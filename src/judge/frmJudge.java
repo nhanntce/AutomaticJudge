@@ -47,14 +47,14 @@ import javax.swing.table.TableRowSorter;
  */
 public class frmJudge extends javax.swing.JFrame {
 
-    public ArrayList<String> listNopbaiPath;
-    public ArrayList<String> listNopbaiName;
-    public ArrayList<String> listProbPath;
-    public ArrayList<String> listProbName;
-    public ArrayList<String> listStuPath;
-    public ArrayList<String> listStuName;
-    public ArrayList<String> listStuClassPath;
-    public ArrayList<String> listStuClassName;
+    public ArrayList<String> listNopbaiPath;    //store the path of each student solution
+    public ArrayList<String> listNopbaiName;    //store the name of each student solution
+    public ArrayList<String> listProbPath;      //store the path of each testcase file (1)
+    public ArrayList<String> listProbName;      //store the name of each testcase file (1)
+    public ArrayList<String> listStuPath;       //store the path to each workspace folder of student in contest (1)
+    public ArrayList<String> listStuName;       //store the name of each workspace folder of student in contest (1)
+    public ArrayList<String> listStuClassPath;  //store the path of each contest
+    public ArrayList<String> listStuClassName;  //store the name of each contest
     public HashMap<String, String> hmStuPath;
     public HashMap<String, JTable> hmTable;
     public HashMap<String, Integer> hmStuIndex;
@@ -65,10 +65,10 @@ public class frmJudge extends javax.swing.JFrame {
     public String typecpp;
     public String typec;
     public String typepy;
-    public String studentDir;
-    private String problemDir;
+    public String studentDir;       //store the path of workspace (1)
+    private String problemDir;      //store the path of testcase of contests (1)
     private String excelPath;
-    public String folderNopbaiPath;
+    public String folderNopbaiPath; //store the path of submissions (1)
     public boolean checkFunction;
     public boolean checkCmt;
     public boolean checkWall;
@@ -106,6 +106,8 @@ public class frmJudge extends javax.swing.JFrame {
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/img/btnjudge.png")));
         init();
         initProperties();
+        listProblem();
+        listStudent();
     }
 
     /**
@@ -355,45 +357,53 @@ public class frmJudge extends javax.swing.JFrame {
             File f = fileFolderProblem.getSelectedFile(); // get file
             String folderPath = f.getAbsolutePath(); // get path file
             problemDir = folderPath;
-            listProbPath.clear();
-            listProbName.clear();
-            lsParentProblem.clear();
-            tabTable.removeAll();
-
-            File[] dirParentProblem = new File(problemDir).listFiles(File::isDirectory);
-            for (File dir : dirParentProblem) {
-                if (dir.getName().contains("$")) {
-                    continue;
-                }
-                ArrayList<String> lsHead1 = new ArrayList<>();
-                lsHead1.add("Contestants");
-                File[] dirHead = new File(dir.getAbsolutePath()).listFiles(File::isDirectory);
-                for (File file : dirHead) {
-                    lsHead1.add(file.getName());
-                    listProbPath.add(file.getAbsolutePath());
-                    listProbName.add(file.getName());
-                }
-                lsHead1.add("Total");
-                lsParentProblem.add(lsHead1);
-
-                DefaultTableModel dtm = new DefaultTableModel(lsHead1.toArray(), 0);
-
-                JTable tb = new JTable(dtm);
-                tb.setEnabled(false);
-                setupTable(tb, dir.getName());
-                hmTable.put(dir.getName(), tb);
-                JScrollPane scr = new JScrollPane(tb);
-                tabTable.addTab(dir.getName(), scr);
-            }
-            if (!listProbName.isEmpty() && !listStuName.isEmpty()) {
-                btnUpdateOnline.setEnabled(true);
-                btnLoadPoint.setEnabled(true);
-                btnImportExcel.setEnabled(true);
-                btnExportExcel.setEnabled(true);
-                btnJudge.setEnabled(true);
-            }
+            listProblem();
         }
     }//GEN-LAST:event_btnListProblemActionPerformed
+    
+    /**
+     * list all problem 
+     * @author NhanNT
+     */
+    private void listProblem() {
+        listProbPath.clear();
+        listProbName.clear();
+        lsParentProblem.clear();
+        tabTable.removeAll();
+
+        File[] dirParentProblem = new File(problemDir).listFiles(File::isDirectory);
+        for (File dir : dirParentProblem) {
+            if (dir.getName().contains("$")) {
+                continue;
+            }
+            ArrayList<String> lsHead1 = new ArrayList<>();
+            lsHead1.add("Contestants");
+            File[] dirHead = new File(dir.getAbsolutePath()).listFiles(File::isDirectory);
+            for (File file : dirHead) {
+                lsHead1.add(file.getName());
+                listProbPath.add(file.getAbsolutePath());
+                listProbName.add(file.getName());
+            }
+            lsHead1.add("Total");
+            lsParentProblem.add(lsHead1);
+
+            DefaultTableModel dtm = new DefaultTableModel(lsHead1.toArray(), 0);
+
+            JTable tb = new JTable(dtm);
+            tb.setEnabled(false);
+            setupTable(tb, dir.getName());
+            hmTable.put(dir.getName(), tb);
+            JScrollPane scr = new JScrollPane(tb);
+            tabTable.addTab(dir.getName(), scr);
+        }
+        if (!listProbName.isEmpty() && !listStuName.isEmpty()) {
+            btnUpdateOnline.setEnabled(true);
+            btnLoadPoint.setEnabled(true);
+            btnImportExcel.setEnabled(true);
+            btnExportExcel.setEnabled(true);
+            btnJudge.setEnabled(true);
+        }
+    }
 
     private void btnListStudentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnListStudentActionPerformed
         if (!listProbName.isEmpty() && !listStuName.isEmpty()) {
@@ -410,54 +420,7 @@ public class frmJudge extends javax.swing.JFrame {
                 File f = fileFolderStudent.getSelectedFile(); // get file
                 String folderPath = f.getAbsolutePath(); // get path file
                 studentDir = folderPath;
-
-                listStuPath.clear();
-                listStuName.clear();
-                tabTable.removeAll();
-
-                int index = 0;
-                File[] dirStu = new File(studentDir).listFiles(File::isDirectory);
-                for (File dir : dirStu) {
-                    if (dir.getName().contains("$")) {
-                        continue;
-                    }
-                    int totalStudent = 0;
-                    listStuClassPath.add(dir.getAbsolutePath());
-                    listStuClassName.add(dir.getName());
-                    ArrayList<ArrayList<String>> lsRow1 = new ArrayList<>();
-                    File[] dirStuClass = new File(dir.getAbsolutePath()).listFiles(File::isDirectory);
-                    for (File dirStuClas : dirStuClass) {
-                        if (dirStuClas.getName().contains("$")) {
-                            continue;
-                        }
-                        ArrayList<String> enity = new ArrayList<>();
-                        enity.add(dirStuClas.getName());
-
-                        for (int i = 0; i < lsParentProblem.get(index).size() - 1; ++i) {
-                            enity.add("Not submit");
-                        }
-
-                        lsRow1.add(enity);
-                        listStuPath.add(dirStuClas.getAbsolutePath());
-                        listStuName.add(dirStuClas.getName());
-                        hmStuIndex.put(dirStuClas.getName() + dir.getName(), totalStudent++);
-
-                        hmStuPath.put(dirStuClas.getName() + dir.getName(), dirStuClas.getAbsolutePath());
-                        hmTotalPoint.put(dirStuClas.getName() + dir.getName(), 0);
-                    }
-
-                    DefaultTableModel dtm = new DefaultTableModel(lsParentProblem.get(index).toArray(), 0);
-                    for (ArrayList<String> arrayList : lsRow1) {
-                        dtm.addRow(arrayList.toArray());
-                    }
-                    JTable tb = new JTable(dtm);
-                    tb.setEnabled(false);
-                    setupTable(tb, dir.getName());
-                    hmTable.put(dir.getName(), tb);
-                    JScrollPane scr = new JScrollPane(tb);
-                    tabTable.addTab(dir.getName(), scr);
-                    index++;
-                }
+                listStudent();
             }
             if (!listProbName.isEmpty() && !listStuName.isEmpty()) {
                 btnUpdateOnline.setEnabled(true);
@@ -470,6 +433,60 @@ public class frmJudge extends javax.swing.JFrame {
             System.out.println(e.getMessage());
         }
     }//GEN-LAST:event_btnListStudentActionPerformed
+
+    /**
+     * list all student
+     * @author NhanNT
+     */
+    private void listStudent() {
+        listStuPath.clear();
+        listStuName.clear();
+        tabTable.removeAll();
+
+        int index = 0;
+        File[] dirStu = new File(studentDir).listFiles(File::isDirectory);
+
+        for (File dir : dirStu) {
+            if (dir.getName().contains("$")) {
+                continue;
+            }
+            int totalStudent = 0;
+            listStuClassPath.add(dir.getAbsolutePath());
+            listStuClassName.add(dir.getName());
+            ArrayList<ArrayList<String>> lsRow1 = new ArrayList<>();
+            File[] dirStuClass = new File(dir.getAbsolutePath()).listFiles(File::isDirectory);
+            for (File dirStuClas : dirStuClass) {
+                if (dirStuClas.getName().contains("$")) {
+                    continue;
+                }
+                ArrayList<String> enity = new ArrayList<>();
+                enity.add(dirStuClas.getName());
+
+                for (int i = 0; i < lsParentProblem.get(index).size() - 1; ++i) {
+                    enity.add("Not submit");
+                }
+
+                lsRow1.add(enity);
+                listStuPath.add(dirStuClas.getAbsolutePath());
+                listStuName.add(dirStuClas.getName());
+                hmStuIndex.put(dirStuClas.getName() + dir.getName(), totalStudent++);
+
+                hmStuPath.put(dirStuClas.getName() + dir.getName(), dirStuClas.getAbsolutePath());
+                hmTotalPoint.put(dirStuClas.getName() + dir.getName(), 0);
+            }
+            DefaultTableModel dtm = new DefaultTableModel(lsParentProblem.get(index).toArray(), 0);
+            for (ArrayList<String> arrayList : lsRow1) {
+                dtm.addRow(arrayList.toArray());
+            }
+            JTable tb = new JTable(dtm);
+            tb.setEnabled(false);
+            setupTable(tb, dir.getName());
+            hmTable.put(dir.getName(), tb);
+            JScrollPane scr = new JScrollPane(tb);
+            tabTable.addTab(dir.getName(), scr);
+            index++;
+        }
+    }
 
     private void btnSettingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSettingActionPerformed
         frmSetting setting = new frmSetting(this);
@@ -504,6 +521,8 @@ public class frmJudge extends javax.swing.JFrame {
                             continue;
                         }
                         listNopbaiPath.add(dir.getAbsolutePath());
+                        System.out.println(dir.getAbsolutePath());
+                        System.out.println(dir.getName());
                         listNopbaiName.add(dir.getName());
                     }
                 }
@@ -540,9 +559,14 @@ public class frmJudge extends javax.swing.JFrame {
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         try {
-            props.setProperty("studentDir", studentDir);
-            props.setProperty("problemDir", problemDir);
-            props.setProperty("folderNopbaiPath", folderNopbaiPath);
+            //TODO
+            //write properties here
+            //holding relative path
+            String AbPath = this.FILE.getAbsolutePath();
+            String path1 = AbPath.substring(0, AbPath.length() - 33);
+            props.setProperty("studentDir", studentDir.replace(path1, ""));
+            props.setProperty("problemDir", problemDir.replace(path1, ""));
+            props.setProperty("folderNopbaiPath", folderNopbaiPath.replace(path1, ""));
             props.setProperty("excelPath", excelPath);
             props.setProperty("typecpp", typecpp);
             props.setProperty("typec", typec);
@@ -950,7 +974,7 @@ public class frmJudge extends javax.swing.JFrame {
         this.btnUpdateOnline.setEnabled(false);
         this.btnImportExcel.setEnabled(false);
         this.btnExportExcel.setEnabled(false);
-        this.btnJudge.setEnabled(false);
+//        this.btnJudge.setEnabled(false);
         this.tmptype = "cpppysql"; // C, C++, python
         this.listNopbaiPath = new ArrayList<>();
         this.listNopbaiName = new ArrayList<>();
@@ -1005,11 +1029,13 @@ public class frmJudge extends javax.swing.JFrame {
         }
 
         try {
+            String AbPath = this.FILE.getAbsolutePath();
+            String path1 = AbPath.substring(0, AbPath.length() - 33);
             FileInputStream in = new FileInputStream(this.FILE);
             this.props.load(in);
-            this.studentDir = this.props.getProperty("studentDir");
-            this.problemDir = this.props.getProperty("problemDir");
-            this.folderNopbaiPath = this.props.getProperty("folderNopbaiPath");
+            this.studentDir = path1 + this.props.getProperty("studentDir");
+            this.problemDir = path1 + this.props.getProperty("problemDir");
+            this.folderNopbaiPath = path1 + this.props.getProperty("folderNopbaiPath");
             this.excelPath = this.props.getProperty("excelPath");
             this.typecpp = this.props.getProperty("typecpp");
             this.typec = this.props.getProperty("typec");
