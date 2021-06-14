@@ -132,6 +132,10 @@ public class frmProcess extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * stop judge 
+     * @param evt 
+     */
     private void btnStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStopActionPerformed
         parent.judge.stop();
         parent.timer.stop();

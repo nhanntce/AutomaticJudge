@@ -187,7 +187,10 @@ public class frmSetting extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    /**
+     * choose path student's solution NhanNT
+     * @param evt 
+     */
     private void btnNopbaiPathActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNopbaiPathActionPerformed
         parent.fileFolderNopbai.setCurrentDirectory(new File(parent.folderNopbaiPath));
         int choice = parent.fileFolderNopbai.showOpenDialog(this);
@@ -196,7 +199,10 @@ public class frmSetting extends javax.swing.JFrame {
             txtNopbaiPath.setText(f.getAbsolutePath());
         }
     }//GEN-LAST:event_btnNopbaiPathActionPerformed
-
+    /**
+     * get config value from user and set to frmJudge NhanNT
+     * @param evt 
+     */
     private void btnOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOkActionPerformed
         try {
             parent.folderNopbaiPath = txtNopbaiPath.getText();

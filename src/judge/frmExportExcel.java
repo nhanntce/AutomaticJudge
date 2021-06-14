@@ -102,7 +102,10 @@ public class frmExportExcel extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    /**
+     * export student's score NhaNT
+     * @param evt 
+     */
     private void btnExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportActionPerformed
         ExcelHandle tool = new ExcelHandle(parent);
         if (cmbExport.getItemCount() > 0) {

@@ -47,38 +47,38 @@ import javax.swing.table.TableRowSorter;
  */
 public class frmJudge extends javax.swing.JFrame {
 
-    public ArrayList<String> listNopbaiPath;    //store the path of each student solution
-    public ArrayList<String> listNopbaiName;    //store the name of each student solution
-    public ArrayList<String> listProbPath;      //store the path of each testcase file (1)
-    public ArrayList<String> listProbName;      //store the name of each testcase file (1)
-    public ArrayList<String> listStuPath;       //store the path to each workspace folder of student in contest (1)
-    public ArrayList<String> listStuName;       //store the name of each workspace folder of student in contest (1)
-    public ArrayList<String> listStuClassPath;  //store the path of each contest
-    public ArrayList<String> listStuClassName;  //store the name of each contest
+    public ArrayList<String> listNopbaiPath;    //store the path of each student solution NhanNT
+    public ArrayList<String> listNopbaiName;    //store the name of each student solution NhanNT
+    public ArrayList<String> listProbPath;      //store the path of each testcase file NhanNT
+    public ArrayList<String> listProbName;      //store the name of each testcase file NhanNT
+    public ArrayList<String> listStuPath;       //store the path to each workspace folder of student in contest NhanNT
+    public ArrayList<String> listStuName;       //store the name of each workspace folder of student in contest NhanNT
+    public ArrayList<String> listStuClassPath;  //store the path of each contest NhanNT
+    public ArrayList<String> listStuClassName;  //store the name of each contest NhanNT
     public HashMap<String, String> hmStuPath;
     public HashMap<String, JTable> hmTable;
     public HashMap<String, Integer> hmStuIndex;
     public HashMap<String, Integer> hmTotalPoint;
-    public ArrayList<ArrayList<String>> lsParentProblem;
+    public ArrayList<ArrayList<String>> lsParentProblem;    //list of list test case name folder NhanNT
     public DefaultTableModel tableModelExport;
 
     public String typecpp;
     public String typec;
     public String typepy;
-    public String studentDir;       //store the path of workspace (1)
-    private String problemDir;      //store the path of testcase of contests (1)
+    public String studentDir;       //store the path of workspace NhanNT
+    private String problemDir;      //store the path of testcase of contests NhanNT
     private String excelPath;
-    public String folderNopbaiPath; //store the path of submissions (1)
+    public String folderNopbaiPath; //store the path of submissions NhanNT
     public boolean checkFunction;
     public boolean checkCmt;
     public boolean checkWall;
     public int timeLimit;
     public int memoryLimit;
 
-    private Properties props;
-    private File FILE;
-    public frmProcess pro;
-    public Judge tool;
+    private Properties props;       //store properties config file NhanNT
+    private File FILE;              //store path name of config file NhanNT
+    public frmProcess pro;          //process frame
+    public Judge tool;              //judge class
     public FileHandle fhandle;
     public OsCheck.OSType ostype;
     public ExcelHandle excel;
@@ -95,6 +95,7 @@ public class frmJudge extends javax.swing.JFrame {
      */
     public frmJudge() {
         initComponents();
+        //make UI beautiful NhanNT
         this.getContentPane().setBackground(Color.WHITE);
         pnlToolbar.setBackground(Color.WHITE);
         FontUIResource font = new FontUIResource("Verdana", Font.PLAIN, 14);
@@ -106,7 +107,9 @@ public class frmJudge extends javax.swing.JFrame {
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/img/btnjudge.png")));
         init();
         initProperties();
+        //load test cases NhanNT
         listProblem();
+        //load student solutions NhanNT
         listStudent();
     }
 
@@ -343,6 +346,11 @@ public class frmJudge extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * button load or reload list test cases NhanNT
+     *
+     * @param evt
+     */
     private void btnListProblemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnListProblemActionPerformed
         if (!listProbName.isEmpty() && !listStuName.isEmpty()) {
             int input = JOptionPane.showConfirmDialog(null,
@@ -360,9 +368,10 @@ public class frmJudge extends javax.swing.JFrame {
             listProblem();
         }
     }//GEN-LAST:event_btnListProblemActionPerformed
-    
+
     /**
-     * list all problem 
+     * list all problem
+     *
      * @author NhanNT
      */
     private void listProblem() {
@@ -386,7 +395,7 @@ public class frmJudge extends javax.swing.JFrame {
             }
             lsHead1.add("Total");
             lsParentProblem.add(lsHead1);
-
+     
             DefaultTableModel dtm = new DefaultTableModel(lsHead1.toArray(), 0);
 
             JTable tb = new JTable(dtm);
@@ -404,7 +413,10 @@ public class frmJudge extends javax.swing.JFrame {
             btnJudge.setEnabled(true);
         }
     }
-
+    /**
+     * load student solutions NhanNT
+     * @param evt 
+     */
     private void btnListStudentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnListStudentActionPerformed
         if (!listProbName.isEmpty() && !listStuName.isEmpty()) {
             int input = JOptionPane.showConfirmDialog(null,
@@ -421,13 +433,7 @@ public class frmJudge extends javax.swing.JFrame {
                 String folderPath = f.getAbsolutePath(); // get path file
                 studentDir = folderPath;
                 listStudent();
-            }
-            if (!listProbName.isEmpty() && !listStuName.isEmpty()) {
-                btnUpdateOnline.setEnabled(true);
-                btnLoadPoint.setEnabled(true);
-                btnImportExcel.setEnabled(true);
-                btnExportExcel.setEnabled(true);
-                btnJudge.setEnabled(true);
+
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -436,6 +442,7 @@ public class frmJudge extends javax.swing.JFrame {
 
     /**
      * list all student
+     *
      * @author NhanNT
      */
     private void listStudent() {
@@ -486,13 +493,28 @@ public class frmJudge extends javax.swing.JFrame {
             tabTable.addTab(dir.getName(), scr);
             index++;
         }
+        if (!listProbName.isEmpty() && !listStuName.isEmpty()) {
+            btnUpdateOnline.setEnabled(true);
+            btnLoadPoint.setEnabled(true);
+            btnImportExcel.setEnabled(true);
+            btnExportExcel.setEnabled(true);
+            btnJudge.setEnabled(true);
+        }
     }
-
+    
+    /**
+     * load setting form NhanNT
+     * @param evt 
+     */
     private void btnSettingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSettingActionPerformed
         frmSetting setting = new frmSetting(this);
         setting.setVisible(true);
     }//GEN-LAST:event_btnSettingActionPerformed
-
+    
+    /**
+     * button run judge 
+     * @param evt 
+     */
     private void btnJudgeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnJudgeActionPerformed
         String[] classes = new String[tabTable.getTabCount() + 1];
         classes[0] = "All classes";
@@ -521,8 +543,6 @@ public class frmJudge extends javax.swing.JFrame {
                             continue;
                         }
                         listNopbaiPath.add(dir.getAbsolutePath());
-                        System.out.println(dir.getAbsolutePath());
-                        System.out.println(dir.getName());
                         listNopbaiName.add(dir.getName());
                     }
                 }
@@ -530,12 +550,18 @@ public class frmJudge extends javax.swing.JFrame {
             tool.foo(listNopbaiPath, listNopbaiName, false);
         }
     }//GEN-LAST:event_btnJudgeActionPerformed
-
+    /**
+     * open config frame NhanNT
+     * @param evt 
+     */
     private void btnConfigActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfigActionPerformed
         frmConfig frmCon = new frmConfig(this);
         frmCon.setVisible(true);
     }//GEN-LAST:event_btnConfigActionPerformed
-
+    /**
+     * import excel NhanNT
+     * @param evt 
+     */
     private void btnImportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImportExcelActionPerformed
         fileFile.removeChoosableFileFilter(fileFile.getFileFilter());
         fileFile.setCurrentDirectory(new File(excelPath));
@@ -552,11 +578,17 @@ public class frmJudge extends javax.swing.JFrame {
             excel.importExcel();
         }
     }//GEN-LAST:event_btnImportExcelActionPerformed
-
+    /**
+     * load problem and student's solution
+     * @param evt 
+     */
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
         updateTable();
     }//GEN-LAST:event_btnUpdateActionPerformed
-
+    /**
+     * save config file NhanNT
+     * @param evt 
+     */
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         try {
             //TODO
@@ -583,7 +615,10 @@ public class frmJudge extends javax.swing.JFrame {
             this.dispose();
         }
     }//GEN-LAST:event_formWindowClosing
-
+    /**
+     * open Export excel frame
+     * @param evt 
+     */
     private void btnExportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportExcelActionPerformed
         frmExportExcel frmCon = new frmExportExcel(this);
         frmCon.setVisible(true);
@@ -837,7 +872,7 @@ public class frmJudge extends javax.swing.JFrame {
 
     /**
      * Setup styles table
-     *
+     * show data in table NhanNT
      * @param tb
      */
     private void setupTable(JTable tb, String nameTable) {
@@ -1013,6 +1048,7 @@ public class frmJudge extends javax.swing.JFrame {
 
     /**
      * Initialize Properties
+     * read config file then assign value to global variable NhanNT
      */
     private void initProperties() {
         switch (this.ostype) {
