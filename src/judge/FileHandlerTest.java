@@ -23,13 +23,19 @@ public class FileHandlerTest implements FileHandler {
         this.tool = tool;
 
     }
-    
+    /**
+     * check Type of file test
+     * LinhNC
+     */
     private boolean checkType(String filename) {
         String[] lstype = filename.split("\\.");
         String type = lstype[lstype.length - 1];
         return type.equalsIgnoreCase("cpp") || type.equalsIgnoreCase("c") || type.equalsIgnoreCase("py") ||  type.equalsIgnoreCase("sql");
     }
-    
+    /**
+     * auto Judge
+     * LinhNC
+     */
     @Override
     public void handle(File file, Kind<?> fileEvent) {
         LOGGER.log(Level.INFO, "Handler is triggered for file {0}", file.getPath());

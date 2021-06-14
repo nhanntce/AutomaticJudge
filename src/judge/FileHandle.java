@@ -15,7 +15,10 @@ import org.apache.commons.io.FileUtils;
  * Automatic Judger
  */
 public class FileHandle {
-
+	/**
+	 * Copy file  
+	 *LinhNC
+	 */
     public void copyFile(String source, String dest) {
         try {
             FileUtils.copyFile(new File(source), new File(dest), true);
@@ -23,7 +26,10 @@ public class FileHandle {
             System.out.println(e.getMessage());
         }
     }
-
+    /**
+     * Compare two file
+     * LinhNC
+     */
     public boolean compareTwoFiles(String file1Path, String file2Path) throws IOException {
 
         File file1 = new File(file1Path);

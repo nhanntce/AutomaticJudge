@@ -40,7 +40,10 @@ public class ExcelHandle {
     public ExcelHandle(frmJudge parent) {
         this.parent = parent;
     }
-
+    /**
+     * Get path list student by file excel 
+     * LinhNC
+     */
     public ExcelHandle(String path, String name, String studentDir, String problemDir, frmJudge parent) {
         try {
             this.parent = parent;
@@ -165,6 +168,10 @@ public class ExcelHandle {
             System.out.println(e);
         }
     }
+    /**
+     * Round point
+     * LinhNC
+     */
     private static double round(double value, int precision) {
         int scale = (int) Math.pow(10, precision);
         return (double) Math.round(value * scale) / scale;
