@@ -22,6 +22,7 @@ public class frmConfig extends javax.swing.JFrame {
         tblConfig.setValueAt(parent.typecpp, 0, 1);
         tblConfig.setValueAt(parent.typec, 1, 1);
         tblConfig.setValueAt(parent.typepy, 2, 1);
+        tblConfig.setValueAt(parent.typejava, 3, 1);
     }
 
     /**
@@ -53,7 +54,8 @@ public class frmConfig extends javax.swing.JFrame {
             new Object [][] {
                 {".cpp", null},
                 {".c", null},
-                {".py", null}
+                {".py", null},
+                {".java", null}
             },
             new String [] {
                 "File type", "Compiler"
@@ -109,6 +111,7 @@ public class frmConfig extends javax.swing.JFrame {
         parent.typecpp = tblConfig.getValueAt(0, 1).toString();
         parent.typec = tblConfig.getValueAt(1, 1).toString();
         parent.typepy = tblConfig.getValueAt(2, 1).toString();
+        parent.typejava = tblConfig.getValueAt(3, 1).toString();
         setVisible(false);
     }//GEN-LAST:event_btnOkActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables

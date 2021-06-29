@@ -139,7 +139,7 @@ public class frmProcess extends javax.swing.JFrame {
     private void btnStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStopActionPerformed
         parent.judge.stop();
         parent.timer.stop();
-        parent.btnJudge.setEnabled(true);
+        parent.btnJudgeAContest.setEnabled(true);
         parent.btnUpdateOnline.setEnabled(true);
         this.dispose();
     }//GEN-LAST:event_btnStopActionPerformed

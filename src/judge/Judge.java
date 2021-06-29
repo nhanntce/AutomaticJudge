@@ -109,6 +109,8 @@ public class Judge {
 					Files.deleteIfExists(Paths.get(tenbai));
 					Files.deleteIfExists(Paths.get(tenbai + ".exe"));
 					Files.deleteIfExists(Paths.get(tenbai + ".pyc"));
+                                        //delete file java NhanNT
+					Files.deleteIfExists(Paths.get(tenbai + ".class"));
 					continue;
 				}
 
@@ -196,6 +198,7 @@ public class Judge {
 				Files.deleteIfExists(Paths.get(tenbai));
 				Files.deleteIfExists(Paths.get(tenbai + ".exe"));
 				Files.deleteIfExists(Paths.get(tenbai + ".pyc"));
+				Files.deleteIfExists(Paths.get(tenbai + ".java"));
 				Files.deleteIfExists(Paths.get(problem + ".inp"));
 				Files.deleteIfExists(Paths.get(problem + ".out"));
 			} catch (IOException ex) {
@@ -298,6 +301,26 @@ public class Judge {
 			case "py":
 				cmd = parent.typepy + " -m compileall " + tenbai + ".py -q -b";
 				break;
+                                //judge Java NhanNT
+                        case "java":
+                                Runtime rTmp = Runtime.getRuntime();
+                            try {
+                                Process p = rTmp.exec("javac " + tenbai + ".java");
+                                BufferedReader br = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+				BufferedReader br1 = new BufferedReader(new InputStreamReader(p.getInputStream()));
+				String s;
+                                boolean hasError = false;
+				while ((s = br.readLine()) != null || (s = br1.readLine()) != null) {
+					error += s + "\n";
+                                        hasError = true;
+				}
+                                if(hasError)
+                                    return false;
+                                while (p.isAlive()) {}
+                            } catch (IOException ex) {
+                                Logger.getLogger(Judge.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                                cmd = "java " + tenbai;
 			}
 			try {
 				Runtime r = Runtime.getRuntime();
@@ -531,11 +554,11 @@ public class Judge {
 		parent.judge = new Thread() {
 			@Override
 			public void run() {
-				parent.btnJudge.setEnabled(false);
+				parent.btnJudgeAContest.setEnabled(false);
 				parent.btnUpdateOnline.setEnabled(false);
 				judge(NopbaiPath, NopbaiName, auto);
 				parent.pro.setVisible(false);
-				parent.btnJudge.setEnabled(true);
+				parent.btnJudgeAContest.setEnabled(true);
 				parent.btnUpdateOnline.setEnabled(true);
 			}
 		};

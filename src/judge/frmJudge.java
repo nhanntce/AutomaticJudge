@@ -65,6 +65,7 @@ public class frmJudge extends javax.swing.JFrame {
     public String typecpp;
     public String typec;
     public String typepy;
+    public String typejava;
     public String studentDir;       //store the path of workspace NhanNT
     private String problemDir;      //store the path of testcase of contests NhanNT
     private String excelPath;
@@ -140,8 +141,9 @@ public class frmJudge extends javax.swing.JFrame {
         btnExportExcel = new javax.swing.JButton();
         btnConfig = new javax.swing.JButton();
         btnSetting = new javax.swing.JButton();
-        btnJudge = new javax.swing.JButton();
+        btnJudgeAContest = new javax.swing.JButton();
         btnLoadPoint = new javax.swing.JButton();
+        btnJudgeAllClass = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Automatic Judger");
@@ -174,13 +176,13 @@ public class frmJudge extends javax.swing.JFrame {
         });
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel1.setText("Find contestants:");
+        jLabel1.setText("Find students:");
 
         pnlToolbar.setPreferredSize(new java.awt.Dimension(1200, 100));
 
         btnListProblem.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         btnListProblem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/btnloadtasks.png"))); // NOI18N
-        btnListProblem.setToolTipText("Load Tasks");
+        btnListProblem.setToolTipText("Load Testcases");
         btnListProblem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnListProblemActionPerformed(evt);
@@ -249,12 +251,12 @@ public class frmJudge extends javax.swing.JFrame {
             }
         });
 
-        btnJudge.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        btnJudge.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/btnjudge.png"))); // NOI18N
-        btnJudge.setToolTipText("Judge");
-        btnJudge.addActionListener(new java.awt.event.ActionListener() {
+        btnJudgeAContest.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        btnJudgeAContest.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/btnjudge.png"))); // NOI18N
+        btnJudgeAContest.setToolTipText("Judge Current Tab");
+        btnJudgeAContest.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnJudgeActionPerformed(evt);
+                btnJudgeAContestActionPerformed(evt);
             }
         });
 
@@ -264,6 +266,15 @@ public class frmJudge extends javax.swing.JFrame {
         btnLoadPoint.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnLoadPointActionPerformed(evt);
+            }
+        });
+
+        btnJudgeAllClass.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        btnJudgeAllClass.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/btnjudgeall.png"))); // NOI18N
+        btnJudgeAllClass.setToolTipText("Judge All Contestant");
+        btnJudgeAllClass.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnJudgeAllClassActionPerformed(evt);
             }
         });
 
@@ -291,7 +302,9 @@ public class frmJudge extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnSetting)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnJudge)
+                .addComponent(btnJudgeAContest)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnJudgeAllClass)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         pnlToolbarLayout.setVerticalGroup(
@@ -299,8 +312,9 @@ public class frmJudge extends javax.swing.JFrame {
             .addGroup(pnlToolbarLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnlToolbarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnJudgeAllClass)
                     .addComponent(btnLoadPoint)
-                    .addComponent(btnJudge)
+                    .addComponent(btnJudgeAContest)
                     .addComponent(btnSetting)
                     .addComponent(btnConfig)
                     .addComponent(btnExportExcel)
@@ -324,9 +338,9 @@ public class frmJudge extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtFilter, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(tabTable, javax.swing.GroupLayout.DEFAULT_SIZE, 864, Short.MAX_VALUE))
+                    .addComponent(tabTable, javax.swing.GroupLayout.DEFAULT_SIZE, 951, Short.MAX_VALUE))
                 .addContainerGap())
-            .addComponent(pnlToolbar, javax.swing.GroupLayout.DEFAULT_SIZE, 884, Short.MAX_VALUE)
+            .addComponent(pnlToolbar, javax.swing.GroupLayout.DEFAULT_SIZE, 971, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -395,7 +409,7 @@ public class frmJudge extends javax.swing.JFrame {
             }
             lsHead1.add("Total");
             lsParentProblem.add(lsHead1);
-     
+
             DefaultTableModel dtm = new DefaultTableModel(lsHead1.toArray(), 0);
 
             JTable tb = new JTable(dtm);
@@ -410,12 +424,14 @@ public class frmJudge extends javax.swing.JFrame {
             btnLoadPoint.setEnabled(true);
             btnImportExcel.setEnabled(true);
             btnExportExcel.setEnabled(true);
-            btnJudge.setEnabled(true);
+            btnJudgeAContest.setEnabled(true);
         }
     }
+
     /**
      * load student solutions NhanNT
-     * @param evt 
+     *
+     * @param evt
      */
     private void btnListStudentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnListStudentActionPerformed
         if (!listProbName.isEmpty() && !listStuName.isEmpty()) {
@@ -498,61 +514,50 @@ public class frmJudge extends javax.swing.JFrame {
             btnLoadPoint.setEnabled(true);
             btnImportExcel.setEnabled(true);
             btnExportExcel.setEnabled(true);
-            btnJudge.setEnabled(true);
+            btnJudgeAContest.setEnabled(true);
         }
     }
-    
+
     /**
      * load setting form NhanNT
-     * @param evt 
+     *
+     * @param evt
      */
     private void btnSettingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSettingActionPerformed
         frmSetting setting = new frmSetting(this);
         setting.setVisible(true);
     }//GEN-LAST:event_btnSettingActionPerformed
-    
+
     /**
-     * button run judge 
-     * @param evt 
+     * button run judge
+     *
+     * @param evt
      */
-    private void btnJudgeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnJudgeActionPerformed
-        String[] classes = new String[tabTable.getTabCount() + 1];
-        classes[0] = "All classes";
-        for (int i = 1; i < tabTable.getTabCount() + 1; ++i) {
-            classes[i] = tabTable.getTitleAt(i - 1);
-        }
-        String s = (String) JOptionPane.showInputDialog(null,
-                "Select class",
-                "Judge",
-                JOptionPane.PLAIN_MESSAGE, null,
-                classes, classes[0]);
-        if (s != null) {
-            if (s.equals("All classes")) {
-                s = "";
-            } else {
-                s = "\\" + s + "\\";
-            }
-            listNopbaiPath.clear();
-            listNopbaiName.clear();
-            for (int i = 0; i < listStuPath.size(); ++i) {
-                if (listStuPath.get(i).contains(s)) {
-                    File[] directories = new File(listStuPath.get(i)).listFiles(File::isFile);
-                    Arrays.sort(directories, Comparator.comparingLong(File::lastModified)); // sort by time asc
-                    for (File dir : directories) {
-                        if (dir.getName().equalsIgnoreCase(".htaccess") || !tmptype.contains(tool.getType(dir.getName()))) {
-                            continue;
-                        }
-                        listNopbaiPath.add(dir.getAbsolutePath());
-                        listNopbaiName.add(dir.getName());
+    private void btnJudgeAContestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnJudgeAContestActionPerformed
+        String s = "\\" + tabTable.getTitleAt(tabTable.getSelectedIndex()) + "\\";
+
+        listNopbaiPath.clear();
+        listNopbaiName.clear();
+        for (int i = 0; i < listStuPath.size(); ++i) {
+            if (listStuPath.get(i).contains(s)) {
+                File[] directories = new File(listStuPath.get(i)).listFiles(File::isFile);
+                Arrays.sort(directories, Comparator.comparingLong(File::lastModified)); // sort by time asc
+                for (File dir : directories) {
+                    if (dir.getName().equalsIgnoreCase(".htaccess") || !tmptype.contains(tool.getType(dir.getName()))) {
+                        continue;
                     }
+                    listNopbaiPath.add(dir.getAbsolutePath());
+                    listNopbaiName.add(dir.getName());
                 }
             }
-            tool.foo(listNopbaiPath, listNopbaiName, false);
         }
-    }//GEN-LAST:event_btnJudgeActionPerformed
+        tool.foo(listNopbaiPath, listNopbaiName, false);
+
+    }//GEN-LAST:event_btnJudgeAContestActionPerformed
     /**
      * open config frame NhanNT
-     * @param evt 
+     *
+     * @param evt
      */
     private void btnConfigActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfigActionPerformed
         frmConfig frmCon = new frmConfig(this);
@@ -560,7 +565,8 @@ public class frmJudge extends javax.swing.JFrame {
     }//GEN-LAST:event_btnConfigActionPerformed
     /**
      * import excel NhanNT
-     * @param evt 
+     *
+     * @param evt
      */
     private void btnImportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImportExcelActionPerformed
         fileFile.removeChoosableFileFilter(fileFile.getFileFilter());
@@ -580,14 +586,16 @@ public class frmJudge extends javax.swing.JFrame {
     }//GEN-LAST:event_btnImportExcelActionPerformed
     /**
      * load problem and student's solution
-     * @param evt 
+     *
+     * @param evt
      */
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
         updateTable();
     }//GEN-LAST:event_btnUpdateActionPerformed
     /**
      * save config file NhanNT
-     * @param evt 
+     *
+     * @param evt
      */
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         try {
@@ -603,6 +611,7 @@ public class frmJudge extends javax.swing.JFrame {
             props.setProperty("typecpp", typecpp);
             props.setProperty("typec", typec);
             props.setProperty("typepy", typepy);
+            props.setProperty("typejava", typejava);
             props.setProperty("checkFunction", String.valueOf(checkFunction));
             props.setProperty("checkCmt", String.valueOf(checkCmt));
             props.setProperty("checkWall", String.valueOf(checkWall));
@@ -617,7 +626,8 @@ public class frmJudge extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowClosing
     /**
      * open Export excel frame
-     * @param evt 
+     *
+     * @param evt
      */
     private void btnExportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportExcelActionPerformed
         frmExportExcel frmCon = new frmExportExcel(this);
@@ -674,6 +684,25 @@ public class frmJudge extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_btnLoadPointActionPerformed
+
+    private void btnJudgeAllClassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnJudgeAllClassActionPerformed
+
+        listNopbaiPath.clear();
+        listNopbaiName.clear();
+        for (int i = 0; i < listStuPath.size(); ++i) {
+            File[] directories = new File(listStuPath.get(i)).listFiles(File::isFile);
+            Arrays.sort(directories, Comparator.comparingLong(File::lastModified)); // sort by time asc
+            for (File dir : directories) {
+                if (dir.getName().equalsIgnoreCase(".htaccess") || !tmptype.contains(tool.getType(dir.getName()))) {
+                    continue;
+                }
+                listNopbaiPath.add(dir.getAbsolutePath());
+                listNopbaiName.add(dir.getName());
+            }
+        }
+        tool.foo(listNopbaiPath, listNopbaiName, false);
+
+    }//GEN-LAST:event_btnJudgeAllClassActionPerformed
     /**
      * Method load point from logs file
      *
@@ -782,7 +811,7 @@ public class frmJudge extends javax.swing.JFrame {
                 btnLoadPoint.setEnabled(true);
                 btnImportExcel.setEnabled(true);
                 btnExportExcel.setEnabled(true);
-                btnJudge.setEnabled(true);
+                btnJudgeAContest.setEnabled(true);
                 tabTable.removeAll();
                 listProbPath.clear();
                 listProbName.clear();
@@ -871,8 +900,8 @@ public class frmJudge extends javax.swing.JFrame {
     }
 
     /**
-     * Setup styles table
-     * show data in table NhanNT
+     * Setup styles table show data in table NhanNT
+     *
      * @param tb
      */
     private void setupTable(JTable tb, String nameTable) {
@@ -1035,6 +1064,7 @@ public class frmJudge extends javax.swing.JFrame {
         this.typec = "gcc";
         this.typecpp = "g++";
         this.typepy = "python";
+        this.typejava = "java";
         this.checkFunction = false;
         this.checkCmt = false;
         this.checkWall = false;
@@ -1047,8 +1077,8 @@ public class frmJudge extends javax.swing.JFrame {
     }
 
     /**
-     * Initialize Properties
-     * read config file then assign value to global variable NhanNT
+     * Initialize Properties read config file then assign value to global
+     * variable NhanNT
      */
     private void initProperties() {
         switch (this.ostype) {
@@ -1076,6 +1106,7 @@ public class frmJudge extends javax.swing.JFrame {
             this.typecpp = this.props.getProperty("typecpp");
             this.typec = this.props.getProperty("typec");
             this.typepy = this.props.getProperty("typepy");
+            this.typejava = this.props.getProperty("typejava");
             this.checkFunction = Boolean.parseBoolean(this.props.getProperty("checkFunction"));
             this.checkCmt = Boolean.parseBoolean(this.props.getProperty("checkCmt"));
             this.checkWall = Boolean.parseBoolean(this.props.getProperty("checkWall"));
@@ -1139,7 +1170,8 @@ public class frmJudge extends javax.swing.JFrame {
     private javax.swing.JButton btnConfig;
     private javax.swing.JButton btnExportExcel;
     private javax.swing.JButton btnImportExcel;
-    public javax.swing.JButton btnJudge;
+    public javax.swing.JButton btnJudgeAContest;
+    public javax.swing.JButton btnJudgeAllClass;
     private javax.swing.JButton btnListProblem;
     private javax.swing.JButton btnListStudent;
     private javax.swing.JButton btnLoadPoint;
