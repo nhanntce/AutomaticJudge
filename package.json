@@ -1,0 +1,32 @@
+{
+  "name": "judger",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node --max-old-space-size=8192 app.js"
+  },
+  "author": {
+    "name": "Hy Nguyen",
+    "email": "khanghy3004@gmail.com",
+    "url": "https://github.com/khanghy3004"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "compression": "^1.7.4",
+    "dayjs": "^1.8.30",
+    "ejs": "^3.0.2",
+    "express": "^4.17.1",
+    "express-session": "^1.17.0",
+    "extract-zip": "^2.0.0",
+    "formidable": "^1.2.2",
+    "lignator": "^1.0.2",
+    "mysql": "^2.18.0",
+    "nodemon": "^2.0.4",
+    "nodetable": "^1.0.2",
+    "req-flash": "0.0.3",
+    "xlsx": "^0.15.6",
+    "zip-local": "^0.3.4"
+  }
+}
