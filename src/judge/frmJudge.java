@@ -340,7 +340,7 @@ public class frmJudge extends javax.swing.JFrame {
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(tabTable, javax.swing.GroupLayout.DEFAULT_SIZE, 951, Short.MAX_VALUE))
                 .addContainerGap())
-            .addComponent(pnlToolbar, javax.swing.GroupLayout.DEFAULT_SIZE, 971, Short.MAX_VALUE)
+            .addComponent(pnlToolbar, javax.swing.GroupLayout.PREFERRED_SIZE, 975, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1185,7 +1185,7 @@ public class frmJudge extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel pnlToolbar;
-    private javax.swing.JTabbedPane tabTable;
+    public javax.swing.JTabbedPane tabTable;
     private javax.swing.JTable tblTable;
     private javax.swing.JTextField txtFilter;
     // End of variables declaration//GEN-END:variables
