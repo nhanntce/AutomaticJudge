@@ -5,7 +5,7 @@ import java.nio.file.StandardWatchEventKinds;
 import java.nio.file.WatchEvent.Kind;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.junit.Ignore;
+import jdk.nashorn.internal.ir.annotations.Ignore;
 
 /**
  *
