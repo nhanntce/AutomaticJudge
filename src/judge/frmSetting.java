@@ -34,7 +34,11 @@ public class frmSetting extends javax.swing.JFrame {
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/img/btnsettings.png")));
         this.parent = parent;
 //        txtNopbaiPath.setText(parent.folderNopbaiPath);
-        if (parent.checkFunction) {
+//        if (parent.checkFunction) {
+//            chkCheckFormat.setSelected(true);
+//        }
+
+        if (parent.checkFormat) {
             chkCheckFormat.setSelected(true);
         }
         if (parent.checkCmt) {
@@ -206,12 +210,11 @@ public class frmSetting extends javax.swing.JFrame {
             fileWriter.write("check_format=" + chkCheckFormat.isSelected() + "\n");
             fileWriter.write("check_comment=" + chkCheckCmt.isSelected() + "\n");
             fileWriter.close();
-            
+
             //update apply all contest checkbox to property file
 //            parent.props.setProperty("apply_all", Boolean.toString(chkApplyAll.isSelected()));
 //            OutputStream out = new FileOutputStream(parent.FILE);
 //            parent.props.store(out, "User properties");
-
 //            parent.folderNopbaiPath = txtNopbaiPath.getText();
 //            parent.checkFunction = chkCheckFunc.isSelected();
 //            parent.checkCmt = chkCheckCmt.isSelected();

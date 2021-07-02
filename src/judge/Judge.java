@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -16,11 +17,15 @@ import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import management.CompareFiles;
+import utility.Formatter;
 
 /**
  *
@@ -89,7 +94,7 @@ public class Judge {
 
                 parent.pro.getTxtCompileRun().setText("Compiling " + problem);
                 // if comile error DangVTH
-                if (!compile(tenbai, problem, type)) {
+                if (!compile(tenbai, problem, type, stuclass)) {
                     writer.write("Compile Error\n" + error);
                     setPoint(stuclass, "Compile Error", parent.hmStuIndex.get(user + stuclass),
                             parent.hmTable.get(stuclass).getColumn(problem).getModelIndex());
@@ -176,6 +181,7 @@ public class Judge {
                                 }
                             }
                         }
+                        
                         // write the result
                         DecimalFormat newFormat = new DecimalFormat("#.#");
                         double points = Double.valueOf(newFormat.format((double) point / testPath.length * 10));
@@ -190,6 +196,14 @@ public class Judge {
                         // Set total point for user
                         setPoint(stuclass, getTotalPoint(stuclass, user), parent.hmStuIndex.get(user + stuclass),
                                 parent.hmTable.get(stuclass).getColumnCount() - 1);
+                        //Check format
+                        if (parent.checkFormat) {
+                            Formatter.Format(name);
+                            CompareFiles cf = new CompareFiles();
+                            if (true) {
+                                writer.write("You have not format code\n");
+                            }
+                        }
                         break;
                     }
                 }
@@ -268,11 +282,23 @@ public class Judge {
      * @param type
      * @return
      */
-    public boolean compile(String tenbai, String problem, String type) {
+    public boolean compile(String tenbai, String problem, String type, String stuClass) {
         error = "";
         String cmd = "";
         int exitCode = 0;
-        if (!checkHack(problem, type, tenbai + "." + type, parent.checkFunction, parent.checkCmt)) {
+        String pathToSettingConfig = parent.problemDir + "\\" + stuClass + "\\config.txt";
+        try {
+            List<String> lines = Collections.emptyList();
+            lines = Files.readAllLines(Paths.get(pathToSettingConfig), StandardCharsets.UTF_8);
+            //set setting content to interface
+            parent.timeLimit = Integer.parseInt(lines.get(0).split("=")[1]);
+            parent.memoryLimit = Integer.parseInt(lines.get(1).split("=")[1]);
+            parent.checkFormat = Boolean.parseBoolean(lines.get(2).split("=")[1]);
+            parent.checkCmt = Boolean.parseBoolean(lines.get(3).split("=")[1]);
+        } catch (IOException ex) {
+            Logger.getLogger(frmJudge.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (!checkHack(problem, type, tenbai + "." + type, parent.checkFormat, parent.checkCmt)) {
             return true;
         }
         if (type.equals("sql")) {
@@ -612,9 +638,9 @@ public class Judge {
      * @param checkCmt
      * @return
      */
-    private boolean checkHack(String problem, String type, String file, boolean checkFunc, boolean checkCmt) {
+    private boolean checkHack(String problem, String type, String file, boolean checkFormat, boolean checkCmt) {
         FileReader fr = null;
-        int cntFunc = 0;
+//        int cntFunc = 0;
         int cntCmt = 0;
         try {
             File f = new File(file); // creates a new file instance
@@ -644,11 +670,12 @@ public class Judge {
                     error = "Function \"CREATE\" is not allow";
                     return false;
                 }
-                if (checkFunc) {
-                    if (isFunction(line)) {
-                        cntFunc++;
-                    }
-                }
+//                if (checkFunc) {
+//                    if (isFunction(line)) {
+//                        cntFunc++;
+//                    }
+//                }
+
                 if (checkCmt) {
                     if (isCmt(line)) {
                         cntCmt++;
@@ -676,10 +703,10 @@ public class Judge {
         } catch (IOException ex) {
             Logger.getLogger(Judge.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if (checkFunc && cntFunc < 1) {
-            error = "You don't have any function in code";
-            return false;
-        }
+//        if (checkFunc && cntFunc < 1) {
+//            error = "You don't have any function in code";
+//            return false;
+//        }
         if (checkCmt && cntCmt < 1) {
             error = "You don't have any comment in code";
             return false;

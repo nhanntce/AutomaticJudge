@@ -74,7 +74,8 @@ public class frmJudge extends javax.swing.JFrame {
     public String problemDir;      //store the path of testcase of contests NhanNT
     private String excelPath;
     public String folderNopbaiPath; //store the path of submissions NhanNT
-    public boolean checkFunction;
+//    public boolean checkFunction;
+    public boolean checkFormat;
     public boolean checkCmt;
     public boolean checkWall;
     public int timeLimit;
@@ -318,7 +319,7 @@ public class frmJudge extends javax.swing.JFrame {
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(tabTable, javax.swing.GroupLayout.DEFAULT_SIZE, 955, Short.MAX_VALUE))
                 .addContainerGap())
-            .addComponent(pnlToolbar, javax.swing.GroupLayout.DEFAULT_SIZE, 975, Short.MAX_VALUE)
+            .addComponent(pnlToolbar, javax.swing.GroupLayout.DEFAULT_SIZE, 979, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -470,7 +471,7 @@ public class frmJudge extends javax.swing.JFrame {
             try {
                 File configFile = new File(pathToSettingConfig);
                 configFile.createNewFile();
-                FileWriter fileWriter = new  FileWriter(configFile);
+                FileWriter fileWriter = new FileWriter(configFile);
                 //get default setting from property file
                 String time_limit = this.props.getProperty("time_limit");
                 String memory_limit = this.props.getProperty("memory_limit");
@@ -490,8 +491,8 @@ public class frmJudge extends javax.swing.JFrame {
             } catch (IOException ex) {
                 Logger.getLogger(frmJudge.class.getName()).log(Level.SEVERE, null, ex);
             }
-        //if have config file -> read and get setting content to interface
-        }else {
+            //if have config file -> read and get setting content to interface
+        } else {
             try {
                 List<String> lines = Collections.emptyList();
                 lines = Files.readAllLines(Paths.get(pathToSettingConfig), StandardCharsets.UTF_8);
@@ -500,7 +501,7 @@ public class frmJudge extends javax.swing.JFrame {
                 setting.txtMemoryLimit.setText(lines.get(1).split("=")[1]);
                 setting.chkCheckFormat.setSelected(Boolean.parseBoolean(lines.get(2).split("=")[1]));
                 setting.chkCheckCmt.setSelected(Boolean.parseBoolean(lines.get(3).split("=")[1]));
-              
+
             } catch (IOException ex) {
                 Logger.getLogger(frmJudge.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -568,7 +569,7 @@ public class frmJudge extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnImportExcelActionPerformed
 
-   /**
+    /**
      * save config file NhanNT
      *
      * @param evt
@@ -588,7 +589,8 @@ public class frmJudge extends javax.swing.JFrame {
             props.setProperty("typec", typec);
             props.setProperty("typepy", typepy);
             props.setProperty("typejava", typejava);
-            props.setProperty("checkFunction", String.valueOf(checkFunction));
+//            props.setProperty("checkFunction", String.valueOf(checkFunction));
+            props.setProperty("checkFormat", String.valueOf(checkFormat));
             props.setProperty("checkCmt", String.valueOf(checkCmt));
             props.setProperty("checkWall", String.valueOf(checkWall));
             props.setProperty("timeLimit", String.valueOf(timeLimit));
@@ -1042,7 +1044,8 @@ public class frmJudge extends javax.swing.JFrame {
         this.typecpp = "g++";
         this.typepy = "python";
         this.typejava = "java";
-        this.checkFunction = false;
+//        this.checkFunction = false;
+        this.checkFormat = false;
         this.checkCmt = false;
         this.checkWall = false;
         this.timeLimit = 1000;
@@ -1084,7 +1087,8 @@ public class frmJudge extends javax.swing.JFrame {
             this.typec = this.props.getProperty("typec");
             this.typepy = this.props.getProperty("typepy");
             this.typejava = this.props.getProperty("typejava");
-            this.checkFunction = Boolean.parseBoolean(this.props.getProperty("checkFunction"));
+//            this.checkFunction = Boolean.parseBoolean(this.props.getProperty("checkFunction"));
+            this.checkFormat = Boolean.parseBoolean(this.props.getProperty("checkFormat"));
             this.checkCmt = Boolean.parseBoolean(this.props.getProperty("checkCmt"));
             this.checkWall = Boolean.parseBoolean(this.props.getProperty("checkWall"));
             this.timeLimit = Integer.parseInt(this.props.getProperty("timeLimit"));
