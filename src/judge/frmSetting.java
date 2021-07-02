@@ -2,7 +2,11 @@ package judge;
 
 import java.awt.Toolkit;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardWatchEventKinds;
@@ -13,9 +17,7 @@ import javax.swing.JFrame;
 
 /**
  *
- * @author Nguyen Vuong Khang Hy 
- * Email: khanghy3004@gmail.com 
- * Automatic Judger
+ * @author Nguyen Vuong Khang Hy Email: khanghy3004@gmail.com Automatic Judger
  */
 public class frmSetting extends javax.swing.JFrame {
 
@@ -63,8 +65,8 @@ public class frmSetting extends javax.swing.JFrame {
         lblMemoryLimit = new javax.swing.JLabel();
         txtMemoryLimit = new javax.swing.JTextField();
         chkWall = new javax.swing.JCheckBox();
-        jCheckBox1 = new javax.swing.JCheckBox();
-        jLabel1 = new javax.swing.JLabel();
+        chkApplyAll = new javax.swing.JCheckBox();
+        lblNoteText = new javax.swing.JLabel();
 
         setTitle("Setting");
         setName("frmSetting"); // NOI18N
@@ -111,11 +113,11 @@ public class frmSetting extends javax.swing.JFrame {
         chkWall.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         chkWall.setText("All Warning");
 
-        jCheckBox1.setText("Apply to all contest");
+        chkApplyAll.setText("Apply to all contest");
 
-        jLabel1.setForeground(new java.awt.Color(255, 0, 51));
-        jLabel1.setText("NOTE: You can setting for all contest");
-        jLabel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        lblNoteText.setForeground(new java.awt.Color(255, 0, 51));
+        lblNoteText.setText("NOTE: You can setting for all contest");
+        lblNoteText.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -140,14 +142,14 @@ public class frmSetting extends javax.swing.JFrame {
                         .addGap(76, 76, 76))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jCheckBox1)
+                            .addComponent(chkApplyAll)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(chkCheckFormat)
                                 .addGap(18, 18, 18)
                                 .addComponent(chkCheckCmt)
                                 .addGap(18, 18, 18)
                                 .addComponent(chkWall))
-                            .addComponent(jLabel1))
+                            .addComponent(lblNoteText))
                         .addGap(0, 76, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -168,9 +170,9 @@ public class frmSetting extends javax.swing.JFrame {
                     .addComponent(chkCheckCmt)
                     .addComponent(chkWall))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel1)
+                .addComponent(lblNoteText)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jCheckBox1)
+                .addComponent(chkApplyAll)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnOk)
@@ -181,30 +183,51 @@ public class frmSetting extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-   /**
+    /**
      * get config value from user and set to frmJudge NhanNT
-     * @param evt 
+     *
+     * @param evt
      */
     private void btnOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOkActionPerformed
         String selectedTab = parent.tabTable.getTitleAt(parent.tabTable.getSelectedIndex());
-        String pathToContest = "";
-//        try {
+        String pathToSettingConfig = parent.problemDir + "\\" + selectedTab + "\\config.txt";
+
+        File configFile = new File(pathToSettingConfig);
+        try {
+            //delete content of config file
+            PrintWriter writer = new PrintWriter(configFile);
+            writer.print("");
+            writer.close();
+
+            FileWriter fileWriter = new FileWriter(configFile);
+            //write new content into config file
+            fileWriter.write("time_limit=" + txtTimeLimit.getText() + "\n");
+            fileWriter.write("memory_limit=" + txtMemoryLimit.getText() + "\n");
+            fileWriter.write("check_format=" + chkCheckFormat.isSelected() + "\n");
+            fileWriter.write("check_comment=" + chkCheckCmt.isSelected() + "\n");
+            fileWriter.close();
+            
+            //update apply all contest checkbox to property file
+//            parent.props.setProperty("apply_all", Boolean.toString(chkApplyAll.isSelected()));
+//            OutputStream out = new FileOutputStream(parent.FILE);
+//            parent.props.store(out, "User properties");
+
 //            parent.folderNopbaiPath = txtNopbaiPath.getText();
 //            parent.checkFunction = chkCheckFunc.isSelected();
 //            parent.checkCmt = chkCheckCmt.isSelected();
 //            parent.checkWall = chkWall.isSelected();
 //            parent.timeLimit = Integer.parseInt(txtTimeLimit.getText());
 //            parent.memoryLimit = Integer.parseInt(txtMemoryLimit.getText());
-//            Path path = Paths.get(txtNopbaiPath.getText());
+//            Path path = Paths.get(parent.folderNopbaiPath);
 //            FileHandlerTest fileHandlerTest = new FileHandlerTest(parent);
 //            FileWatcher fileWatcher = new FileWatcher(path, fileHandlerTest, false, StandardWatchEventKinds.ENTRY_CREATE); //For non-recursive polling
 //            Thread watcherThread = new Thread(fileWatcher);
 //            watcherThread.start();  
-//        } catch (IOException ex) {
-//            Logger.getLogger(frmSetting.class.getName()).log(Level.SEVERE, null, ex);
-//        } finally {
-//            setVisible(false);
-//        }
+        } catch (IOException ex) {
+            Logger.getLogger(frmSetting.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            setVisible(false);
+        }
     }//GEN-LAST:event_btnOkActionPerformed
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
@@ -218,14 +241,14 @@ public class frmSetting extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnOk;
-    private javax.swing.JCheckBox chkCheckCmt;
-    private javax.swing.JCheckBox chkCheckFormat;
+    public javax.swing.JCheckBox chkApplyAll;
+    public javax.swing.JCheckBox chkCheckCmt;
+    public javax.swing.JCheckBox chkCheckFormat;
     private javax.swing.JCheckBox chkWall;
-    private javax.swing.JCheckBox jCheckBox1;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel lblMemoryLimit;
+    public javax.swing.JLabel lblNoteText;
     private javax.swing.JLabel lblTimeLimit;
-    private javax.swing.JTextField txtMemoryLimit;
-    private javax.swing.JTextField txtTimeLimit;
+    public javax.swing.JTextField txtMemoryLimit;
+    public javax.swing.JTextField txtTimeLimit;
     // End of variables declaration//GEN-END:variables
 }

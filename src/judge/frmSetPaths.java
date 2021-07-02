@@ -278,7 +278,7 @@ public class frmSetPaths extends javax.swing.JFrame {
     private javax.swing.JLabel lbFolderTestcase;
     private javax.swing.JLabel lbFolderWorkspace;
     private javax.swing.JLabel lbStudentSubmission;
-    private javax.swing.JTextField txtFolderTestcase;
+    public javax.swing.JTextField txtFolderTestcase;
     private javax.swing.JTextField txtFolderWorkspace;
     private javax.swing.JTextField txtStudentSubmission;
     // End of variables declaration//GEN-END:variables

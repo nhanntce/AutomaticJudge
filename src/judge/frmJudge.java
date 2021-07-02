@@ -12,16 +12,20 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardWatchEventKinds;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -76,8 +80,8 @@ public class frmJudge extends javax.swing.JFrame {
     public int timeLimit;
     public int memoryLimit;
 
-    private Properties props;       //store properties config file NhanNT
-    private File FILE;              //store path name of config file NhanNT
+    public Properties props;       //store properties config file NhanNT
+    public File FILE;              //store path name of config file NhanNT
     public frmProcess pro;          //process frame
     public Judge tool;              //judge class
     public FileHandle fhandle;
@@ -458,6 +462,52 @@ public class frmJudge extends javax.swing.JFrame {
      */
     private void btnSettingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSettingActionPerformed
         frmSetting setting = new frmSetting(this);
+        String selectedTab = tabTable.getTitleAt(tabTable.getSelectedIndex());
+        String pathToSettingConfig = problemDir + "\\" + selectedTab + "\\config.txt";
+        File tempFile = new File(pathToSettingConfig);
+        //if dont have config file -> create new file and write default setting to config file
+        if (!tempFile.exists()) {
+            try {
+                File configFile = new File(pathToSettingConfig);
+                configFile.createNewFile();
+                FileWriter fileWriter = new  FileWriter(configFile);
+                //get default setting from property file
+                String time_limit = this.props.getProperty("time_limit");
+                String memory_limit = this.props.getProperty("memory_limit");
+                String check_format = this.props.getProperty("check_format");
+                String check_comment = this.props.getProperty("check_comment");
+                //write setting to specify contest's config file
+                fileWriter.write("time_limit=" + time_limit + "\n");
+                fileWriter.write("memory_limit=" + memory_limit + "\n");
+                fileWriter.write("check_format=" + check_format + "\n");
+                fileWriter.write("check_comment=" + check_comment + "\n");
+                fileWriter.close();
+                //get setting content to interface
+                setting.txtTimeLimit.setText(time_limit);
+                setting.txtMemoryLimit.setText(memory_limit);
+                setting.chkCheckFormat.setSelected(Boolean.parseBoolean(this.props.getProperty("check_format")));
+                setting.chkCheckCmt.setSelected(Boolean.parseBoolean(this.props.getProperty("check_comment")));
+            } catch (IOException ex) {
+                Logger.getLogger(frmJudge.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        //if have config file -> read and get setting content to interface
+        }else {
+            try {
+                List<String> lines = Collections.emptyList();
+                lines = Files.readAllLines(Paths.get(pathToSettingConfig), StandardCharsets.UTF_8);
+                //set setting content to interface
+                setting.txtTimeLimit.setText(lines.get(0).split("=")[1]);
+                setting.txtMemoryLimit.setText(lines.get(1).split("=")[1]);
+                setting.chkCheckFormat.setSelected(Boolean.parseBoolean(lines.get(2).split("=")[1]));
+                setting.chkCheckCmt.setSelected(Boolean.parseBoolean(lines.get(3).split("=")[1]));
+              
+            } catch (IOException ex) {
+                Logger.getLogger(frmJudge.class.getName()).log(Level.SEVERE, null, ex);
+            }
+//            setting.chkApplyAll.setSelected(Boolean.parseBoolean(this.props.getProperty("apply_all")));
+        }
+        setting.chkApplyAll.setVisible(false);
+        setting.lblNoteText.setVisible(false);
         setting.setVisible(true);
     }//GEN-LAST:event_btnSettingActionPerformed
 
