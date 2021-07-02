@@ -67,7 +67,7 @@ public class frmJudge extends javax.swing.JFrame {
     public String typepy;
     public String typejava;
     public String studentDir;       //store the path of workspace NhanNT
-    private String problemDir;      //store the path of testcase of contests NhanNT
+    public String problemDir;      //store the path of testcase of contests NhanNT
     private String excelPath;
     public String folderNopbaiPath; //store the path of submissions NhanNT
     public boolean checkFunction;
@@ -134,8 +134,6 @@ public class frmJudge extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         pnlToolbar = new javax.swing.JPanel();
         btnListProblem = new javax.swing.JButton();
-        btnListStudent = new javax.swing.JButton();
-        btnUpdate = new javax.swing.JButton();
         btnUpdateOnline = new javax.swing.JButton();
         btnImportExcel = new javax.swing.JButton();
         btnExportExcel = new javax.swing.JButton();
@@ -182,28 +180,10 @@ public class frmJudge extends javax.swing.JFrame {
 
         btnListProblem.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         btnListProblem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/btnloadtasks.png"))); // NOI18N
-        btnListProblem.setToolTipText("Load Testcases");
+        btnListProblem.setToolTipText("Path Setting");
         btnListProblem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnListProblemActionPerformed(evt);
-            }
-        });
-
-        btnListStudent.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        btnListStudent.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/btnloadcontestants.png"))); // NOI18N
-        btnListStudent.setToolTipText("Load Contestants");
-        btnListStudent.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnListStudentActionPerformed(evt);
-            }
-        });
-
-        btnUpdate.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        btnUpdate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/btnrefreshtasks.png"))); // NOI18N
-        btnUpdate.setToolTipText("Refresh Tasks and Contestants");
-        btnUpdate.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnUpdateActionPerformed(evt);
             }
         });
 
@@ -285,25 +265,21 @@ public class frmJudge extends javax.swing.JFrame {
             .addGroup(pnlToolbarLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(btnListProblem)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnListStudent)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnUpdate)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnUpdateOnline)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnLoadPoint)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnImportExcel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnExportExcel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnConfig)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnSetting)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnJudgeAContest)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnJudgeAllClass)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -320,8 +296,6 @@ public class frmJudge extends javax.swing.JFrame {
                     .addComponent(btnExportExcel)
                     .addComponent(btnImportExcel)
                     .addComponent(btnUpdateOnline)
-                    .addComponent(btnUpdate)
-                    .addComponent(btnListStudent)
                     .addComponent(btnListProblem))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -338,9 +312,9 @@ public class frmJudge extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtFilter, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(tabTable, javax.swing.GroupLayout.DEFAULT_SIZE, 951, Short.MAX_VALUE))
+                    .addComponent(tabTable, javax.swing.GroupLayout.DEFAULT_SIZE, 955, Short.MAX_VALUE))
                 .addContainerGap())
-            .addComponent(pnlToolbar, javax.swing.GroupLayout.DEFAULT_SIZE, 971, Short.MAX_VALUE)
+            .addComponent(pnlToolbar, javax.swing.GroupLayout.DEFAULT_SIZE, 975, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -366,21 +340,8 @@ public class frmJudge extends javax.swing.JFrame {
      * @param evt
      */
     private void btnListProblemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnListProblemActionPerformed
-        if (!listProbName.isEmpty() && !listStuName.isEmpty()) {
-            int input = JOptionPane.showConfirmDialog(null,
-                    "Data will be lost. Do you want to refresh?", "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-            if (input != 0) {
-                return;
-            }
-        }
-        fileFolderProblem.setCurrentDirectory(new File(problemDir));
-        int choice = fileFolderProblem.showOpenDialog(this);
-        if (choice == JFileChooser.APPROVE_OPTION) { // if option Open file in JFileChooser
-            File f = fileFolderProblem.getSelectedFile(); // get file
-            String folderPath = f.getAbsolutePath(); // get path file
-            problemDir = folderPath;
-            listProblem();
-        }
+        frmSetPaths setPaths = new frmSetPaths(this);
+        setPaths.setVisible(true);
     }//GEN-LAST:event_btnListProblemActionPerformed
 
     /**
@@ -388,7 +349,7 @@ public class frmJudge extends javax.swing.JFrame {
      *
      * @author NhanNT
      */
-    private void listProblem() {
+    public void listProblem() {
         listProbPath.clear();
         listProbName.clear();
         lsParentProblem.clear();
@@ -429,39 +390,11 @@ public class frmJudge extends javax.swing.JFrame {
     }
 
     /**
-     * load student solutions NhanNT
-     *
-     * @param evt
-     */
-    private void btnListStudentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnListStudentActionPerformed
-        if (!listProbName.isEmpty() && !listStuName.isEmpty()) {
-            int input = JOptionPane.showConfirmDialog(null,
-                    "Data will be lost. Do you want to refresh?", "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-            if (input != 0) {
-                return;
-            }
-        }
-        try {
-            fileFolderStudent.setCurrentDirectory(new File(studentDir));
-            int choice = fileFolderStudent.showOpenDialog(this);
-            if (choice == JFileChooser.APPROVE_OPTION) { // if option Open file in JFileChooser
-                File f = fileFolderStudent.getSelectedFile(); // get file
-                String folderPath = f.getAbsolutePath(); // get path file
-                studentDir = folderPath;
-                listStudent();
-
-            }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }//GEN-LAST:event_btnListStudentActionPerformed
-
-    /**
      * list all student
      *
      * @author NhanNT
      */
-    private void listStudent() {
+    public void listStudent() {
         listStuPath.clear();
         listStuName.clear();
         tabTable.removeAll();
@@ -584,15 +517,8 @@ public class frmJudge extends javax.swing.JFrame {
             excel.importExcel();
         }
     }//GEN-LAST:event_btnImportExcelActionPerformed
-    /**
-     * load problem and student's solution
-     *
-     * @param evt
-     */
-    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
-        updateTable();
-    }//GEN-LAST:event_btnUpdateActionPerformed
-    /**
+
+   /**
      * save config file NhanNT
      *
      * @param evt
@@ -665,6 +591,7 @@ public class frmJudge extends javax.swing.JFrame {
                     JOptionPane.YES_NO_OPTION);
             JTable tb = hmTable.get(s);
             Thread tload = null;
+            //n = 0, yes
             if (n == 0) {
                 tload = new Thread() {
                     @Override
@@ -759,7 +686,7 @@ public class frmJudge extends javax.swing.JFrame {
                 String point = "";
                 int pen = 0;
                 String problem = tb.getColumnName(j);
-                String log = "[" + contest + "][" + user + "][" + problem + "]";
+                String log = "[" + user + "][" + problem + "]";
                 // Duyệt thư mục logs chứa kết quả bài làm
                 File[] pathlog = new File(folderNopbaiPath + "/Logs/" + contest).listFiles();
                 Arrays.sort(pathlog, Comparator.comparingLong(File::lastModified)); // sắp xếp theo thời gian tăng dần
@@ -1173,10 +1100,8 @@ public class frmJudge extends javax.swing.JFrame {
     public javax.swing.JButton btnJudgeAContest;
     public javax.swing.JButton btnJudgeAllClass;
     private javax.swing.JButton btnListProblem;
-    private javax.swing.JButton btnListStudent;
     private javax.swing.JButton btnLoadPoint;
     private javax.swing.JButton btnSetting;
-    private javax.swing.JButton btnUpdate;
     public javax.swing.JButton btnUpdateOnline;
     private javax.swing.JFileChooser fileFile;
     public javax.swing.JFileChooser fileFolderNopbai;
