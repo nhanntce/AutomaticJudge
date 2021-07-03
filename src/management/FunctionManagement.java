@@ -1,7 +1,13 @@
 package management;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import obj.Comment;
 import obj.MyFunction;
 import obj.MyStack;
@@ -291,4 +297,29 @@ public class FunctionManagement {
 		}
 		return str;
 	}
+        
+            public double calculatePercentOfAllFunctionCmt(String path) {
+        double result = 0;
+        try {
+            double countCmt = 0;
+            List<String> lines = Collections.emptyList();
+//            lines = Files.readAllLines(path, StandardCharsets.UTF_8);
+            lines = Files.readAllLines(Paths.get(path));
+            separateFunction(lines);
+            CommentManagement cm = new CommentManagement();
+            List<Comment> cmts = cm.separateComments(lines);
+            checkFunctionComment(cmts);
+            for (MyFunction func : funcs) {
+                if (func.isCommented()) {
+                    countCmt += 1;
+                }
+            }
+            System.out.println("Func is commented: " + countCmt);
+            result = (countCmt + 1)/(double)funcs.size();
+            return result != 0 ? result * 100.0 : 0;
+        } catch (IOException ex) {
+            Logger.getLogger(FunctionManagement.class.getName()).log(Level.SEVERE, null, ex);
+            return -1;
+        }
+    }
 }
