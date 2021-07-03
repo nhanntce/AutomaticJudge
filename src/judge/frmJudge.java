@@ -1018,7 +1018,7 @@ public class frmJudge extends javax.swing.JFrame {
         this.btnImportExcel.setEnabled(false);
         this.btnExportExcel.setEnabled(false);
 //        this.btnJudge.setEnabled(false);
-        this.tmptype = "cpppysql"; // C, C++, python
+        this.tmptype = "cpppysqljava"; // C, C++, python
         this.listNopbaiPath = new ArrayList<>();
         this.listNopbaiName = new ArrayList<>();
         this.listProbPath = new ArrayList<>();
