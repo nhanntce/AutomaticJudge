@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -38,11 +39,13 @@ public class Judge {
     FileHandle fhandle;
     String error;
     long maxMemory;
+    private boolean checkFormat; //is formatted
+    private double checkCommet; //percent commented
 
     /**
      * Construct a Judge DangVTH
      *
-     * @param parent
+     * @param parent Judge Frame
      */
     public Judge(frmJudge parent) {
         this.parent = parent;
@@ -54,11 +57,11 @@ public class Judge {
     /**
      * Judging and writing a log file DangVTH
      *
-     * @param folderPath
-     * @param folderName
-     * @param auto
+     * @param folderPath List of Path to the submission folder
+     * @param fileName List of file name
+     * @param auto True if auto judge, false if not auto judge
      */
-    public void judge(ArrayList<String> folderPath, ArrayList<String> folderName, boolean auto) {
+    public void judge(ArrayList<String> folderPath, ArrayList<String> fileName, boolean auto) {
         int point;
         long maxTime;
         String name; // Store the name of the solution including name extension DangVTH
@@ -72,7 +75,7 @@ public class Judge {
         // scan workspace DangVTH
         for (int i = 0; i < folderPath.size(); ++i) {
             try {
-                name = folderName.get(i);
+                name = fileName.get(i);
                 // Get name of solution DangVTH
                 tenbai = name.split("\\.")[0];
                 // Get class of student DangVTH
@@ -182,13 +185,15 @@ public class Judge {
                                 }
                             }
                         }
-                        
+
                         // write the result
                         DecimalFormat newFormat = new DecimalFormat("#.#");
                         double points = Double.valueOf(newFormat.format((double) point / testPath.length * 10));
                         writer.write(points + "\n");
                         writer.write("Max time: " + maxTime + "\n");
                         writer.write("Max memory: " + maxMemory + "\n");
+                        writer.write("Format: " + checkFormat + "\n");
+                        writer.write("Comment: " + checkCommet + "%\n");
                         writer.write(result.toString());
 
                         // Set point for problem column
@@ -197,25 +202,13 @@ public class Judge {
                         // Set total point for user
                         setPoint(stuclass, getTotalPoint(stuclass, user), parent.hmStuIndex.get(user + stuclass),
                                 parent.hmTable.get(stuclass).getColumnCount() - 1);
-                        //Check format
-                        if (parent.checkFormat) {
-                            Formatter.Format(name);
-                            CompareFiles cf = new CompareFiles();
-                            if (true) {
-                                writer.write("You have not format code\n");
-                            }
-                        }
-                        //check percent of comment
-                        if (parent.checkCmt) {
-                            FunctionManagement fm = new FunctionManagement();
-                            double per = fm.calculatePercentOfAllFunctionCmt(name);
-                            writer.write("You have " + per + " % comment of all function\n");
-                        }
+
                         break;
                     }
                 }
                 // Delete excuted file
                 Files.deleteIfExists(Paths.get(tenbai + "." + type));
+                Files.deleteIfExists(Paths.get(tenbai + "." + type + ".orig"));
                 Files.deleteIfExists(Paths.get(tenbai));
                 Files.deleteIfExists(Paths.get(tenbai + ".exe"));
                 Files.deleteIfExists(Paths.get(tenbai + ".pyc"));
@@ -235,12 +228,12 @@ public class Judge {
     }
 
     /**
-     * Set points
+     * Set points into table
      *
-     * @param stuclass
-     * @param point
-     * @param i
-     * @param j
+     * @param stuclass Name of contest
+     * @param point Point
+     * @param i Index of row
+     * @param j Index of column
      */
     private void setPoint(String stuclass, String point, int i, int j) {
         parent.hmTable.get(stuclass).setValueAt(point, i, j);
@@ -249,9 +242,9 @@ public class Judge {
     /**
      * Get total point for user
      *
-     * @param stuclass
-     * @param user
-     * @return
+     * @param stuclass Name of contest
+     * @param user Name of user
+     * @return Total point type of String
      */
     private String getTotalPoint(String stuclass, String user) {
         double totalpoint = 0;
@@ -267,10 +260,10 @@ public class Judge {
     }
 
     /**
-     * Check String is numeric
+     * Check if string is numeric
      *
-     * @param str
-     * @return
+     * @param str String to check
+     * @return True if it's numeric, false if it isn't numeric
      */
     public boolean isNumeric(String str) {
         try {
@@ -284,12 +277,13 @@ public class Judge {
     /**
      * Compile submission file
      *
-     * @param tenbai
-     * @param problem
-     * @param type
-     * @return
+     * @param fileName Name of file without file extension
+     * @param problem Name of problem
+     * @param type File extension
+     * @param stuClass Name of contest
+     * @return True if compile successfully, false if compile not successfully
      */
-    public boolean compile(String tenbai, String problem, String type, String stuClass) {
+    public boolean compile(String fileName, String problem, String type, String stuClass) {
         error = "";
         String cmd = "";
         int exitCode = 0;
@@ -302,16 +296,36 @@ public class Judge {
             parent.memoryLimit = Integer.parseInt(lines.get(1).split("=")[1]);
             parent.checkFormat = Boolean.parseBoolean(lines.get(2).split("=")[1]);
             parent.checkCmt = Boolean.parseBoolean(lines.get(3).split("=")[1]);
+            //Check format
+            if (parent.checkFormat) {
+                //Generate formatted file
+                Formatter.Format(fileName + "." + type);
+                //Compare original file with formatted file
+                CompareFiles cf = new CompareFiles();
+                Path path = Paths.get(fileName + "." + type);
+                Path pathToCompare = Paths.get(fileName + "." + type + ".orig");
+                if (!cf.CompareFiles(path, pathToCompare)) { //if not the same means files was not formatted
+                    checkFormat = false;
+                } else { // if the same means file was formatted
+                    checkFormat = true;
+                }
+            }
+            //Calculate the percent of comments
+            if (parent.checkCmt) {
+                FunctionManagement fm = new FunctionManagement();
+                checkCommet = fm.calculatePercentOfAllFunctionCmt(fileName + "." + type);
+                
+            }
         } catch (IOException ex) {
             Logger.getLogger(frmJudge.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if (!checkHack(problem, type, tenbai + "." + type, parent.checkFormat, parent.checkCmt)) {
+        if (!checkHack(problem, type, fileName + "." + type, parent.checkFormat, parent.checkCmt)) {
             return true;
         }
         if (type.equals("sql")) {
             Scanner scanner = null;
             try {
-                scanner = new Scanner(new File(tenbai + ".sql"));
+                scanner = new Scanner(new File(fileName + ".sql"));
                 DBManagement db = new DBManagement();
                 Connection conn = db.getConnection();
                 Statement st = conn.createStatement();
@@ -327,19 +341,19 @@ public class Judge {
             switch (type) {
                 //get time
                 case "cpp":
-                    cmd = compileCMD(tenbai, type);
+                    cmd = compileCMD(fileName, type);
                     break;
                 case "c":
-                    cmd = compileCMD(tenbai, type);
+                    cmd = compileCMD(fileName, type);
                     break;
                 case "py":
-                    cmd = parent.typepy + " -m compileall " + tenbai + ".py -q -b";
+                    cmd = parent.typepy + " -m compileall " + fileName + ".py -q -b";
                     break;
                 //judge Java NhanNT
                 case "java":
                     Runtime rTmp = Runtime.getRuntime();
                     try {
-                        Process p = rTmp.exec("javac " + tenbai + ".java");
+                        Process p = rTmp.exec("javac " + fileName + ".java");
                         BufferedReader br = new BufferedReader(new InputStreamReader(p.getErrorStream()));
                         BufferedReader br1 = new BufferedReader(new InputStreamReader(p.getInputStream()));
                         String s;
@@ -356,7 +370,7 @@ public class Judge {
                     } catch (IOException ex) {
                         Logger.getLogger(Judge.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    cmd = "java " + tenbai;
+                    cmd = "java " + fileName;
             }
             try {
                 Runtime r = Runtime.getRuntime();
@@ -691,14 +705,14 @@ public class Judge {
                 string += line + "\n";
                 if (line.contains("main")) {
                     if (line.contains("{")) {
-                        string += "\nfreopen(\"" + problem + ".inp\", \"r\", stdin);\n" + "	freopen(\"" + problem
+                        string += "\n    freopen(\"" + problem + ".inp\", \"r\", stdin);\n" + "    freopen(\"" + problem
                                 + ".out\", \"w\", stdout);";
                     } else {
                         flag = true;
                     }
                 }
                 if (flag && line.contains("{")) {
-                    string += "\nfreopen(\"" + problem + ".inp\", \"r\", stdin);\n" + "	freopen(\"" + problem
+                    string += "\n    freopen(\"" + problem + ".inp\", \"r\", stdin);\n" + "    freopen(\"" + problem
                             + ".out\", \"w\", stdout);";
                     flag = false;
                 }
