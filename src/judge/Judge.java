@@ -25,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import management.CompareFiles;
+import management.FunctionManagement;
 import utility.Formatter;
 
 /**
@@ -203,6 +204,12 @@ public class Judge {
                             if (true) {
                                 writer.write("You have not format code\n");
                             }
+                        }
+                        //check percent of comment
+                        if (parent.checkCmt) {
+                            FunctionManagement fm = new FunctionManagement();
+                            double per = fm.calculatePercentOfAllFunctionCmt(name);
+                            writer.write("You have " + per + " % comment of all function\n");
                         }
                         break;
                     }

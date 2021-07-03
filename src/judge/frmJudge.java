@@ -147,6 +147,7 @@ public class frmJudge extends javax.swing.JFrame {
         btnJudgeAContest = new javax.swing.JButton();
         btnLoadPoint = new javax.swing.JButton();
         btnJudgeAllClass = new javax.swing.JButton();
+        btnJudgeAContest1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Automatic Judger");
@@ -263,6 +264,15 @@ public class frmJudge extends javax.swing.JFrame {
             }
         });
 
+        btnJudgeAContest1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        btnJudgeAContest1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/btninfo.png"))); // NOI18N
+        btnJudgeAContest1.setToolTipText("Judge Current Tab");
+        btnJudgeAContest1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnJudgeAContest1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnlToolbarLayout = new javax.swing.GroupLayout(pnlToolbar);
         pnlToolbar.setLayout(pnlToolbarLayout);
         pnlToolbarLayout.setHorizontalGroup(
@@ -286,6 +296,8 @@ public class frmJudge extends javax.swing.JFrame {
                 .addComponent(btnJudgeAContest)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnJudgeAllClass)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnJudgeAContest1)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         pnlToolbarLayout.setVerticalGroup(
@@ -293,6 +305,7 @@ public class frmJudge extends javax.swing.JFrame {
             .addGroup(pnlToolbarLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnlToolbarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnJudgeAContest1)
                     .addComponent(btnJudgeAllClass)
                     .addComponent(btnLoadPoint)
                     .addComponent(btnJudgeAContest)
@@ -317,9 +330,9 @@ public class frmJudge extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtFilter, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(tabTable, javax.swing.GroupLayout.DEFAULT_SIZE, 955, Short.MAX_VALUE))
+                    .addComponent(tabTable, javax.swing.GroupLayout.DEFAULT_SIZE, 918, Short.MAX_VALUE))
                 .addContainerGap())
-            .addComponent(pnlToolbar, javax.swing.GroupLayout.DEFAULT_SIZE, 979, Short.MAX_VALUE)
+            .addComponent(pnlToolbar, javax.swing.GroupLayout.DEFAULT_SIZE, 942, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -682,6 +695,11 @@ public class frmJudge extends javax.swing.JFrame {
         tool.foo(listNopbaiPath, listNopbaiName, false);
 
     }//GEN-LAST:event_btnJudgeAllClassActionPerformed
+
+    private void btnJudgeAContest1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnJudgeAContest1ActionPerformed
+        frmAbout about = new frmAbout();
+        about.setVisible(true);
+    }//GEN-LAST:event_btnJudgeAContest1ActionPerformed
     /**
      * Method load point from logs file
      *
@@ -1152,6 +1170,7 @@ public class frmJudge extends javax.swing.JFrame {
     private javax.swing.JButton btnExportExcel;
     private javax.swing.JButton btnImportExcel;
     public javax.swing.JButton btnJudgeAContest;
+    public javax.swing.JButton btnJudgeAContest1;
     public javax.swing.JButton btnJudgeAllClass;
     private javax.swing.JButton btnListProblem;
     private javax.swing.JButton btnLoadPoint;
