@@ -43,6 +43,8 @@ public class CompareFiles {
                 list2.add(sCurrentLine);
 
             }
+            br1.close();
+            br2.close();
             // create tmp list
             List<String> tmpList = new ArrayList<String>(list1);
             // remove all list 2 from tmpList

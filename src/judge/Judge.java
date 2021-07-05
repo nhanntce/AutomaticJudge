@@ -207,8 +207,7 @@ public class Judge {
                     }
                 }
                 // Delete excuted file
-                Files.deleteIfExists(Paths.get(tenbai + "." + type));
-                Files.deleteIfExists(Paths.get(tenbai + "." + type + ".orig"));
+                
                 Files.deleteIfExists(Paths.get(tenbai));
                 Files.deleteIfExists(Paths.get(tenbai + ".exe"));
                 Files.deleteIfExists(Paths.get(tenbai + ".pyc"));
@@ -296,10 +295,12 @@ public class Judge {
             parent.memoryLimit = Integer.parseInt(lines.get(1).split("=")[1]);
             parent.checkFormat = Boolean.parseBoolean(lines.get(2).split("=")[1]);
             parent.checkCmt = Boolean.parseBoolean(lines.get(3).split("=")[1]);
+            
             //Check format
             if (parent.checkFormat) {
                 //Generate formatted file
                 Formatter.Format(fileName + "." + type);
+                fhandle.copyFile(fileName + "." + type, fileName + "_new." + type);
                 //Compare original file with formatted file
                 CompareFiles cf = new CompareFiles();
                 Path path = Paths.get(fileName + "." + type);
@@ -697,11 +698,11 @@ public class Judge {
 //                    }
 //                }
 
-                if (checkCmt) {
-                    if (isCmt(line)) {
-                        cntCmt++;
-                    }
-                }
+//                if (checkCmt) {
+//                    if (isCmt(line)) {
+//                        cntCmt++;
+//                    }
+//                }
                 string += line + "\n";
                 if (line.contains("main")) {
                     if (line.contains("{")) {
@@ -728,10 +729,10 @@ public class Judge {
 //            error = "You don't have any function in code";
 //            return false;
 //        }
-        if (checkCmt && cntCmt < 1) {
-            error = "You don't have any comment in code";
-            return false;
-        }
+//        if (checkCmt && cntCmt < 1) {
+//            error = "You don't have any comment in code";
+//            return false;
+//        }
         return true;
     }
 
