@@ -30,7 +30,7 @@ public class FileHandlerTest implements FileHandler {
     private boolean checkType(String filename) {
         String[] lstype = filename.split("\\.");
         String type = lstype[lstype.length - 1];
-        return type.equalsIgnoreCase("cpp") || type.equalsIgnoreCase("c") || type.equalsIgnoreCase("py") ||  type.equalsIgnoreCase("sql");
+        return type.equalsIgnoreCase("java") || type.equalsIgnoreCase("cpp") || type.equalsIgnoreCase("c") || type.equalsIgnoreCase("py") ||  type.equalsIgnoreCase("sql");
     }
     /**
      * auto Judge
