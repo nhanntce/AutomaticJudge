@@ -52,6 +52,8 @@ public class CompareFiles {
             // after remove 
             if (tmpList.size() == 0) { //if size = 0 means two files are the same
                 return true;
+            } else {
+                return false;
             }
 
         } catch (Exception e) {

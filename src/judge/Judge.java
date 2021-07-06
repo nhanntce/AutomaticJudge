@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -25,7 +24,6 @@ import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import management.CompareFiles;
 import management.FunctionManagement;
 import utility.Formatter;
 
@@ -87,7 +85,7 @@ public class Judge {
                 // Get type of solution DangVTH
                 type = getType(name);
 
-                // copy file from workspace DangVTH
+                // copy file from submission DangVTH
                 fhandle.copyFile(folderPath.get(i), name);
                 // if auto judging, delete solution in submissions folder DangVTH
                 if (auto) {
@@ -114,6 +112,7 @@ public class Judge {
                             parent.hmTable.get(stuclass).getColumn(problem).getModelIndex());
                     setPoint(stuclass, getTotalPoint(stuclass, user), parent.hmStuIndex.get(user + stuclass),
                             parent.hmTable.get(stuclass).getColumnCount() - 1);
+
                     Files.deleteIfExists(Paths.get(name));
                     Files.deleteIfExists(Paths.get(tenbai));
                     Files.deleteIfExists(Paths.get(tenbai + ".exe"));
@@ -146,7 +145,7 @@ public class Judge {
                             for (File file : inout) {
                                 // If it's an input file DangVTH
                                 if (file.getName().split("\\.")[1].equals("inp")) {
-                                    // Copy file from workspace DangVTH
+                                    // Copy file from submission DangVTH
                                     fhandle.copyFile(file.getPath(), file.getName());
                                 } else {// If it's an output file DangVTH
                                     try {
@@ -192,8 +191,16 @@ public class Judge {
                         writer.write(points + "\n");
                         writer.write("Max time: " + maxTime + "\n");
                         writer.write("Max memory: " + maxMemory + "\n");
-                        writer.write("Format: " + checkFormat + "\n");
-                        writer.write("Comment: " + checkCommet + "%\n");
+                        if (parent.checkFormat) {
+                            writer.write("Format: " + checkFormat + "\n");
+                        } else {
+                            writer.write("Format: null\n");
+                        }
+                        if (parent.checkCmt) {
+                            writer.write("Comment: " + checkCommet + "\n");
+                        } else {
+                            writer.write("Comment: -1\n");
+                        }
                         writer.write(result.toString());
 
                         // Set point for problem column
@@ -202,13 +209,14 @@ public class Judge {
                         // Set total point for user
                         setPoint(stuclass, getTotalPoint(stuclass, user), parent.hmStuIndex.get(user + stuclass),
                                 parent.hmTable.get(stuclass).getColumnCount() - 1);
-
                         break;
                     }
                 }
                 // Delete excuted file
-                
+
                 Files.deleteIfExists(Paths.get(tenbai));
+                Files.deleteIfExists(Paths.get(tenbai + "." + type));
+                Files.deleteIfExists(Paths.get(tenbai + "." + type + ".orig"));
                 Files.deleteIfExists(Paths.get(tenbai + ".exe"));
                 Files.deleteIfExists(Paths.get(tenbai + ".pyc"));
                 Files.deleteIfExists(Paths.get(tenbai + ".java"));
@@ -295,27 +303,26 @@ public class Judge {
             parent.memoryLimit = Integer.parseInt(lines.get(1).split("=")[1]);
             parent.checkFormat = Boolean.parseBoolean(lines.get(2).split("=")[1]);
             parent.checkCmt = Boolean.parseBoolean(lines.get(3).split("=")[1]);
-            
+
             //Check format
             if (parent.checkFormat) {
                 //Generate formatted file
                 Formatter.Format(fileName + "." + type);
-                fhandle.copyFile(fileName + "." + type, fileName + "_new." + type);
-                //Compare original file with formatted file
-                CompareFiles cf = new CompareFiles();
-                Path path = Paths.get(fileName + "." + type);
-                Path pathToCompare = Paths.get(fileName + "." + type + ".orig");
-                if (!cf.CompareFiles(path, pathToCompare)) { //if not the same means files was not formatted
+                // check file isexist
+                if (Files.exists(Paths.get(fileName + "." + type + ".orig"))) { // 2 files are different, then generate new file.orig
                     checkFormat = false;
-                } else { // if the same means file was formatted
+//                    fhandle.copyFile(fileName + "." + type, fileName + "_new." + type);
+
+                } else { // 2 files are the same
                     checkFormat = true;
                 }
+
             }
             //Calculate the percent of comments
             if (parent.checkCmt) {
                 FunctionManagement fm = new FunctionManagement();
                 checkCommet = fm.calculatePercentOfAllFunctionCmt(fileName + "." + type);
-                
+
             }
         } catch (IOException ex) {
             Logger.getLogger(frmJudge.class.getName()).log(Level.SEVERE, null, ex);
