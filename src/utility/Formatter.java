@@ -15,9 +15,11 @@ public class Formatter {
 	 * @throws IOException
 	 */
 	public static void Format(String path) throws IOException {
-		Process process = Runtime.getRuntime().exec("AStyle.exe --style=allman " + path);
+            Runtime r = Runtime.getRuntime();
+		Process process = r.exec("AStyle.exe --style=allman " + path);
 		while (process.isAlive()) {
 			
 		}
+                process.destroy();
 	}
 }
