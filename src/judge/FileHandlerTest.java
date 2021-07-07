@@ -9,9 +9,7 @@ import jdk.nashorn.internal.ir.annotations.Ignore;
 
 /**
  *
- * @author Nguyen Vuong Khang Hy 
- * Email: khanghy3004@gmail.com 
- * Automatic Judger
+ * @author Nguyen Vuong Khang Hy Email: khanghy3004@gmail.com Automatic Judger
  */
 @Ignore
 public class FileHandlerTest implements FileHandler {
@@ -23,26 +21,25 @@ public class FileHandlerTest implements FileHandler {
         this.tool = tool;
 
     }
+
     /**
-     * check Type of file test
-     * LinhNC
+     * check Type of file test LinhNC
      */
     private boolean checkType(String filename) {
         String[] lstype = filename.split("\\.");
         String type = lstype[lstype.length - 1];
-        return type.equalsIgnoreCase("java") || type.equalsIgnoreCase("cpp") || type.equalsIgnoreCase("c") || type.equalsIgnoreCase("py") ||  type.equalsIgnoreCase("sql");
+        return type.equalsIgnoreCase("java") || type.equalsIgnoreCase("cpp") || type.equalsIgnoreCase("c") || type.equalsIgnoreCase("py") || type.equalsIgnoreCase("sql");
     }
+
     /**
-     * auto Judge
-     * LinhNC
+     * auto Judge LinhNC
      */
     @Override
     public void handle(File file, Kind<?> fileEvent) {
         LOGGER.log(Level.INFO, "Handler is triggered for file {0}", file.getPath());
-        
+
         if (fileEvent == StandardWatchEventKinds.ENTRY_CREATE && checkType(file.getName())) {
-            System.out.println(file.getPath());
-            if(tool.judge == null || !tool.judge.isAlive()) {
+            if (tool.judge == null || !tool.judge.isAlive()) {
                 tool.autoJudge();
             } else {
                 synchronized (tool.judge) {
@@ -53,7 +50,7 @@ public class FileHandlerTest implements FileHandler {
                         Logger.getLogger(FileHandlerTest.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-            }  
+            }
         }
     }
 }

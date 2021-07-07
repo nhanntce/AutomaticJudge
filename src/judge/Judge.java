@@ -87,8 +87,13 @@ public class Judge {
                 // Get type of solution DangVTH
                 type = getType(name);
 
-                // copy file from workspace DangVTH
-                fhandle.copyFile(folderPath.get(i), name);
+                // copy file from workspace or submission DangVTH
+                if ("java".equals(type)) {
+                    tenbai = problem;
+                    fhandle.copyFile(folderPath.get(i), tenbai + "." + type);
+                } else {
+                    fhandle.copyFile(folderPath.get(i), name);
+                }
                 // if auto judging, delete solution in submissions folder DangVTH
                 if (auto) {
                     Files.deleteIfExists(Paths.get(folderPath.get(i)));
@@ -207,11 +212,11 @@ public class Judge {
                     }
                 }
                 // Delete excuted file
-                
+
                 Files.deleteIfExists(Paths.get(tenbai));
                 Files.deleteIfExists(Paths.get(tenbai + ".exe"));
                 Files.deleteIfExists(Paths.get(tenbai + ".pyc"));
-                Files.deleteIfExists(Paths.get(tenbai + ".java"));
+//                Files.deleteIfExists(Paths.get(tenbai + ".java"));
                 Files.deleteIfExists(Paths.get(problem + ".inp"));
                 Files.deleteIfExists(Paths.get(problem + ".out"));
             } catch (IOException ex) {
@@ -295,7 +300,7 @@ public class Judge {
             parent.memoryLimit = Integer.parseInt(lines.get(1).split("=")[1]);
             parent.checkFormat = Boolean.parseBoolean(lines.get(2).split("=")[1]);
             parent.checkCmt = Boolean.parseBoolean(lines.get(3).split("=")[1]);
-            
+
             //Check format
             if (parent.checkFormat) {
                 //Generate formatted file
@@ -315,7 +320,7 @@ public class Judge {
             if (parent.checkCmt) {
                 FunctionManagement fm = new FunctionManagement();
                 checkCommet = fm.calculatePercentOfAllFunctionCmt(fileName + "." + type);
-                
+
             }
         } catch (IOException ex) {
             Logger.getLogger(frmJudge.class.getName()).log(Level.SEVERE, null, ex);
@@ -352,26 +357,8 @@ public class Judge {
                     break;
                 //judge Java NhanNT
                 case "java":
-                    Runtime rTmp = Runtime.getRuntime();
-                    try {
-                        Process p = rTmp.exec("javac " + fileName + ".java");
-                        BufferedReader br = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-                        BufferedReader br1 = new BufferedReader(new InputStreamReader(p.getInputStream()));
-                        String s;
-                        boolean hasError = false;
-                        while ((s = br.readLine()) != null || (s = br1.readLine()) != null) {
-                            error += s + "\n";
-                            hasError = true;
-                        }
-                        if (hasError) {
-                            return false;
-                        }
-                        while (p.isAlive()) {
-                        }
-                    } catch (IOException ex) {
-                        Logger.getLogger(Judge.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    cmd = "java " + fileName;
+                    cmd = "javac " + fileName + "." + type;
+                    break;
             }
             try {
                 Runtime r = Runtime.getRuntime();
@@ -386,7 +373,6 @@ public class Judge {
                 exitCode = p.waitFor();
 
             } catch (IOException | InterruptedException e) {
-                System.out.println(e.getMessage());
             }
         }
         return exitCode == 0;
@@ -471,6 +457,9 @@ public class Judge {
                 case "py":
                     cmd = parent.typepy + " " + tenbai + ".py";
                     break;
+                case "java":
+                    cmd = "java " + tenbai;
+                    break;
             }
 
             try {
@@ -497,7 +486,6 @@ public class Judge {
                     return false;
                 }
             } catch (IOException | InterruptedException e) {
-                System.out.println(e.getMessage());
             }
         }
 
@@ -607,6 +595,7 @@ public class Judge {
             @Override
             public void run() {
                 parent.btnJudgeAContest.setEnabled(false);
+                parent.btnJudgeAllContests.setEnabled(false);
                 parent.btnUpdateOnline.setEnabled(false);
                 judge(NopbaiPath, NopbaiName, auto);
                 parent.pro.setVisible(false);
@@ -703,19 +692,39 @@ public class Judge {
 //                        cntCmt++;
 //                    }
 //                }
-                string += line + "\n";
-                if (line.contains("main")) {
-                    if (line.contains("{")) {
-                        string += "\n    freopen(\"" + problem + ".inp\", \"r\", stdin);\n" + "    freopen(\"" + problem
-                                + ".out\", \"w\", stdout);";
-                    } else {
-                        flag = true;
+                if ("java".equals(type)) {
+                    if (line.contains("System.in")) {
+                        String scVar = line.trim().split("\\s+")[1];
+                        string += "Scanner " + scVar + " = null; "
+                                + "try { " + scVar + " = new java.util.Scanner(new java.io.InputStreamReader(new java.io.FileInputStream(new java.io.File(\"" + problem + ".inp\"))));" + 
+                                "} catch (java.io.FileNotFoundException ex) {}";
+                        line = "";
                     }
                 }
-                if (flag && line.contains("{")) {
-                    string += "\n    freopen(\"" + problem + ".inp\", \"r\", stdin);\n" + "    freopen(\"" + problem
-                            + ".out\", \"w\", stdout);";
-                    flag = false;
+                string += line + "\n";
+                if ("java".equals(type)) {
+                    if (line.contains("main")) {
+                        if (line.contains("{")) {
+                            string += "\njava.io.PrintStream fileOut;\n" + "try {\n"
+                                    + "            fileOut = new java.io.PrintStream(\"" + problem + ".out\");\n"
+                                    + "             System.setOut(fileOut); \n"
+                                    + "        } catch (java.io.FileNotFoundException ex) {}";
+                        }
+                    }
+                } else {
+                    if (line.contains("main")) {
+                        if (line.contains("{")) {
+                            string += "\n    freopen(\"" + problem + ".inp\", \"r\", stdin);\n" + "    freopen(\"" + problem
+                                    + ".out\", \"w\", stdout);";
+                        } else {
+                            flag = true;
+                        }
+                    }
+                    if (flag && line.contains("{")) {
+                        string += "\n    freopen(\"" + problem + ".inp\", \"r\", stdin);\n" + "    freopen(\"" + problem
+                                + ".out\", \"w\", stdout);";
+                        flag = false;
+                    }
                 }
             }
             fr.close();

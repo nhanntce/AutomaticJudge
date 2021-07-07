@@ -198,7 +198,6 @@ public class frmSetPaths extends javax.swing.JFrame {
             }
         }
         fileChooserWorkspace.setCurrentDirectory(new File(parent.studentDir));
-        System.out.println(parent.studentDir);
         int choice = fileChooserWorkspace.showOpenDialog(this);
         if (choice == JFileChooser.APPROVE_OPTION) { // if option Open file in JFileChooser
             File f = fileChooserWorkspace.getSelectedFile(); // get file

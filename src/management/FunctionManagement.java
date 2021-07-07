@@ -314,7 +314,6 @@ public class FunctionManagement {
                     countCmt += 1;
                 }
             }
-            System.out.println("Func is commented: " + countCmt);
             result = (countCmt + 1)/(double)funcs.size();
             return result != 0 ? result * 100.0 : 0;
         } catch (IOException ex) {

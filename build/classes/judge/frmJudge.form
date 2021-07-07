@@ -164,7 +164,7 @@
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="btnJudgeAContest" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                  <Component id="btnJudgeAllClass" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnJudgeAllContests" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="btnJudgeAContest1" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
@@ -177,7 +177,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
                       <Component id="btnJudgeAContest1" min="-2" max="-2" attributes="0"/>
-                      <Component id="btnJudgeAllClass" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnJudgeAllContests" min="-2" max="-2" attributes="0"/>
                       <Component id="btnLoadPoint" min="-2" max="-2" attributes="0"/>
                       <Component id="btnJudgeAContest" min="-2" max="-2" attributes="0"/>
                       <Component id="btnSetting" min="-2" max="-2" attributes="0"/>
@@ -308,7 +308,7 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnLoadPointActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="btnJudgeAllClass">
+        <Component class="javax.swing.JButton" name="btnJudgeAllContests">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Tahoma" size="14" style="0"/>
@@ -319,7 +319,7 @@
             <Property name="toolTipText" type="java.lang.String" value="Judge All Contestant"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnJudgeAllClassActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnJudgeAllContestsActionPerformed"/>
           </Events>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
