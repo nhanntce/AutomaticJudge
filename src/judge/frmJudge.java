@@ -64,6 +64,7 @@ public class frmJudge extends javax.swing.JFrame {
     public HashMap<String, Integer> hmStuIndex;
     public HashMap<String, Integer> hmTotalPoint;
     public ArrayList<ArrayList<String>> lsParentProblem;    //list of list test case name folder NhanNT
+    public ArrayList<String> listContestLoadPannalty;       //list of contestant is loading pannalty NhanNT
     public DefaultTableModel tableModelExport;
 
     public String typecpp;
@@ -366,6 +367,37 @@ public class frmJudge extends javax.swing.JFrame {
         setPaths.setVisible(true);
     }//GEN-LAST:event_btnListProblemActionPerformed
 
+    public void loadAllPoint() {
+        File[] listContestsPaths = new File(studentDir).listFiles(File::isDirectory);
+        String[] splitResult;
+        for (File f : listContestsPaths) {
+            String currentContest = f.getName();
+            for (String s : listContestLoadPannalty) {
+                JTable tb = hmTable.get(currentContest);
+                Thread tload = null;
+                if (currentContest.equals(s)) {
+                    tload = new Thread() {
+                        @Override
+                        public void run() {
+                            loadPointPenalty(currentContest, tb);
+                        }
+                    };
+                    tload.start();
+                    break;
+                } else {
+                    tload = new Thread() {
+                        @Override
+                        public void run() {
+                            loadPoint(currentContest, tb);
+                        }
+                    };
+                    tload.start();
+                    break;
+                }
+            }
+        }
+    }
+
     /**
      * list all problem
      *
@@ -501,7 +533,7 @@ public class frmJudge extends javax.swing.JFrame {
             btnJudgeAContest.setEnabled(true);
         }
     }
-    
+
     /**
      * list all student
      *
@@ -790,6 +822,7 @@ public class frmJudge extends javax.swing.JFrame {
      */
     private void loadPoint(String s, JTable tb) {
         String contest = s;
+        listContestLoadPannalty.remove(contest);
         for (int i = 0; i < tb.getRowCount(); ++i) {
             String user = tb.getValueAt(i, 0).toString();
             double total = 0;
@@ -831,6 +864,9 @@ public class frmJudge extends javax.swing.JFrame {
      */
     private void loadPointPenalty(String s, JTable tb) {
         String contest = s;
+        if (!listContestLoadPannalty.contains(contest)) {
+            listContestLoadPannalty.add(contest);
+        }
         for (int i = 0; i < tb.getRowCount(); ++i) {
             String user = tb.getValueAt(i, 0).toString();
             double total = 0;
@@ -1098,7 +1134,7 @@ public class frmJudge extends javax.swing.JFrame {
                         Files.deleteIfExists(Paths.get(file.getPath()));
                     }
                 }
-                
+
                 contestantPath = dirContestantPath + "/" + dir.getName();
                 // copy to contestant folder
                 fhandle.copyFile(dir.getAbsolutePath(), contestantPath);
@@ -1155,6 +1191,7 @@ public class frmJudge extends javax.swing.JFrame {
         this.fileFolderProblem.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         this.fileFolderStudent.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         this.fileFolderNopbai.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        listContestLoadPannalty = new ArrayList<>();
     }
 
     /**
@@ -1283,7 +1320,7 @@ public class frmJudge extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(frmJudge.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         FileWorkspaceHandlerTest fileWorkspaceHandlerTest = new FileWorkspaceHandlerTest(this);
         Path workspaceEventPathPath = Paths.get(workspaceEventPath);
         FileWatcher fileWorkspaceWatcher;

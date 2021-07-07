@@ -36,6 +36,9 @@ public class frmSetPaths extends javax.swing.JFrame {
         txtFolderWorkspace.setText(parent.studentDir);
         txtFolderTestcase.setText(parent.problemDir);
         txtStudentSubmission.setText(parent.folderNopbaiPath);
+        txtFolderWorkspace.setEditable(false);
+        txtFolderTestcase.setEditable(false);
+        txtStudentSubmission.setEditable(false);
         this.fileChooserWorkspace.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         this.fileChooserTestcase.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 

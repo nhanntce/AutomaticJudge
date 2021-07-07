@@ -122,6 +122,7 @@ public class Judge {
                     Files.deleteIfExists(Paths.get(tenbai));
                     Files.deleteIfExists(Paths.get(tenbai + ".exe"));
                     Files.deleteIfExists(Paths.get(tenbai + ".pyc"));
+                    Files.deleteIfExists(Paths.get(tenbai + "." + type + ".orig"));
                     //delete file java NhanNT
                     Files.deleteIfExists(Paths.get(tenbai + ".class"));
                     continue;
@@ -225,6 +226,7 @@ public class Judge {
                 Files.deleteIfExists(Paths.get(tenbai + ".exe"));
                 Files.deleteIfExists(Paths.get(tenbai + ".pyc"));
                 Files.deleteIfExists(Paths.get(tenbai + ".java"));
+                Files.deleteIfExists(Paths.get(tenbai + ".class"));
                 Files.deleteIfExists(Paths.get(problem + ".inp"));
                 Files.deleteIfExists(Paths.get(problem + ".out"));
             } catch (IOException ex) {

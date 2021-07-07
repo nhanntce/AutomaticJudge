@@ -36,6 +36,7 @@ public class FileTestcaseHandlerTest implements FileHandler {
 
             tool.listProblemA();
             tool.loadStudentToTable();
+            tool.loadAllPoint();
 
         }
     }
