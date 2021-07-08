@@ -307,7 +307,7 @@ public class Judge {
             //Check format
             if (parent.checkFormat) {
                 //Generate formatted file
-                Formatter.Format(fileName + "." + type);
+                Formatter.Format(fileName + "." + type, type);
                 // check file isexist
                 if (Files.exists(Paths.get(fileName + "." + type + ".orig"))) { // 2 files are different, then generate new file.orig
                     checkFormat = false;
@@ -324,6 +324,9 @@ public class Judge {
                 checkCommet = fm.calculatePercentOfAllFunctionCmt(fileName + "." + type);
 
             }
+            if (parent.checkPlag) {
+				
+			}
         } catch (IOException ex) {
             Logger.getLogger(frmJudge.class.getName()).log(Level.SEVERE, null, ex);
         }
