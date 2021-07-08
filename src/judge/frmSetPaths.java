@@ -36,6 +36,9 @@ public class frmSetPaths extends javax.swing.JFrame {
         txtFolderWorkspace.setText(parent.studentDir);
         txtFolderTestcase.setText(parent.problemDir);
         txtStudentSubmission.setText(parent.folderNopbaiPath);
+        txtFolderWorkspace.setEditable(false);
+        txtFolderTestcase.setEditable(false);
+        txtStudentSubmission.setEditable(false);
         this.fileChooserWorkspace.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         this.fileChooserTestcase.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
@@ -198,7 +201,6 @@ public class frmSetPaths extends javax.swing.JFrame {
             }
         }
         fileChooserWorkspace.setCurrentDirectory(new File(parent.studentDir));
-        System.out.println(parent.studentDir);
         int choice = fileChooserWorkspace.showOpenDialog(this);
         if (choice == JFileChooser.APPROVE_OPTION) { // if option Open file in JFileChooser
             File f = fileChooserWorkspace.getSelectedFile(); // get file

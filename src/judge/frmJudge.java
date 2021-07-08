@@ -64,6 +64,7 @@ public class frmJudge extends javax.swing.JFrame {
     public HashMap<String, Integer> hmStuIndex;
     public HashMap<String, Integer> hmTotalPoint;
     public ArrayList<ArrayList<String>> lsParentProblem;    //list of list test case name folder NhanNT
+    public ArrayList<String> listContestLoadPannalty;       //list of contestant is loading pannalty NhanNT
     public DefaultTableModel tableModelExport;
 
     public String typecpp;
@@ -74,11 +75,12 @@ public class frmJudge extends javax.swing.JFrame {
     public String problemDir;      //store the path of testcase of contests NhanNT
     private String excelPath;
     public String folderNopbaiPath; //store the path of submissions NhanNT
+    public String testcaseEventPath; //store the path catch the event when update testcase NhanNT
+    public String workspaceEventPath; //store the path catch the event when update workspace NhanNT
 //    public boolean checkFunction;
     public boolean checkFormat;
     public boolean checkCmt;
     public boolean checkWall;
-    public boolean checkPlag;
     public int timeLimit;
     public int memoryLimit;
 
@@ -120,6 +122,8 @@ public class frmJudge extends javax.swing.JFrame {
         listProblem();
         //load student solutions NhanNT
         listStudent();
+        addEvent();
+
     }
 
     /**
@@ -149,7 +153,7 @@ public class frmJudge extends javax.swing.JFrame {
         btnSetting = new javax.swing.JButton();
         btnJudgeAContest = new javax.swing.JButton();
         btnLoadPoint = new javax.swing.JButton();
-        btnJudgeAllClass = new javax.swing.JButton();
+        btnJudgeAllContests = new javax.swing.JButton();
         btnJudgeAContest1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -258,12 +262,12 @@ public class frmJudge extends javax.swing.JFrame {
             }
         });
 
-        btnJudgeAllClass.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        btnJudgeAllClass.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/btnjudgeall.png"))); // NOI18N
-        btnJudgeAllClass.setToolTipText("Judge All Contestant");
-        btnJudgeAllClass.addActionListener(new java.awt.event.ActionListener() {
+        btnJudgeAllContests.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        btnJudgeAllContests.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/btnjudgeall.png"))); // NOI18N
+        btnJudgeAllContests.setToolTipText("Judge All Contestant");
+        btnJudgeAllContests.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnJudgeAllClassActionPerformed(evt);
+                btnJudgeAllContestsActionPerformed(evt);
             }
         });
 
@@ -298,7 +302,7 @@ public class frmJudge extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnJudgeAContest)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnJudgeAllClass)
+                .addComponent(btnJudgeAllContests)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnJudgeAContest1)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -309,7 +313,7 @@ public class frmJudge extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(pnlToolbarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(btnJudgeAContest1)
-                    .addComponent(btnJudgeAllClass)
+                    .addComponent(btnJudgeAllContests)
                     .addComponent(btnLoadPoint)
                     .addComponent(btnJudgeAContest)
                     .addComponent(btnSetting)
@@ -365,6 +369,37 @@ public class frmJudge extends javax.swing.JFrame {
         setPaths.setVisible(true);
     }//GEN-LAST:event_btnListProblemActionPerformed
 
+    public void loadAllPoint() {
+        File[] listContestsPaths = new File(studentDir).listFiles(File::isDirectory);
+        String[] splitResult;
+        for (File f : listContestsPaths) {
+            String currentContest = f.getName();
+            for (String s : listContestLoadPannalty) {
+                JTable tb = hmTable.get(currentContest);
+                Thread tload = null;
+                if (currentContest.equals(s)) {
+                    tload = new Thread() {
+                        @Override
+                        public void run() {
+                            loadPointPenalty(currentContest, tb);
+                        }
+                    };
+                    tload.start();
+                    break;
+                } else {
+                    tload = new Thread() {
+                        @Override
+                        public void run() {
+                            loadPoint(currentContest, tb);
+                        }
+                    };
+                    tload.start();
+                    break;
+                }
+            }
+        }
+    }
+
     /**
      * list all problem
      *
@@ -407,6 +442,35 @@ public class frmJudge extends javax.swing.JFrame {
             btnImportExcel.setEnabled(true);
             btnExportExcel.setEnabled(true);
             btnJudgeAContest.setEnabled(true);
+        }
+    }
+
+    /**
+     * list a test case
+     *
+     * @author NhanNT
+     */
+    public void listProblemA() {
+        listProbPath.clear();
+        listProbName.clear();
+        lsParentProblem.clear();
+
+        File[] dirParentProblem = new File(problemDir).listFiles(File::isDirectory);
+        for (File dir : dirParentProblem) {
+            if (dir.getName().contains("$")) {
+                continue;
+            }
+            ArrayList<String> lsHead1 = new ArrayList<>();
+            lsHead1.add("Contestants");
+            File[] dirHead = new File(dir.getAbsolutePath()).listFiles(File::isDirectory);
+            for (File file : dirHead) {
+                lsHead1.add(file.getName());
+                listProbPath.add(file.getAbsolutePath());
+                listProbName.add(file.getName());
+            }
+            lsHead1.add("Total");
+            lsParentProblem.add(lsHead1);
+
         }
     }
 
@@ -473,6 +537,57 @@ public class frmJudge extends javax.swing.JFrame {
     }
 
     /**
+     * list all student
+     *
+     * @author NhanNT
+     */
+    public void loadStudentToTable() {
+        tabTable.removeAll();
+
+        int index = 0;
+        File[] dirStu = new File(studentDir).listFiles(File::isDirectory);
+
+        for (File dir : dirStu) {
+            if (dir.getName().contains("$")) {
+                continue;
+            }
+            int totalStudent = 0;
+            listStuClassPath.add(dir.getAbsolutePath());
+            listStuClassName.add(dir.getName());
+            ArrayList<ArrayList<String>> lsRow1 = new ArrayList<>();
+            File[] dirStuClass = new File(dir.getAbsolutePath()).listFiles(File::isDirectory);
+            for (File dirStuClas : dirStuClass) {
+                if (dirStuClas.getName().contains("$")) {
+                    continue;
+                }
+                ArrayList<String> enity = new ArrayList<>();
+                enity.add(dirStuClas.getName());
+
+                for (int i = 0; i < lsParentProblem.get(index).size() - 1; ++i) {
+                    enity.add("Not submit");
+                }
+
+                lsRow1.add(enity);
+                hmStuIndex.put(dirStuClas.getName() + dir.getName(), totalStudent++);
+
+                hmStuPath.put(dirStuClas.getName() + dir.getName(), dirStuClas.getAbsolutePath());
+                hmTotalPoint.put(dirStuClas.getName() + dir.getName(), 0);
+            }
+            DefaultTableModel dtm = new DefaultTableModel(lsParentProblem.get(index).toArray(), 0);
+            for (ArrayList<String> arrayList : lsRow1) {
+                dtm.addRow(arrayList.toArray());
+            }
+            JTable tb = new JTable(dtm);
+            tb.setEnabled(false);
+            setupTable(tb, dir.getName());
+            hmTable.put(dir.getName(), tb);
+            JScrollPane scr = new JScrollPane(tb);
+            tabTable.addTab(dir.getName(), scr);
+            index++;
+        }
+    }
+
+    /**
      * load setting form NhanNT
      *
      * @param evt
@@ -485,9 +600,8 @@ public class frmJudge extends javax.swing.JFrame {
         //if dont have config file -> create new file and write default setting to config file
         if (!tempFile.exists()) {
             try {
-                File configFile = new File(pathToSettingConfig);
-                configFile.createNewFile();
-                FileWriter fileWriter = new FileWriter(configFile);
+                tempFile.createNewFile();
+                FileWriter fileWriter = new FileWriter(tempFile);
                 //get default setting from property file
                 String time_limit = this.props.getProperty("time_limit");
                 String memory_limit = this.props.getProperty("memory_limit");
@@ -521,10 +635,7 @@ public class frmJudge extends javax.swing.JFrame {
             } catch (IOException ex) {
                 Logger.getLogger(frmJudge.class.getName()).log(Level.SEVERE, null, ex);
             }
-//            setting.chkApplyAll.setSelected(Boolean.parseBoolean(this.props.getProperty("apply_all")));
         }
-        setting.chkApplyAll.setVisible(false);
-        setting.lblNoteText.setVisible(false);
         setting.setVisible(true);
     }//GEN-LAST:event_btnSettingActionPerformed
 
@@ -599,6 +710,8 @@ public class frmJudge extends javax.swing.JFrame {
             String path1 = AbPath.substring(0, AbPath.length() - 33);
             props.setProperty("studentDir", studentDir.replace(path1, ""));
             props.setProperty("problemDir", problemDir.replace(path1, ""));
+            props.setProperty("testcaseEventPath", testcaseEventPath.replace(path1, ""));
+            props.setProperty("workspaceEventPath", workspaceEventPath.replace(path1, ""));
             props.setProperty("folderNopbaiPath", folderNopbaiPath.replace(path1, ""));
             props.setProperty("excelPath", excelPath);
             props.setProperty("typecpp", typecpp);
@@ -680,7 +793,7 @@ public class frmJudge extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnLoadPointActionPerformed
 
-    private void btnJudgeAllClassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnJudgeAllClassActionPerformed
+    private void btnJudgeAllContestsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnJudgeAllContestsActionPerformed
 
         listNopbaiPath.clear();
         listNopbaiName.clear();
@@ -697,7 +810,7 @@ public class frmJudge extends javax.swing.JFrame {
         }
         tool.foo(listNopbaiPath, listNopbaiName, false);
 
-    }//GEN-LAST:event_btnJudgeAllClassActionPerformed
+    }//GEN-LAST:event_btnJudgeAllContestsActionPerformed
 
     private void btnJudgeAContest1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnJudgeAContest1ActionPerformed
         frmAbout about = new frmAbout();
@@ -711,15 +824,16 @@ public class frmJudge extends javax.swing.JFrame {
      */
     private void loadPoint(String s, JTable tb) {
         String contest = s;
+        listContestLoadPannalty.remove(contest);
         for (int i = 0; i < tb.getRowCount(); ++i) {
             String user = tb.getValueAt(i, 0).toString();
             double total = 0;
             for (int j = 1; j < tb.getColumnCount() - 1; ++j) {
                 String problem = tb.getColumnName(j);
                 String log = "[" + contest + "][" + user + "][" + problem + "]";
-                // Duyá»‡t thÆ° má»¥c logs chá»©a káº¿t quáº£ bÃ i lÃ m
+                // Duyệt thư mục logs chứa kết quả bài làm
                 File[] pathlog = new File(folderNopbaiPath + "/Logs/" + contest).listFiles();
-                Arrays.sort(pathlog, Comparator.comparingLong(File::lastModified).reversed()); // sáº¯p xáº¿p theo thá»�i gian giáº£m dáº§n
+                Arrays.sort(pathlog, Comparator.comparingLong(File::lastModified).reversed()); // sắp xếp theo thời gian giảm dần
                 for (File file : pathlog) {
                     if (file.getAbsolutePath().contains(log)) {
                         try {
@@ -752,6 +866,9 @@ public class frmJudge extends javax.swing.JFrame {
      */
     private void loadPointPenalty(String s, JTable tb) {
         String contest = s;
+        if (!listContestLoadPannalty.contains(contest)) {
+            listContestLoadPannalty.add(contest);
+        }
         for (int i = 0; i < tb.getRowCount(); ++i) {
             String user = tb.getValueAt(i, 0).toString();
             double total = 0;
@@ -760,9 +877,9 @@ public class frmJudge extends javax.swing.JFrame {
                 int pen = 0;
                 String problem = tb.getColumnName(j);
                 String log = "[" + user + "][" + problem + "]";
-                // Duyá»‡t thÆ° má»¥c logs chá»©a káº¿t quáº£ bÃ i lÃ m
+                // Duyệt thư mục logs chứa kết quả bài làm
                 File[] pathlog = new File(folderNopbaiPath + "/Logs/" + contest).listFiles();
-                Arrays.sort(pathlog, Comparator.comparingLong(File::lastModified)); // sáº¯p xáº¿p theo thá»�i gian tÄƒng dáº§n
+                Arrays.sort(pathlog, Comparator.comparingLong(File::lastModified)); // sắp xếp theo thời gian tăng dần
                 for (File file : pathlog) {
                     if (file.getAbsolutePath().contains(log)) {
                         pen++;
@@ -926,18 +1043,18 @@ public class frmJudge extends javax.swing.JFrame {
                 if (SwingUtilities.isRightMouseButton(me) == true) {
                     // If has judged
                     if (col != tb.getColumnCount() - 1 && col != 0) {
-                        // Láº¥y tÃªn bÃ i ná»™p trÃªn báº£ng Ä‘iá»ƒm
+                        // Lấy tên bài nộp trên bảng điểm
                         String contest = tabTable.getTitleAt(tabTable.getSelectedIndex());
                         String user = tb.getValueAt(row, 0).toString();
                         String problem = tb.getColumnName(col);
                         String log = "[" + contest + "][" + user + "][" + problem + "]";
-                        // Duyá»‡t thÆ° má»¥c logs chá»©a káº¿t quáº£ bÃ i lÃ m
+                        // Duyệt thư mục logs chứa kết quả bài làm
                         File[] pathlog = new File(folderNopbaiPath + "/Logs/" + nameTable).listFiles();
-                        Arrays.sort(pathlog, Comparator.comparingLong(File::lastModified).reversed()); // sáº¯p xáº¿p theo thá»�i gian giáº£m dáº§n
+                        Arrays.sort(pathlog, Comparator.comparingLong(File::lastModified).reversed()); // sắp xếp theo thời gian giảm dần
                         String popcontent = "";
                         for (File file : pathlog) {
                             if (file.getAbsolutePath().contains(log)) {
-                                // Ä‘Æ°á»�ng dáº«n bÃ i lÃ m khi chá»�n trÃªn báº£ng Ä‘iá»ƒm
+                                // đường dẫn bài làm khi chọn trên bảng điểm
                                 popcontent = file.getAbsolutePath();
                                 break;
                             }
@@ -996,7 +1113,7 @@ public class frmJudge extends javax.swing.JFrame {
         listNopbaiPath.clear();
         listNopbaiName.clear();
         File[] directories = new File(folderNopbaiPath).listFiles(File::isFile);
-        Arrays.sort(directories, Comparator.comparingLong(File::lastModified)); // sáº¯p xáº¿p theo thá»�i gian tÄƒng dáº§n
+        Arrays.sort(directories, Comparator.comparingLong(File::lastModified)); // sắp xếp theo thời gian tăng dần
         for (File dir : directories) {
             if (dir.getName().equalsIgnoreCase(".htaccess") || !tmptype.contains(tool.getType(dir.getName()))) {
                 continue; // skip if not .c, .cpp. .py
@@ -1011,7 +1128,7 @@ public class frmJudge extends javax.swing.JFrame {
             File[] dirContestant = new File(dirContestantPath).listFiles(File::isFile);
             try {
                 for (File file : dirContestant) {
-                    if (file.getName().contains(log)) { // Náº¿u Ä‘Ã£ cÃ³ bÃ i theo mÃ£ Ä‘á»� trong thumuclambai, thÃ¬ bá»� vÃ o $History
+                    if (file.getName().contains(log)) { // Nếu đã có bài theo mã đề trong thumuclambai, thì bỏ vào $History
                         if (Files.notExists(Paths.get(dirContestantPath + "/$History/"))) {
                             new File(dirContestantPath + "/$History/").mkdirs();
                         }
@@ -1019,6 +1136,7 @@ public class frmJudge extends javax.swing.JFrame {
                         Files.deleteIfExists(Paths.get(file.getPath()));
                     }
                 }
+
                 contestantPath = dirContestantPath + "/" + dir.getName();
                 // copy to contestant folder
                 fhandle.copyFile(dir.getAbsolutePath(), contestantPath);
@@ -1075,6 +1193,7 @@ public class frmJudge extends javax.swing.JFrame {
         this.fileFolderProblem.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         this.fileFolderStudent.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         this.fileFolderNopbai.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        listContestLoadPannalty = new ArrayList<>();
     }
 
     /**
@@ -1102,6 +1221,8 @@ public class frmJudge extends javax.swing.JFrame {
             this.props.load(in);
             this.studentDir = path1 + this.props.getProperty("studentDir");
             this.problemDir = path1 + this.props.getProperty("problemDir");
+            this.testcaseEventPath = path1 + this.props.getProperty("testcaseEventPath");
+            this.workspaceEventPath = path1 + this.props.getProperty("workspaceEventPath");
             this.folderNopbaiPath = path1 + this.props.getProperty("folderNopbaiPath");
             this.excelPath = this.props.getProperty("excelPath");
             this.typecpp = this.props.getProperty("typecpp");
@@ -1116,7 +1237,6 @@ public class frmJudge extends javax.swing.JFrame {
             this.memoryLimit = Integer.parseInt(this.props.getProperty("memoryLimit"));
             this.astylePath = this.props.getProperty("astylePath");
             this.simPath = this.props.getProperty("simPath");
-            this.checkPlag = true;
             if (!this.folderNopbaiPath.equals("")) {
                 Path path = Paths.get(this.folderNopbaiPath);
                 FileHandlerTest fileHandlerTest = new FileHandlerTest(this);
@@ -1130,7 +1250,6 @@ public class frmJudge extends javax.swing.JFrame {
             } catch (IOException ex) {
                 Logger.getLogger(frmJudge.class.getName()).log(Level.SEVERE, null, ex);
             }
-            System.out.println(e.getMessage());
         }
     }
 
@@ -1176,7 +1295,7 @@ public class frmJudge extends javax.swing.JFrame {
     private javax.swing.JButton btnImportExcel;
     public javax.swing.JButton btnJudgeAContest;
     public javax.swing.JButton btnJudgeAContest1;
-    public javax.swing.JButton btnJudgeAllClass;
+    public javax.swing.JButton btnJudgeAllContests;
     private javax.swing.JButton btnListProblem;
     private javax.swing.JButton btnLoadPoint;
     private javax.swing.JButton btnSetting;
@@ -1192,4 +1311,28 @@ public class frmJudge extends javax.swing.JFrame {
     private javax.swing.JTable tblTable;
     private javax.swing.JTextField txtFilter;
     // End of variables declaration//GEN-END:variables
+
+    private void addEvent() {
+        FileTestcaseHandlerTest folderHandlerTest = new FileTestcaseHandlerTest(this);
+        Path path = Paths.get(testcaseEventPath);
+        FileWatcher fileWatcher;
+        try {
+            fileWatcher = new FileWatcher(path, folderHandlerTest, false, StandardWatchEventKinds.ENTRY_MODIFY); //For non-recursive polling
+            Thread watcherThread = new Thread(fileWatcher);
+            watcherThread.start();
+        } catch (IOException ex) {
+            Logger.getLogger(frmJudge.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        FileWorkspaceHandlerTest fileWorkspaceHandlerTest = new FileWorkspaceHandlerTest(this);
+        Path workspaceEventPathPath = Paths.get(workspaceEventPath);
+        FileWatcher fileWorkspaceWatcher;
+        try {
+            fileWorkspaceWatcher = new FileWatcher(workspaceEventPathPath, fileWorkspaceHandlerTest, false, StandardWatchEventKinds.ENTRY_MODIFY); //For non-recursive polling
+            Thread watcherworkspaceThread = new Thread(fileWorkspaceWatcher);
+            watcherworkspaceThread.start();
+        } catch (IOException ex) {
+            Logger.getLogger(frmJudge.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }
