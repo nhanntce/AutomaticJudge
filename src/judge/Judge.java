@@ -25,7 +25,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import management.FunctionManagement;
+import obj.Plagiarism;
 import utility.Formatter;
+import utility.Plagiarismer;
 
 /**
  *
@@ -39,6 +41,7 @@ public class Judge {
     long maxMemory;
     private boolean checkFormat; //is formatted
     private double checkCommet; //percent commented
+    private ArrayList<Plagiarism> listPlagiarisms;
 
     /**
      * Construct a Judge DangVTH
@@ -201,6 +204,19 @@ public class Judge {
                         } else {
                             writer.write("Comment: -1\n");
                         }
+                        if (true) {
+                            if (listPlagiarisms != null && listPlagiarisms.size() > 0) {
+                                writer.write("Plagiarism: " + listPlagiarisms.get(0).getPercentageOfPlagiarism() + "\n");
+                                writer.write(listPlagiarisms.get(0).getNameOfFileHasPlagiarism() + "\n");
+                                writer.write((listPlagiarisms.size() - 1) + "\n");
+                                for (int idx = 1; idx < listPlagiarisms.size(); idx++) {
+                                    writer.write(listPlagiarisms.get(idx).getOrigianal() + "\n");
+                                    writer.write(listPlagiarisms.get(idx).getCompareWith() + "\n");
+                                }
+                            } else {
+                                writer.write("Plagiarism: 0\n");
+                            }
+                        }
                         writer.write(result.toString());
 
                         // Set point for problem column
@@ -324,9 +340,22 @@ public class Judge {
                 checkCommet = fm.calculatePercentOfAllFunctionCmt(fileName + "." + type);
 
             }
-            if (parent.checkPlag) {
-				
-			}
+            //check plagiarism
+            if (true) {
+                File[] listWorkspaceStudent = new File(parent.studentDir + "\\" + stuClass).listFiles(File::isDirectory);
+                ArrayList<String> listSolutionToCompare = new ArrayList<>();
+                String currentSolutionToCompare = "";
+                for (File f : listWorkspaceStudent) {
+                    File[] listStudentSolution = new File(f.getAbsolutePath()).listFiles(File::isFile);
+                    for (File solution : listStudentSolution) {
+                        currentSolutionToCompare = solution.getAbsolutePath();
+                        if (currentSolutionToCompare.contains(problem)) {
+                            listSolutionToCompare.add(currentSolutionToCompare);
+                        }
+                    }
+                }
+                listPlagiarisms = Plagiarismer.plagiarism(parent.studentDir + "\\" + stuClass + "\\" + getUser(fileName) + "\\" + fileName, listSolutionToCompare, type, parent);
+            }
         } catch (IOException ex) {
             Logger.getLogger(frmJudge.class.getName()).log(Level.SEVERE, null, ex);
         }
