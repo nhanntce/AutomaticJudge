@@ -80,6 +80,7 @@ public class frmJudge extends javax.swing.JFrame {
 //    public boolean checkFunction;
     public boolean checkFormat;
     public boolean checkCmt;
+    public boolean checkPlagiarism;
     public boolean checkWall;
     public int timeLimit;
     public int memoryLimit;
@@ -593,31 +594,51 @@ public class frmJudge extends javax.swing.JFrame {
      * @param evt
      */
     private void btnSettingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSettingActionPerformed
+
         frmSetting setting = new frmSetting(this);
         String selectedTab = tabTable.getTitleAt(tabTable.getSelectedIndex());
         String pathToSettingConfig = problemDir + "\\" + selectedTab + "\\config.txt";
         File tempFile = new File(pathToSettingConfig);
+
+        boolean isChecked = true;
+
         //if dont have config file -> create new file and write default setting to config file
         if (!tempFile.exists()) {
             try {
                 tempFile.createNewFile();
                 FileWriter fileWriter = new FileWriter(tempFile);
+
                 //get default setting from property file
                 String time_limit = this.props.getProperty("time_limit");
                 String memory_limit = this.props.getProperty("memory_limit");
                 String check_format = this.props.getProperty("check_format");
                 String check_comment = this.props.getProperty("check_comment");
+                String check_comment_mode = this.props.getProperty("check_comment_mode");
+                String perentage_accept = this.props.getProperty("perentage_accept");
+                String minus_value = this.props.getProperty("minus_value");
+                String check_plagiarism = this.props.getProperty("check_plagiarism");
+
                 //write setting to specify contest's config file
                 fileWriter.write("time_limit=" + time_limit + "\n");
                 fileWriter.write("memory_limit=" + memory_limit + "\n");
                 fileWriter.write("check_format=" + check_format + "\n");
                 fileWriter.write("check_comment=" + check_comment + "\n");
+                fileWriter.write("check_comment_mode=" + check_comment_mode + "\n");
+                fileWriter.write(perentage_accept + "\n");
+                fileWriter.write(minus_value + "\n");
+                fileWriter.write(check_plagiarism + "\n");
+
                 fileWriter.close();
+
                 //get setting content to interface
                 setting.txtTimeLimit.setText(time_limit);
                 setting.txtMemoryLimit.setText(memory_limit);
                 setting.chkCheckFormat.setSelected(Boolean.parseBoolean(this.props.getProperty("check_format")));
                 setting.chkCheckCmt.setSelected(Boolean.parseBoolean(this.props.getProperty("check_comment")));
+                setting.cbbCommentMode.setSelectedItem(check_comment_mode);
+                setting.txtPercentageAccept.setText(perentage_accept);
+                setting.txtMinusValue.setText(minus_value);
+                setting.chkCheckPlagiarism.setSelected(Boolean.parseBoolean(this.props.getProperty("check_plagiarism")));
             } catch (IOException ex) {
                 Logger.getLogger(frmJudge.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -626,15 +647,34 @@ public class frmJudge extends javax.swing.JFrame {
             try {
                 List<String> lines = Collections.emptyList();
                 lines = Files.readAllLines(Paths.get(pathToSettingConfig), StandardCharsets.UTF_8);
+                //Checkbox Check comment is checked or not
+                isChecked = Boolean.parseBoolean(lines.get(3).split("=")[1]);
+                
                 //set setting content to interface
+                String comment_mode = lines.get(4).split("=")[1];
                 setting.txtTimeLimit.setText(lines.get(0).split("=")[1]);
                 setting.txtMemoryLimit.setText(lines.get(1).split("=")[1]);
                 setting.chkCheckFormat.setSelected(Boolean.parseBoolean(lines.get(2).split("=")[1]));
                 setting.chkCheckCmt.setSelected(Boolean.parseBoolean(lines.get(3).split("=")[1]));
-
+                
+                if (isChecked) {
+                    setting.cbbCommentMode.setSelectedItem(comment_mode);
+                    setting.txtPercentageAccept.setText(lines.get(5));
+                    setting.txtMinusValue.setText(lines.get(6));
+                    setting.chkCheckPlagiarism.setSelected(Boolean.parseBoolean(lines.get(7).split("=")[1]));
+                } else {
+                    setting.chkCheckPlagiarism.setSelected(Boolean.parseBoolean(lines.get(4).split("=")[1]));
+                }
+                
             } catch (IOException ex) {
                 Logger.getLogger(frmJudge.class.getName()).log(Level.SEVERE, null, ex);
             }
+        }
+        if (!isChecked) {
+            setting.cbbCommentMode.setVisible(false);
+            setting.txtPercentageAccept.setVisible(false);
+            setting.txtMinusValue.setVisible(false);
+            setting.pnlSettingCheckCmt.setVisible(false);
         }
         setting.setVisible(true);
     }//GEN-LAST:event_btnSettingActionPerformed

@@ -320,6 +320,7 @@ public class Judge {
             parent.memoryLimit = Integer.parseInt(lines.get(1).split("=")[1]);
             parent.checkFormat = Boolean.parseBoolean(lines.get(2).split("=")[1]);
             parent.checkCmt = Boolean.parseBoolean(lines.get(3).split("=")[1]);
+            parent.checkPlagiarism = Boolean.parseBoolean(lines.get(4).split("=")[1]);
 
             //Check format
             if (parent.checkFormat) {
@@ -342,7 +343,7 @@ public class Judge {
 
             }
             //check plagiarism
-            if (true) {
+            if (parent.checkPlagiarism) {
                 File[] listWorkspaceStudent = new File(parent.studentDir + "\\" + stuClass).listFiles(File::isDirectory);
                 ArrayList<String> listSolutionToCompare = new ArrayList<>();
                 String currentSolutionToCompare = "";
