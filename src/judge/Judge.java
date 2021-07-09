@@ -90,10 +90,7 @@ public class Judge {
 
                 // copy file from submission DangVTH
                 fhandle.copyFile(folderPath.get(i), name);
-                // if auto judging, delete solution in submissions folder DangVTH
-                if (auto) {
-                    Files.deleteIfExists(Paths.get(folderPath.get(i)));
-                }
+                
                 // Create log file DangVTH
                 writer = new FileWriter(parent.folderNopbaiPath + "/Logs/" + stuclass + "/" + name + ".log");
 
@@ -238,6 +235,10 @@ public class Judge {
                 Files.deleteIfExists(Paths.get(tenbai + ".java"));
                 Files.deleteIfExists(Paths.get(problem + ".inp"));
                 Files.deleteIfExists(Paths.get(problem + ".out"));
+                // if auto judging, delete solution in submissions folder DangVTH
+                if (auto) {
+                    Files.deleteIfExists(Paths.get(folderPath.get(i)));
+                }
             } catch (IOException ex) {
                 Logger.getLogger(frmJudge.class.getName()).log(Level.SEVERE, null, ex);
             } finally {

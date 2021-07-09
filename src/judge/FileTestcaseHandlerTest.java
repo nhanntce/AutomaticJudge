@@ -29,7 +29,6 @@ public class FileTestcaseHandlerTest implements FileHandler {
      */
     @Override
     public void handle(File file, WatchEvent.Kind<?> fileEvent) {
-        System.out.println("Loi ");
         if ((fileEvent == StandardWatchEventKinds.ENTRY_CREATE
                 || fileEvent == StandardWatchEventKinds.ENTRY_DELETE
                 || fileEvent == StandardWatchEventKinds.ENTRY_MODIFY)) {

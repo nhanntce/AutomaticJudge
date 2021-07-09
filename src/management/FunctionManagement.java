@@ -252,7 +252,6 @@ public class FunctionManagement {
 //        }
 //        return false;
 //    }
-
     /**
      * Check and modify whether a function is commented or not
      *
@@ -273,6 +272,29 @@ public class FunctionManagement {
                         funcs.get(i).setCommented(true);
                     }
                 }
+            }
+        }
+    }
+    /**
+     * check a function had algorithm comment or not
+     * if all of line comment greater than 20% all line of code return true, otherwise return false
+     * NhanNT
+     * @param cmts 
+     */
+    public void checkAlgorithmComment(List<Comment> cmts) {
+        int countLineComment;
+        double percentageOfComment;
+        for (int i = 0; i < this.funcs.size(); i++) {
+            countLineComment = 0;
+            for (int j = 0; j < cmts.size(); j++) {
+                    if (this.funcs.get(i).getStartIndex() < cmts.get(j).getStartLine()
+                            && this.funcs.get(i).getEndIndex() > cmts.get(j).getEndLine()) {
+                        countLineComment += cmts.get(j).getNumberOfLines();
+                    }
+            }
+            percentageOfComment = (100.0 / (double)this.funcs.get(i).getLineOfCodes()) * (double)countLineComment; 
+            if(percentageOfComment >= 20){
+                this.funcs.get(i).setIsAlgorithmCommented(true);
             }
         }
     }
@@ -310,11 +332,10 @@ public class FunctionManagement {
             List<Comment> cmts = cm.separateComments(lines);
             checkFunctionComment(cmts);
             for (MyFunction func : funcs) {
-                if (func.isCommented()) {
+                if (func.isCommented() && func.isIsAlgorithmCommented()) {
                     countCmt += 1;
                 }
             }
-            System.out.println("Func is commented: " + countCmt);
             result = (countCmt) / (double) funcs.size();
             return result != 0 ? result * 100.0 : 0;
         } catch (IOException ex) {
@@ -322,6 +343,7 @@ public class FunctionManagement {
             return -1;
         }
     }
+
     /**
      * Check if it's a function DangVTH
      *
