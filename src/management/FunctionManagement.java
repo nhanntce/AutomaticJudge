@@ -331,6 +331,7 @@ public class FunctionManagement {
             CommentManagement cm = new CommentManagement();
             List<Comment> cmts = cm.separateComments(lines);
             checkFunctionComment(cmts);
+            checkAlgorithmComment(cmts);
             for (MyFunction func : funcs) {
                 if (func.isCommented() && func.isIsAlgorithmCommented()) {
                     countCmt += 1;
