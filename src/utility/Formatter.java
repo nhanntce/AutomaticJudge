@@ -18,7 +18,6 @@ public class Formatter {
 	 * @throws IOException
 	 */
 	public static void Format(String path, String type) throws IOException {
-		Runtime r = Runtime.getRuntime();
 		String cmd = "";
 		frmJudge parent = new frmJudge();
 		if (type.equals("c") || type.equals("cpp")) {
@@ -26,8 +25,9 @@ public class Formatter {
 		} else if (type.equals("java")) {
 			cmd = parent.astylePath + " --style=java " + path;
 		}
-
-		Process process = r.exec(cmd);
+		Process process = Runtime.getRuntime().exec(cmd);
+		while (process.isAlive()) {
+		}
 		process.destroy();
 	}
 }
