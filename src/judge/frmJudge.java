@@ -80,6 +80,10 @@ public class frmJudge extends javax.swing.JFrame {
 //    public boolean checkFunction;
     public boolean checkFormat;
     public boolean checkCmt;
+    public String checkCmtMode;
+    public int percentCmtAcp;
+    public double minusPoint;
+    public int minusPercent;
     public boolean checkPlagiarism;
     public boolean checkWall;
     public int timeLimit;
@@ -871,9 +875,9 @@ public class frmJudge extends javax.swing.JFrame {
             for (int j = 1; j < tb.getColumnCount() - 1; ++j) {
                 String problem = tb.getColumnName(j);
                 String log = "[" + contest + "][" + user + "][" + problem + "]";
-                // Duyệt thư mục logs chứa kết quả bài làm
+                // Duyá»‡t thÆ° má»¥c logs chá»©a káº¿t quáº£ bÃ i lÃ m
                 File[] pathlog = new File(folderNopbaiPath + "/Logs/" + contest).listFiles();
-                Arrays.sort(pathlog, Comparator.comparingLong(File::lastModified).reversed()); // sắp xếp theo thời gian giảm dần
+                Arrays.sort(pathlog, Comparator.comparingLong(File::lastModified).reversed()); // sáº¯p xáº¿p theo thá»�i gian giáº£m dáº§n
                 for (File file : pathlog) {
                     if (file.getAbsolutePath().contains(log)) {
                         try {
@@ -917,9 +921,9 @@ public class frmJudge extends javax.swing.JFrame {
                 int pen = 0;
                 String problem = tb.getColumnName(j);
                 String log = "[" + user + "][" + problem + "]";
-                // Duyệt thư mục logs chứa kết quả bài làm
+                // Duyá»‡t thÆ° má»¥c logs chá»©a káº¿t quáº£ bÃ i lÃ m
                 File[] pathlog = new File(folderNopbaiPath + "/Logs/" + contest).listFiles();
-                Arrays.sort(pathlog, Comparator.comparingLong(File::lastModified)); // sắp xếp theo thời gian tăng dần
+                Arrays.sort(pathlog, Comparator.comparingLong(File::lastModified)); // sáº¯p xáº¿p theo thá»�i gian tÄƒng dáº§n
                 for (File file : pathlog) {
                     if (file.getAbsolutePath().contains(log)) {
                         pen++;
@@ -1083,18 +1087,18 @@ public class frmJudge extends javax.swing.JFrame {
                 if (SwingUtilities.isRightMouseButton(me) == true) {
                     // If has judged
                     if (col != tb.getColumnCount() - 1 && col != 0) {
-                        // Lấy tên bài nộp trên bảng điểm
+                        // Láº¥y tÃªn bÃ i ná»™p trÃªn báº£ng Ä‘iá»ƒm
                         String contest = tabTable.getTitleAt(tabTable.getSelectedIndex());
                         String user = tb.getValueAt(row, 0).toString();
                         String problem = tb.getColumnName(col);
                         String log = "[" + contest + "][" + user + "][" + problem + "]";
-                        // Duyệt thư mục logs chứa kết quả bài làm
+                        // Duyá»‡t thÆ° má»¥c logs chá»©a káº¿t quáº£ bÃ i lÃ m
                         File[] pathlog = new File(folderNopbaiPath + "/Logs/" + nameTable).listFiles();
-                        Arrays.sort(pathlog, Comparator.comparingLong(File::lastModified).reversed()); // sắp xếp theo thời gian giảm dần
+                        Arrays.sort(pathlog, Comparator.comparingLong(File::lastModified).reversed()); // sáº¯p xáº¿p theo thá»�i gian giáº£m dáº§n
                         String popcontent = "";
                         for (File file : pathlog) {
                             if (file.getAbsolutePath().contains(log)) {
-                                // đường dẫn bài làm khi chọn trên bảng điểm
+                                // Ä‘Æ°á»�ng dáº«n bÃ i lÃ m khi chá»�n trÃªn báº£ng Ä‘iá»ƒm
                                 popcontent = file.getAbsolutePath();
                                 break;
                             }
@@ -1153,7 +1157,7 @@ public class frmJudge extends javax.swing.JFrame {
         listNopbaiPath.clear();
         listNopbaiName.clear();
         File[] directories = new File(folderNopbaiPath).listFiles(File::isFile);
-        Arrays.sort(directories, Comparator.comparingLong(File::lastModified)); // sắp xếp theo thời gian tăng dần
+        Arrays.sort(directories, Comparator.comparingLong(File::lastModified)); // sáº¯p xáº¿p theo thá»�i gian tÄƒng dáº§n
         for (File dir : directories) {
             if (dir.getName().equalsIgnoreCase(".htaccess") || !tmptype.contains(tool.getType(dir.getName()))) {
                 continue; // skip if not .c, .cpp. .py
@@ -1168,7 +1172,7 @@ public class frmJudge extends javax.swing.JFrame {
             File[] dirContestant = new File(dirContestantPath).listFiles(File::isFile);
             try {
                 for (File file : dirContestant) {
-                    if (file.getName().contains(log)) { // Nếu đã có bài theo mã đề trong thumuclambai, thì bỏ vào $History
+                    if (file.getName().contains(log)) { // Náº¿u Ä‘Ã£ cÃ³ bÃ i theo mÃ£ Ä‘á»� trong thumuclambai, thÃ¬ bá»� vÃ o $History
                         if (Files.notExists(Paths.get(dirContestantPath + "/$History/"))) {
                             new File(dirContestantPath + "/$History/").mkdirs();
                         }
@@ -1227,6 +1231,7 @@ public class frmJudge extends javax.swing.JFrame {
         this.checkFormat = false;
         this.checkCmt = false;
         this.checkWall = false;
+        this.checkCmtMode = "";
         this.timeLimit = 1000;
         this.memoryLimit = 1000;
         // file chooser
