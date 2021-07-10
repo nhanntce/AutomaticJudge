@@ -201,7 +201,7 @@ public class Judge {
 						} else {
 							writer.write("Comment: -1\n");
 						}
-						if (true) {
+						if (parent.checkPlagiarism) {
 							if (listPlagiarisms != null && listPlagiarisms.size() > 0) {
 								writer.write(
 										"Plagiarism: " + listPlagiarisms.get(0).getPercentageOfPlagiarism() + "\n");
@@ -229,8 +229,8 @@ public class Judge {
 				// Delete excuted file
 
 				Files.deleteIfExists(Paths.get(tenbai));
-//                Files.deleteIfExists(Paths.get(tenbai + "." + type));
-//                Files.deleteIfExists(Paths.get(tenbai + "." + type + ".orig"));
+                Files.deleteIfExists(Paths.get(tenbai + "." + type));
+                Files.deleteIfExists(Paths.get(tenbai + "." + type + ".orig"));
 				Files.deleteIfExists(Paths.get(tenbai + ".exe"));
 				Files.deleteIfExists(Paths.get(tenbai + ".pyc"));
 				Files.deleteIfExists(Paths.get(tenbai + ".java"));
