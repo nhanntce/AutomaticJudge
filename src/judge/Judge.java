@@ -103,6 +103,10 @@ public class Judge {
 					setPoint(stuclass, getTotalPoint(stuclass, user), parent.hmStuIndex.get(user + stuclass),
 							parent.hmTable.get(stuclass).getColumnCount() - 1);
 					Files.deleteIfExists(Paths.get(name));
+                                        // if auto judging, delete solution in submissions folder DangVTH
+                                        if (auto) {
+                                                Files.deleteIfExists(Paths.get(folderPath.get(i)));
+                                        }
 					continue;
 				}
 				// if runtime error DangVTH
@@ -119,6 +123,10 @@ public class Judge {
 					Files.deleteIfExists(Paths.get(tenbai + ".pyc"));
 					// delete file java NhanNT
 					Files.deleteIfExists(Paths.get(tenbai + ".class"));
+                                        // if auto judging, delete solution in submissions folder DangVTH
+                                        if (auto) {
+                                                Files.deleteIfExists(Paths.get(folderPath.get(i)));
+                                        }
 					continue;
 				}
 
