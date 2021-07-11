@@ -89,7 +89,12 @@ public class Judge {
 				type = getType(name);
 
 				// copy file from submission DangVTH
-				fhandle.copyFile(folderPath.get(i), name);
+				if ("java".equals(type)) {
+                                    tenbai = problem;
+                                    fhandle.copyFile(folderPath.get(i), tenbai + "." + type);
+                                } else {
+                                    fhandle.copyFile(folderPath.get(i), name);
+                                }
 
 				// Create log file DangVTH
 				writer = new FileWriter(parent.folderNopbaiPath + "/Logs/" + stuclass + "/" + name + ".log");
@@ -549,6 +554,9 @@ public class Judge {
 			case "py":
 				cmd = parent.typepy + " " + tenbai + ".py";
 				break;
+                        case "java":
+                            cmd = "java " + tenbai;
+                            break;
 			}
 
 			try {
@@ -781,20 +789,42 @@ public class Judge {
 //                        cntCmt++;
 //                    }
 //                }
+                        if ("java".equals(type)) {
+                            if (line.contains("System.in")) {
+                                String scVar = line.trim().split("\\s+")[1];
+                                string += "Scanner " + scVar + " = null; "
+                                        + "try { " + scVar + " = new java.util.Scanner(new java.io.InputStreamReader(new java.io.FileInputStream(new java.io.File(\"" + problem + ".inp\"))));" + 
+                                        "} catch (java.io.FileNotFoundException ex) {}"
+                                        + "try { " + scVar + " = new java.util.Scanner(new java.io.InputStreamReader(new java.io.FileInputStream(new java.io.File(\"" + problem 
+                                        + ".inp\"))));" + "} catch (java.io.FileNotFoundException ex) {}";
+                                line = "";
+                            }
+                        } 
 				string += line + "\n";
-				if (line.contains("main")) {
-					if (line.contains("{")) {
-						string += "\n    freopen(\"" + problem + ".inp\", \"r\", stdin);\n" + "    freopen(\"" + problem
-								+ ".out\", \"w\", stdout);";
-					} else {
-						flag = true;
-					}
-				}
-				if (flag && line.contains("{")) {
-					string += "\n    freopen(\"" + problem + ".inp\", \"r\", stdin);\n" + "    freopen(\"" + problem
-							+ ".out\", \"w\", stdout);";
-					flag = false;
-				}
+                            if ("java".equals(type)) {
+                                if (line.contains("main")) {
+                                    if (line.contains("{")) {
+                                        string += "\njava.io.PrintStream fileOutzzz;\n" + "try {\n"
+                                                + "            fileOutzzz = new java.io.PrintStream(\"" + problem + ".out\");\n"
+                                                + "             System.setOut(fileOutzzz); \n"
+                                                + "        } catch (java.io.FileNotFoundException ex) {}";
+                                    }
+                                }
+                            } else {
+                                    if (line.contains("main")) {
+                                            if (line.contains("{")) {
+                                                    string += "\n    freopen(\"" + problem + ".inp\", \"r\", stdin);\n" + "    freopen(\"" + problem
+                                                                    + ".out\", \"w\", stdout);";
+                                            } else {
+                                                    flag = true;
+                                            }
+                                    }
+                                    if (flag && line.contains("{")) {
+                                            string += "\n    freopen(\"" + problem + ".inp\", \"r\", stdin);\n" + "    freopen(\"" + problem
+                                                            + ".out\", \"w\", stdout);";
+                                            flag = false;
+                                    }
+                            }
 			}
 			fr.close();
 			FileWriter writer = new FileWriter(file);
