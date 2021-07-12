@@ -386,7 +386,11 @@ public class frmJudge extends javax.swing.JFrame {
                     tload = new Thread() {
                         @Override
                         public void run() {
-                            loadPointPenalty(currentContest, tb);
+                            try {
+                                loadPointPenalty(currentContest, tb);
+                            } catch (IOException ex) {
+                                Logger.getLogger(frmJudge.class.getName()).log(Level.SEVERE, null, ex);
+                            }
                         }
                     };
                     tload.start();
@@ -653,14 +657,14 @@ public class frmJudge extends javax.swing.JFrame {
                 lines = Files.readAllLines(Paths.get(pathToSettingConfig), StandardCharsets.UTF_8);
                 //Checkbox Check comment is checked or not
                 isChecked = Boolean.parseBoolean(lines.get(3).split("=")[1]);
-                
+
                 //set setting content to interface
                 String comment_mode = lines.get(4).split("=")[1];
                 setting.txtTimeLimit.setText(lines.get(0).split("=")[1]);
                 setting.txtMemoryLimit.setText(lines.get(1).split("=")[1]);
                 setting.chkCheckFormat.setSelected(Boolean.parseBoolean(lines.get(2).split("=")[1]));
                 setting.chkCheckCmt.setSelected(Boolean.parseBoolean(lines.get(3).split("=")[1]));
-                
+
                 if (isChecked) {
                     setting.cbbCommentMode.setSelectedItem(comment_mode);
                     setting.txtPercentageAccept.setText(lines.get(5));
@@ -669,7 +673,7 @@ public class frmJudge extends javax.swing.JFrame {
                 } else {
                     setting.chkCheckPlagiarism.setSelected(Boolean.parseBoolean(lines.get(4).split("=")[1]));
                 }
-                
+
             } catch (IOException ex) {
                 Logger.getLogger(frmJudge.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -821,7 +825,11 @@ public class frmJudge extends javax.swing.JFrame {
                 tload = new Thread() {
                     @Override
                     public void run() {
-                        loadPointPenalty(s, tb);
+                        try {
+                            loadPointPenalty(s, tb);
+                        } catch (IOException ex) {
+                            Logger.getLogger(frmJudge.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     }
                 };
                 tload.start();
@@ -908,14 +916,25 @@ public class frmJudge extends javax.swing.JFrame {
      * @param s
      * @param tb
      */
-    private void loadPointPenalty(String s, JTable tb) {
+    private void loadPointPenalty(String s, JTable tb) throws IOException {
         String contest = s;
+        String selectedTab = tabTable.getTitleAt(tabTable.getSelectedIndex());
+        String pathToSettingConfig = problemDir + "\\" + selectedTab + "\\config.txt";
+        File tempFile = new File(pathToSettingConfig);
+        List<String> logLines = Collections.emptyList();
         if (!listContestLoadPannalty.contains(contest)) {
             listContestLoadPannalty.add(contest);
         }
         for (int i = 0; i < tb.getRowCount(); ++i) {
             String user = tb.getValueAt(i, 0).toString();
             double total = 0;
+            String comment = null;
+            String format = null;
+            String plag = null;
+            String percentage = null;
+            String subPoint = null;
+            String mode_cmt = null;
+            Double pnt = 0.0;
             for (int j = 1; j < tb.getColumnCount() - 1; ++j) {
                 String point = "";
                 int pen = 0;
@@ -931,18 +950,64 @@ public class frmJudge extends javax.swing.JFrame {
                             String strCurrentLine;
                             BufferedReader reader = null;
                             reader = new BufferedReader(new FileReader(file.getAbsolutePath()));
-                            while ((strCurrentLine = reader.readLine()) != null) {
-                                point = strCurrentLine;
-                                break;
-                            }
+
+                            logLines = Files.readAllLines(Paths.get(file.getAbsolutePath()), StandardCharsets.UTF_8);
+
+                            //get point
+                            point = logLines.get(0);
+
                         } catch (IOException ex) {
                             Logger.getLogger(frmJudge.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
                 }
+
                 if (!point.contains("Error") && !point.contains("Time") && point != "") {
-                    hmTable.get(s).setValueAt(round(Double.parseDouble(point) * (11 - pen) * 0.1, 1), i, j);
-                    total += round(Double.parseDouble(point) * (11 - pen) * 0.1, 1);
+                    List<String> configLines = Collections.emptyList();
+                    configLines = Files.readAllLines(Paths.get(pathToSettingConfig), StandardCharsets.UTF_8);
+                    //get format value
+                    if (configLines.get(2).split("=")[1].equals("true")) {
+                        format = logLines.get(3).split(": ")[1];
+
+                    }
+                    //get value of comment
+                    if (configLines.get(3).split("=")[1].equals("true")) {
+                        mode_cmt = configLines.get(4).split("=")[1];
+                        comment = logLines.get(4).split(": ")[1];
+
+                        percentage = configLines.get(5);
+                        subPoint = configLines.get(6);
+
+                        // get value of plagiarism
+                        if (configLines.get(7).split("=")[1].equals("true")) {
+                            plag = logLines.get(5).split(": ")[1];
+                        }
+
+                    } else {// get value of plagiarism
+                        if (configLines.get(4).split("=")[1].equals("true")) {
+                            plag = logLines.get(5).split(": ")[1];
+                        }
+                    }
+                    pnt = Double.parseDouble(point);
+                    if (format.equals("false")) {
+                        pnt -= 1;
+                    }
+                    if (configLines.get(3).split("=")[1].equals("true")) {
+                        if (mode_cmt.equals("Fixed")) {
+                            if (Double.parseDouble(comment) < Double.parseDouble(percentage)) {
+                                pnt -= Double.parseDouble(subPoint);
+                            }
+                        } else {
+                            pnt -= Double.parseDouble(percentage) * Double.parseDouble(subPoint) * 0.01;
+                        }
+                    }
+
+                    if (Double.parseDouble(plag) >= 75) {
+                        pnt = 0.0;
+                    }
+                    hmTable.get(s).setValueAt(round(pnt * (11 - pen) * 0.1, 1), i, j);
+                    total += round((pnt * (11 - pen) * 0.1), 1);
+
                 } else {
                     if (point == "") {
                         hmTable.get(s).setValueAt("Not submit", i, j);
