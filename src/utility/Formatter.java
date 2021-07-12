@@ -17,9 +17,9 @@ public class Formatter {
 	 * @param path
 	 * @throws IOException
 	 */
-	public static void Format(String path, String type) throws IOException {
+	public static void Format(String path, String type, frmJudge parent) throws IOException {
 		String cmd = "";
-		frmJudge parent = new frmJudge();
+//		frmJudge parent = new frmJudge();
 		if (type.equals("c") || type.equals("cpp")) {
 			cmd = parent.astylePath + " --style=allman " + path;
 		} else if (type.equals("java")) {

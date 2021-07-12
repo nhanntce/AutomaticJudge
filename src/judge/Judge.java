@@ -95,7 +95,7 @@ public class Judge {
                 } else {
                     fhandle.copyFile(folderPath.get(i), name);
                 }
-
+                
                 // Create log file DangVTH
                 writer = new FileWriter(parent.folderNopbaiPath + "/Logs/" + stuclass + "/" + name + ".log");
 
@@ -109,7 +109,6 @@ public class Judge {
                             parent.hmTable.get(stuclass).getColumnCount() - 1);
                     Files.deleteIfExists(Paths.get(name));
                     Files.deleteIfExists(Paths.get(tenbai + ".java"));
-                    Files.deleteIfExists(Paths.get(tenbai + ".class"));
                     // if auto judging, delete solution in submissions folder DangVTH
                     if (auto) {
                         Files.deleteIfExists(Paths.get(folderPath.get(i)));
@@ -243,13 +242,11 @@ public class Judge {
                     }
                 }
                 // Delete excuted file
-
                 Files.deleteIfExists(Paths.get(tenbai));
                 Files.deleteIfExists(Paths.get(tenbai + "." + type));
                 Files.deleteIfExists(Paths.get(tenbai + "." + type + ".orig"));
                 Files.deleteIfExists(Paths.get(tenbai + ".exe"));
                 Files.deleteIfExists(Paths.get(tenbai + ".pyc"));
-                Files.deleteIfExists(Paths.get(tenbai + ".java"));
                 Files.deleteIfExists(Paths.get(tenbai + ".class"));
                 Files.deleteIfExists(Paths.get(problem + ".inp"));
                 Files.deleteIfExists(Paths.get(problem + ".out"));
@@ -355,7 +352,7 @@ public class Judge {
             // Check format
             if (parent.checkFormat) {
                 // Generate formatted file
-                Formatter.Format(fileName + "." + type, type);
+                Formatter.Format(fileName + "." + type, type, parent);
                 // check file is exist
                 if (Files.exists(Paths.get(fileName + "." + type + ".orig"))) { // 2 files are different, then generate
                     // new file.orig
@@ -368,8 +365,9 @@ public class Judge {
                     } else {
                         elseType = "cpp";
                     }
-                    Formatter.Format(fileName + "." + type, elseType);
+                    Formatter.Format(fileName + "." + type, elseType, parent);
                     if (Files.exists(Paths.get(fileName + "." + type + ".orig"))) {
+                        Files.exists(Paths.get(fileName + "." + type + ".orig"));
                         checkFormat = false;
                     } else {
                         checkFormat = true;
@@ -680,9 +678,11 @@ public class Judge {
             public void run() {
                 parent.btnJudgeAContest.setEnabled(false);
                 parent.btnUpdateOnline.setEnabled(false);
+                parent.btnJudgeAllContests.setEnabled(false);
                 judge(NopbaiPath, NopbaiName, auto);
                 parent.pro.setVisible(false);
                 parent.btnJudgeAContest.setEnabled(true);
+                parent.btnJudgeAllContests.setEnabled(true);
                 parent.btnUpdateOnline.setEnabled(true);
             }
         };
@@ -784,7 +784,16 @@ public class Judge {
                                     + "            fileOutzzz = new java.io.PrintStream(\"" + problem + ".out\");\n"
                                     + "             System.setOut(fileOutzzz); \n"
                                     + "        } catch (java.io.FileNotFoundException ex) {}";
+                        } else {
+                            flag = true;
                         }
+                    }
+                    if (flag && line.contains("{")) {
+                        string += "\njava.io.PrintStream fileOutzzz;\n" + "try {\n"
+                                + "            fileOutzzz = new java.io.PrintStream(\"" + problem + ".out\");\n"
+                                + "             System.setOut(fileOutzzz); \n"
+                                + "        } catch (java.io.FileNotFoundException ex) {}";
+                        flag = false;
                     }
                 } else {
                     if (line.contains("main")) {
