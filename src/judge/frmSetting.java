@@ -1,5 +1,6 @@
 package judge;
 
+import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileWriter;
@@ -299,20 +300,22 @@ public class frmSetting extends javax.swing.JFrame {
             txtPercentageAccept.setVisible(false);
             txtMinusValue.setVisible(false);
             pnlSettingCheckCmt.setVisible(false);
+            this.pack();
         } else {
             cbbCommentMode.setVisible(true);
             txtPercentageAccept.setVisible(true);
             txtMinusValue.setVisible(true);
             pnlSettingCheckCmt.setVisible(true);
+            this.pack();
         }
     }//GEN-LAST:event_chkCheckCmtActionPerformed
 
     private void cbbCommentModeItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbbCommentModeItemStateChanged
         String selectedItem = cbbCommentMode.getSelectedItem().toString();
         if ("By Percentage".equals(selectedItem)) {
-            lblMinusPoints.setText("Percentage Minus Points(%):");
+            lblMinusPoints.setText("Minus Points(%):");
         } else {
-            lblMinusPoints.setText("Minus Points:");
+            lblMinusPoints.setText("Minus Points (points):");
         }
         txtPercentageAccept.setText("");
         txtMinusValue.setText("");
