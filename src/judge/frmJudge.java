@@ -684,6 +684,7 @@ public class frmJudge extends javax.swing.JFrame {
             setting.txtMinusValue.setVisible(false);
             setting.pnlSettingCheckCmt.setVisible(false);
         }
+        setting.pack();
         setting.setVisible(true);
     }//GEN-LAST:event_btnSettingActionPerformed
 
