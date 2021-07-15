@@ -18,6 +18,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -42,6 +43,16 @@ public class Judge {
     private boolean checkFormat; // is formatted
     private double checkCommet; // percent commented
     private ArrayList<Plagiarism> listPlagiarisms;
+    private int timeLimitConfig;
+    private int memoryLimitConfig;
+    private boolean checkFormatConfig;
+    private float minusFormatPointConfig;
+    private boolean checkCommentConfig;
+    private String commentModeConfig;
+    private float acceptCommentPercentage;
+    private float minusCommentPointConfig;
+    private boolean checkPlagiarismConfig;
+    private float acceptPlagiarsimPercentageConfig;
 
     /**
      * Construct a Judge DangVTH
@@ -206,17 +217,17 @@ public class Judge {
                         writer.write(points + "\n");
                         writer.write("Max time: " + maxTime + "\n");
                         writer.write("Max memory: " + maxMemory + "\n");
-                        if (parent.checkFormat) {
+                        if (checkFormatConfig) {
                             writer.write("Format: " + checkFormat + "\n");
                         } else {
                             writer.write("Format: null\n");
                         }
-                        if (parent.checkCmt) {
+                        if (checkCommentConfig) {
                             writer.write("Comment: " + checkCommet + "\n");
                         } else {
                             writer.write("Comment: -1\n");
                         }
-                        if (parent.checkPlagiarism) {
+                        if (checkPlagiarismConfig) {
                             if (listPlagiarisms != null && listPlagiarisms.size() > 0) {
                                 writer.write(
                                         "Plagiarism: " + listPlagiarisms.get(0).getPercentageOfPlagiarism() + "\n");
@@ -229,11 +240,13 @@ public class Judge {
                             } else {
                                 writer.write("Plagiarism: 0\n");
                             }
+                        } else {
+                           writer.write("Plagiarism: 0\n"); 
                         }
                         writer.write(result.toString());
-
+                        writer.close();
                         // Set point for problem column
-                        setPoint(stuclass, String.valueOf(points), parent.hmStuIndex.get(user + stuclass),
+                        setPoint(stuclass, String.valueOf(calculatePoint(stuclass, user, problem)), parent.hmStuIndex.get(user + stuclass),
                                 parent.hmTable.get(stuclass).getColumn(parent.listProbName.get(j)).getModelIndex());
                         // Set total point for user
                         setPoint(stuclass, getTotalPoint(stuclass, user), parent.hmStuIndex.get(user + stuclass),
@@ -265,7 +278,71 @@ public class Judge {
             }
         }
     }
+    /**
+     * Calculate point
+     *
+     * @param contest
+     * @param student
+     * @param problem
+     * @return
+     */
+    private double calculatePoint(String contest, String student, String problem) {
+        int pen = 0;
+        String lastestLogPath = "";
+        String studentAndProblem = "[" + student + "][" + problem + "]";
+        File[] pathlog = new File(parent.folderNopbaiPath + "/Logs/" + contest).listFiles();
+        Arrays.sort(pathlog, Comparator.comparingLong(File::lastModified));
+        for (File f : pathlog) {
+            if (f.getAbsolutePath().contains(studentAndProblem)) {
+                pen++;
+                lastestLogPath = f.getAbsolutePath();
+            }
+        }
+        try {
+            List<String> lines = Files.readAllLines(Paths.get(lastestLogPath), StandardCharsets.UTF_8);
+            if (!lines.get(0).contains("Error") && !lines.get(0).contains("Time") && !"".equals(lines.get(0))) {
 
+                boolean formatResult = Boolean.parseBoolean(lines.get(3).split(": ")[1]);
+                float commentPercentage = Float.parseFloat(lines.get(4).split(": ")[1]);
+                float plagiarismPercentage = Float.parseFloat(lines.get(5).split(": ")[1]);
+                float mainPoint = Float.parseFloat(lines.get(0));
+                if (checkFormatConfig && !formatResult) {
+                    mainPoint -= minusFormatPointConfig;
+                }
+                if (checkCommentConfig) {
+                    if ("Fixed".equals(commentModeConfig)) {
+                        if (commentPercentage < acceptCommentPercentage) {
+                            mainPoint -= minusCommentPointConfig;
+                        }
+                    } else {
+                        if (commentPercentage < acceptCommentPercentage) {
+                            mainPoint -= mainPoint * minusCommentPointConfig * 0.01;
+                        }
+                    }
+                }
+                if (checkPlagiarismConfig && plagiarismPercentage >= acceptPlagiarsimPercentageConfig) {
+                    mainPoint = 0;
+                }
+                mainPoint -= pen;
+                return  mainPoint > 0 ? (double) mainPoint : 0.0;
+
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(Judge.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0.0;
+    }
+    
+    /**
+     * 
+     * @param value
+     * @param precision
+     * @return 
+     */
+    private static float round(double value, int precision) {
+        int scale = (int) Math.pow(10, precision);
+        return (float) Math.round(value * scale) / scale;
+    }
     /**
      * Set points into table
      *
@@ -328,29 +405,23 @@ public class Judge {
         int exitCode = 0;
         String pathToSettingConfig = parent.problemDir + "\\" + stuClass + "\\config.txt";
         try {
-            List<String> lines = Collections.emptyList();
-            lines = Files.readAllLines(Paths.get(pathToSettingConfig), StandardCharsets.UTF_8);
-            // set setting content to interface
-            parent.timeLimit = Integer.parseInt(lines.get(0).split("=")[1]);
-            parent.memoryLimit = Integer.parseInt(lines.get(1).split("=")[1]);
-            parent.checkFormat = Boolean.parseBoolean(lines.get(2).split("=")[1]);
-            parent.checkCmt = Boolean.parseBoolean(lines.get(3).split("=")[1]);
-            if (parent.checkCmt) {
-                parent.checkCmtMode = lines.get(4).split("=")[1];
-                parent.percentCmtAcp = Integer.parseInt(lines.get(5));
-                if (parent.checkCmtMode.equals("Fixed")) {
-                    parent.minusPoint = Double.parseDouble(lines.get(6));
-                } else {
-                    parent.minusPercent = Integer.parseInt(lines.get(6));
-                }
-
-                parent.checkPlagiarism = Boolean.parseBoolean(lines.get(7).split("=")[1]);
-            } else {
-                parent.checkPlagiarism = Boolean.parseBoolean(lines.get(4).split("=")[1]);
+            if (Files.exists(Paths.get(pathToSettingConfig))) {
+                List<String> lines = Files.readAllLines(Paths.get(pathToSettingConfig), StandardCharsets.UTF_8);
+                // set setting content to interface
+                timeLimitConfig = Integer.parseInt(lines.get(0).split("=")[1]);
+                memoryLimitConfig = Integer.parseInt(lines.get(1).split("=")[1]);
+                checkFormatConfig = Boolean.parseBoolean(lines.get(2).split("=")[1]);
+                minusFormatPointConfig = Float.parseFloat(lines.get(3));
+                checkCommentConfig = Boolean.parseBoolean(lines.get(4).split("=")[1]);
+                commentModeConfig = String.valueOf(lines.get(5).split("=")[1]);
+                acceptCommentPercentage = Float.parseFloat(lines.get(6));
+                minusCommentPointConfig = Float.parseFloat(lines.get(7));
+                checkPlagiarismConfig = Boolean.parseBoolean(lines.get(8).split("=")[1]);
+                acceptPlagiarsimPercentageConfig = Float.parseFloat(lines.get(9));
             }
 
             // Check format
-            if (parent.checkFormat) {
+            if (checkFormatConfig) {
                 // Generate formatted file
                 Formatter.Format(fileName + "." + type, type, parent);
                 // check file is exist
@@ -378,13 +449,13 @@ public class Judge {
 
             }
             // Calculate the percent of comments
-            if (parent.checkCmt) {
+            if (checkCommentConfig) {
                 FunctionManagement fm = new FunctionManagement();
                 checkCommet = fm.calculatePercentOfAllFunctionCmt(fileName + "." + type);
 
             }
             // check plagiarism
-            if (parent.checkPlagiarism) {
+            if (checkPlagiarismConfig) {
                 File[] listWorkspaceStudent = new File(parent.studentDir + "\\" + stuClass)
                         .listFiles(File::isDirectory);
                 ArrayList<String> listSolutionToCompare = new ArrayList<>();
@@ -546,13 +617,13 @@ public class Judge {
             try {
                 Runtime r = Runtime.getRuntime();
                 Process p = r.exec(cmd);
-                boolean exitCode = p.waitFor(parent.timeLimit, TimeUnit.MILLISECONDS);
+                boolean exitCode = p.waitFor(timeLimitConfig, TimeUnit.MILLISECONDS);
                 if (!exitCode) {
                     p.destroyForcibly();
                     error = "Time Limit Exceeded";
                     return false;
                 }
-                if (!checkMemory(r, parent.memoryLimit)) {
+                if (!checkMemory(r, memoryLimitConfig)) {
                     p.destroyForcibly();
                     error = "Memory Limit Exceeded";
                     return false;

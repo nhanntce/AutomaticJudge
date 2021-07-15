@@ -157,7 +157,6 @@ public class frmJudge extends javax.swing.JFrame {
         btnConfig = new javax.swing.JButton();
         btnSetting = new javax.swing.JButton();
         btnJudgeAContest = new javax.swing.JButton();
-        btnLoadPoint = new javax.swing.JButton();
         btnJudgeAllContests = new javax.swing.JButton();
         btnJudgeAContest1 = new javax.swing.JButton();
 
@@ -258,15 +257,6 @@ public class frmJudge extends javax.swing.JFrame {
             }
         });
 
-        btnLoadPoint.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        btnLoadPoint.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/btnloadpoint.png"))); // NOI18N
-        btnLoadPoint.setToolTipText("Load point");
-        btnLoadPoint.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnLoadPointActionPerformed(evt);
-            }
-        });
-
         btnJudgeAllContests.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         btnJudgeAllContests.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/btnjudgeall.png"))); // NOI18N
         btnJudgeAllContests.setToolTipText("Judge All Contestant");
@@ -294,9 +284,7 @@ public class frmJudge extends javax.swing.JFrame {
                 .addComponent(btnListProblem)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnUpdateOnline)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnLoadPoint)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnImportExcel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnExportExcel)
@@ -319,7 +307,6 @@ public class frmJudge extends javax.swing.JFrame {
                 .addGroup(pnlToolbarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(btnJudgeAContest1)
                     .addComponent(btnJudgeAllContests)
-                    .addComponent(btnLoadPoint)
                     .addComponent(btnJudgeAContest)
                     .addComponent(btnSetting)
                     .addComponent(btnConfig)
@@ -342,9 +329,9 @@ public class frmJudge extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtFilter, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(tabTable, javax.swing.GroupLayout.DEFAULT_SIZE, 918, Short.MAX_VALUE))
+                    .addComponent(tabTable, javax.swing.GroupLayout.DEFAULT_SIZE, 820, Short.MAX_VALUE))
                 .addContainerGap())
-            .addComponent(pnlToolbar, javax.swing.GroupLayout.DEFAULT_SIZE, 942, Short.MAX_VALUE)
+            .addComponent(pnlToolbar, javax.swing.GroupLayout.DEFAULT_SIZE, 844, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -447,7 +434,6 @@ public class frmJudge extends javax.swing.JFrame {
         }
         if (!listProbName.isEmpty() && !listStuName.isEmpty()) {
             btnUpdateOnline.setEnabled(true);
-            btnLoadPoint.setEnabled(true);
             btnImportExcel.setEnabled(true);
             btnExportExcel.setEnabled(true);
             btnJudgeAContest.setEnabled(true);
@@ -538,7 +524,6 @@ public class frmJudge extends javax.swing.JFrame {
         }
         if (!listProbName.isEmpty() && !listStuName.isEmpty()) {
             btnUpdateOnline.setEnabled(true);
-            btnLoadPoint.setEnabled(true);
             btnImportExcel.setEnabled(true);
             btnExportExcel.setEnabled(true);
             btnJudgeAContest.setEnabled(true);
@@ -804,48 +789,6 @@ public class frmJudge extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_txtFilterKeyReleased
 
-    private void btnLoadPointActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadPointActionPerformed
-        String[] classes = new String[tabTable.getTabCount()];
-        for (int i = 0; i < tabTable.getTabCount(); ++i) {
-            classes[i] = tabTable.getTitleAt(i);
-        }
-        String s = (String) JOptionPane.showInputDialog(null,
-                "Select class",
-                "Load Point",
-                JOptionPane.PLAIN_MESSAGE, null,
-                classes, classes[0]);
-        if (s != null) {
-            int n = JOptionPane.showConfirmDialog(null,
-                    "Would you like to show pennalty?",
-                    "Pennalty",
-                    JOptionPane.YES_NO_OPTION);
-            JTable tb = hmTable.get(s);
-            Thread tload = null;
-            //n = 0, yes
-            if (n == 0) {
-                tload = new Thread() {
-                    @Override
-                    public void run() {
-                        try {
-                            loadPointPenalty(s, tb);
-                        } catch (IOException ex) {
-                            Logger.getLogger(frmJudge.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-                };
-                tload.start();
-            } else {
-                tload = new Thread() {
-                    @Override
-                    public void run() {
-                        loadPoint(s, tb);
-                    }
-                };
-                tload.start();
-            }
-        }
-    }//GEN-LAST:event_btnLoadPointActionPerformed
-
     private void btnJudgeAllContestsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnJudgeAllContestsActionPerformed
 
         listNopbaiPath.clear();
@@ -1035,7 +978,6 @@ public class frmJudge extends javax.swing.JFrame {
         if (input == 0) {
             try {
                 btnUpdateOnline.setEnabled(true);
-                btnLoadPoint.setEnabled(true);
                 btnImportExcel.setEnabled(true);
                 btnExportExcel.setEnabled(true);
                 btnJudgeAContest.setEnabled(true);
@@ -1262,7 +1204,6 @@ public class frmJudge extends javax.swing.JFrame {
      */
     private void init() {
         this.btnUpdateOnline.setEnabled(false);
-        this.btnLoadPoint.setEnabled(false);
         this.btnUpdateOnline.setEnabled(false);
         this.btnImportExcel.setEnabled(false);
         this.btnExportExcel.setEnabled(false);
@@ -1408,7 +1349,6 @@ public class frmJudge extends javax.swing.JFrame {
     public javax.swing.JButton btnJudgeAContest1;
     public javax.swing.JButton btnJudgeAllContests;
     private javax.swing.JButton btnListProblem;
-    private javax.swing.JButton btnLoadPoint;
     private javax.swing.JButton btnSetting;
     public javax.swing.JButton btnUpdateOnline;
     private javax.swing.JFileChooser fileFile;
