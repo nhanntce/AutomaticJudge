@@ -58,7 +58,6 @@ public class frmSetting extends javax.swing.JFrame {
         btnOk = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
         chkCheckFormat = new javax.swing.JCheckBox();
-        chkCheckCmt = new javax.swing.JCheckBox();
         txtTimeLimit = new javax.swing.JTextField();
         lblTimeLimit = new javax.swing.JLabel();
         lblMemoryLimit = new javax.swing.JLabel();
@@ -70,8 +69,17 @@ public class frmSetting extends javax.swing.JFrame {
         txtMinusValue = new javax.swing.JTextField();
         lblPercentageAccept = new javax.swing.JLabel();
         lblMinusPoints = new javax.swing.JLabel();
+        pnlSettingCheckPlagiarism = new javax.swing.JPanel();
+        txtPercentagePlaAccept = new javax.swing.JTextField();
+        lblPercentagePlaAccept = new javax.swing.JLabel();
+        chkCheckCmt = new javax.swing.JCheckBox();
+        pnlSettingCheckFormat = new javax.swing.JPanel();
+        txtFormatMinusValue = new javax.swing.JTextField();
+        lblFormatMinusValue = new javax.swing.JLabel();
 
         setTitle("Setting");
+        setMaximumSize(new java.awt.Dimension(550, 2147483647));
+        setMinimumSize(new java.awt.Dimension(550, 0));
         setName("frmSetting"); // NOI18N
 
         btnOk.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
@@ -100,14 +108,6 @@ public class frmSetting extends javax.swing.JFrame {
             }
         });
 
-        chkCheckCmt.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        chkCheckCmt.setText("Check Comment");
-        chkCheckCmt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chkCheckCmtActionPerformed(evt);
-            }
-        });
-
         txtTimeLimit.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
 
         lblTimeLimit.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
@@ -120,11 +120,17 @@ public class frmSetting extends javax.swing.JFrame {
 
         chkCheckPlagiarism.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         chkCheckPlagiarism.setText("Check Plagiarism");
+        chkCheckPlagiarism.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkCheckPlagiarismActionPerformed(evt);
+            }
+        });
 
         pnlSettingCheckCmt.setBorder(javax.swing.BorderFactory.createEtchedBorder(java.awt.Color.lightGray, java.awt.Color.white));
 
-        cbbCommentMode.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        cbbCommentMode.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         cbbCommentMode.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Fixed", "By Percentage" }));
+        cbbCommentMode.setBorder(null);
         cbbCommentMode.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 cbbCommentModeItemStateChanged(evt);
@@ -132,29 +138,29 @@ public class frmSetting extends javax.swing.JFrame {
         });
 
         txtPercentageAccept.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        txtPercentageAccept.setMaximumSize(new java.awt.Dimension(6, 23));
 
         txtMinusValue.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        txtMinusValue.setMaximumSize(new java.awt.Dimension(6, 23));
 
         lblPercentageAccept.setText("Percentage Accept (%):");
 
-        lblMinusPoints.setText("Percentage Minus Points(%):");
+        lblMinusPoints.setText("Minus Value:");
 
         javax.swing.GroupLayout pnlSettingCheckCmtLayout = new javax.swing.GroupLayout(pnlSettingCheckCmt);
         pnlSettingCheckCmt.setLayout(pnlSettingCheckCmtLayout);
         pnlSettingCheckCmtLayout.setHorizontalGroup(
             pnlSettingCheckCmtLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-            .addGroup(pnlSettingCheckCmtLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlSettingCheckCmtLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(pnlSettingCheckCmtLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(pnlSettingCheckCmtLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(cbbCommentMode, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(pnlSettingCheckCmtLayout.createSequentialGroup()
-                        .addGroup(pnlSettingCheckCmtLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblPercentageAccept)
-                            .addComponent(lblMinusPoints))
-                        .addGap(18, 18, Short.MAX_VALUE)
-                        .addGroup(pnlSettingCheckCmtLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtMinusValue, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
-                            .addComponent(txtPercentageAccept))))
+                    .addComponent(lblPercentageAccept, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblMinusPoints, javax.swing.GroupLayout.Alignment.LEADING))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
+                .addGroup(pnlSettingCheckCmtLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtPercentageAccept, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtMinusValue, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         pnlSettingCheckCmtLayout.setVerticalGroup(
@@ -173,6 +179,75 @@ public class frmSetting extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        pnlSettingCheckPlagiarism.setBorder(javax.swing.BorderFactory.createEtchedBorder(java.awt.Color.lightGray, java.awt.Color.white));
+        pnlSettingCheckPlagiarism.setMaximumSize(new java.awt.Dimension(405, 94));
+        pnlSettingCheckPlagiarism.setMinimumSize(new java.awt.Dimension(405, 94));
+        pnlSettingCheckPlagiarism.setPreferredSize(new java.awt.Dimension(405, 94));
+
+        txtPercentagePlaAccept.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        txtPercentagePlaAccept.setMaximumSize(new java.awt.Dimension(6, 23));
+
+        lblPercentagePlaAccept.setText("Percentage Accept (%):");
+
+        javax.swing.GroupLayout pnlSettingCheckPlagiarismLayout = new javax.swing.GroupLayout(pnlSettingCheckPlagiarism);
+        pnlSettingCheckPlagiarism.setLayout(pnlSettingCheckPlagiarismLayout);
+        pnlSettingCheckPlagiarismLayout.setHorizontalGroup(
+            pnlSettingCheckPlagiarismLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlSettingCheckPlagiarismLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblPercentagePlaAccept)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(txtPercentagePlaAccept, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        pnlSettingCheckPlagiarismLayout.setVerticalGroup(
+            pnlSettingCheckPlagiarismLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlSettingCheckPlagiarismLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(pnlSettingCheckPlagiarismLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtPercentagePlaAccept, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblPercentagePlaAccept))
+                .addGap(54, 54, 54))
+        );
+
+        chkCheckCmt.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        chkCheckCmt.setText("Check Comment");
+        chkCheckCmt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkCheckCmtActionPerformed(evt);
+            }
+        });
+
+        pnlSettingCheckFormat.setBorder(javax.swing.BorderFactory.createEtchedBorder(java.awt.Color.lightGray, java.awt.Color.white));
+        pnlSettingCheckFormat.setMaximumSize(new java.awt.Dimension(405, 94));
+        pnlSettingCheckFormat.setMinimumSize(new java.awt.Dimension(405, 94));
+
+        txtFormatMinusValue.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        txtFormatMinusValue.setMaximumSize(new java.awt.Dimension(6, 23));
+
+        lblFormatMinusValue.setText("Minus Value (points):");
+
+        javax.swing.GroupLayout pnlSettingCheckFormatLayout = new javax.swing.GroupLayout(pnlSettingCheckFormat);
+        pnlSettingCheckFormat.setLayout(pnlSettingCheckFormatLayout);
+        pnlSettingCheckFormatLayout.setHorizontalGroup(
+            pnlSettingCheckFormatLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlSettingCheckFormatLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblFormatMinusValue)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(txtFormatMinusValue, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        pnlSettingCheckFormatLayout.setVerticalGroup(
+            pnlSettingCheckFormatLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlSettingCheckFormatLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(pnlSettingCheckFormatLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtFormatMinusValue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblFormatMinusValue))
+                .addGap(54, 54, 54))
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -185,28 +260,23 @@ public class frmSetting extends javax.swing.JFrame {
                         .addComponent(btnOk)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnCancel))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(chkCheckCmt, javax.swing.GroupLayout.DEFAULT_SIZE, 204, Short.MAX_VALUE)
-                                .addGap(208, 208, 208))
-                            .addComponent(pnlSettingCheckCmt, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(chkCheckFormat)
+                            .addComponent(chkCheckPlagiarism)
+                            .addComponent(chkCheckCmt)
+                            .addComponent(pnlSettingCheckPlagiarism, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
+                            .addComponent(pnlSettingCheckFormat, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(lblMemoryLimit)
-                                    .addComponent(lblTimeLimit)
-                                    .addComponent(chkCheckFormat))
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(30, 30, 30)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(txtTimeLimit)
-                                            .addComponent(txtMemoryLimit)))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(76, 76, 76)
-                                        .addComponent(chkCheckPlagiarism)
-                                        .addGap(0, 0, Short.MAX_VALUE)))))
-                        .addGap(76, 76, 76)))
+                                    .addComponent(lblTimeLimit))
+                                .addGap(30, 30, 30)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(txtTimeLimit, javax.swing.GroupLayout.DEFAULT_SIZE, 305, Short.MAX_VALUE)
+                                    .addComponent(txtMemoryLimit)))
+                            .addComponent(pnlSettingCheckCmt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 72, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -220,15 +290,19 @@ public class frmSetting extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblMemoryLimit)
                     .addComponent(txtMemoryLimit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(16, 16, 16)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(chkCheckFormat)
-                    .addComponent(chkCheckPlagiarism))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
+                .addComponent(chkCheckFormat)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pnlSettingCheckFormat, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(chkCheckPlagiarism)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pnlSettingCheckPlagiarism, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(chkCheckCmt)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pnlSettingCheckCmt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
+                .addGap(58, 58, 58)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnOk)
                     .addComponent(btnCancel))
@@ -245,10 +319,13 @@ public class frmSetting extends javax.swing.JFrame {
      */
     private void btnOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOkActionPerformed
 
-        if (chkCheckCmt.isSelected() && ("".equals(txtPercentageAccept.getText()) || "".equals(txtMinusValue.getText())) 
-                || "".equals(txtMemoryLimit.getText()) || "".equals(txtTimeLimit.getText())) {
+        if ((chkCheckCmt.isSelected() && ("".equals(txtPercentageAccept.getText()) || "".equals(txtMinusValue.getText())) 
+                || "".equals(txtMemoryLimit.getText()) || "".equals(txtTimeLimit.getText()))
+                || (chkCheckFormat.isSelected() && "".equals(txtFormatMinusValue.getText()))
+                || (chkCheckPlagiarism.isSelected() && "".equals(txtPercentagePlaAccept.getText()))) {
+            
             JOptionPane.showOptionDialog(this, "Please fill in  full information", "Message", 
-                    JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, null, null);
+                                        JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, null, null);
         } else {
 
             String selectedTab = parent.tabTable.getTitleAt(parent.tabTable.getSelectedIndex());
@@ -266,17 +343,33 @@ public class frmSetting extends javax.swing.JFrame {
                 //write new content into config file
                 fileWriter.write("time_limit=" + txtTimeLimit.getText() + "\n");
                 fileWriter.write("memory_limit=" + txtMemoryLimit.getText() + "\n");
+                
                 fileWriter.write("check_format=" + chkCheckFormat.isSelected() + "\n");
+                if (!chkCheckFormat.isSelected()) {
+                    fileWriter.write(parent.props.getProperty("check_format_minusValue") + "\n");
+                } else {
+                    fileWriter.write(txtFormatMinusValue.getText() + "\n");
+                }
+                
                 fileWriter.write("check_comment=" + chkCheckCmt.isSelected() + "\n");
-                if (chkCheckCmt.isSelected()) {
+                if (!chkCheckCmt.isSelected()) {
+                    fileWriter.write("check_comment_mode=" + parent.props.getProperty("check_comment_mode") + "\n");
+                    fileWriter.write(parent.props.getProperty("perentage_accept") + "\n");
+                    fileWriter.write(parent.props.getProperty("minus_value") + "\n");
+                } else {
                     fileWriter.write("check_comment_mode=" + cbbCommentMode.getSelectedItem() + "\n");
                     fileWriter.write(txtPercentageAccept.getText() + "\n");
                     fileWriter.write(txtMinusValue.getText() + "\n");
                 }
+                
                 fileWriter.write("check_plagiarism=" + chkCheckPlagiarism.isSelected() + "\n");
+                if (!chkCheckPlagiarism.isSelected()) {
+                    fileWriter.write(parent.props.getProperty("check_plagiarism_perAccept") + "\n");
+                } else {
+                    fileWriter.write(txtPercentagePlaAccept.getText() + "\n");
+                }
 
                 fileWriter.close();
-
                 setVisible(false);
             } catch (IOException ex) {
                 Logger.getLogger(frmSetting.class.getName()).log(Level.SEVERE, null, ex);
@@ -289,25 +382,24 @@ public class frmSetting extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCancelActionPerformed
 
     private void chkCheckFormatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkCheckFormatActionPerformed
-        // TODO add your handling code here:
+        boolean isChecked = chkCheckFormat.isSelected();
+        if (isChecked) {
+            pnlSettingCheckFormat.setVisible(true);
+        } else {
+            pnlSettingCheckFormat.setVisible(false);
+        }
+        this.pack();
     }//GEN-LAST:event_chkCheckFormatActionPerformed
 
     private void chkCheckCmtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkCheckCmtActionPerformed
         boolean isChecked = chkCheckCmt.isSelected();
 
         if (!isChecked) {
-            cbbCommentMode.setVisible(false);
-            txtPercentageAccept.setVisible(false);
-            txtMinusValue.setVisible(false);
             pnlSettingCheckCmt.setVisible(false);
-            this.pack();
         } else {
-            cbbCommentMode.setVisible(true);
-            txtPercentageAccept.setVisible(true);
-            txtMinusValue.setVisible(true);
             pnlSettingCheckCmt.setVisible(true);
-            this.pack();
         }
+        this.pack();
     }//GEN-LAST:event_chkCheckCmtActionPerformed
 
     private void cbbCommentModeItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbbCommentModeItemStateChanged
@@ -321,6 +413,16 @@ public class frmSetting extends javax.swing.JFrame {
         txtMinusValue.setText("");
     }//GEN-LAST:event_cbbCommentModeItemStateChanged
 
+    private void chkCheckPlagiarismActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkCheckPlagiarismActionPerformed
+        boolean isChecked = chkCheckPlagiarism.isSelected();
+        if (isChecked) {
+            pnlSettingCheckPlagiarism.setVisible(true);
+        } else {
+            pnlSettingCheckPlagiarism.setVisible(false);
+        }
+        this.pack();
+    }//GEN-LAST:event_chkCheckPlagiarismActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnOk;
@@ -328,14 +430,20 @@ public class frmSetting extends javax.swing.JFrame {
     public javax.swing.JCheckBox chkCheckCmt;
     public javax.swing.JCheckBox chkCheckFormat;
     public javax.swing.JCheckBox chkCheckPlagiarism;
+    public javax.swing.JLabel lblFormatMinusValue;
     private javax.swing.JLabel lblMemoryLimit;
     public javax.swing.JLabel lblMinusPoints;
     public javax.swing.JLabel lblPercentageAccept;
+    public javax.swing.JLabel lblPercentagePlaAccept;
     private javax.swing.JLabel lblTimeLimit;
     public javax.swing.JPanel pnlSettingCheckCmt;
+    public javax.swing.JPanel pnlSettingCheckFormat;
+    public javax.swing.JPanel pnlSettingCheckPlagiarism;
+    public javax.swing.JTextField txtFormatMinusValue;
     public javax.swing.JTextField txtMemoryLimit;
     public javax.swing.JTextField txtMinusValue;
     public javax.swing.JTextField txtPercentageAccept;
+    public javax.swing.JTextField txtPercentagePlaAccept;
     public javax.swing.JTextField txtTimeLimit;
     // End of variables declaration//GEN-END:variables
 }
