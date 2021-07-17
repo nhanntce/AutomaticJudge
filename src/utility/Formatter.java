@@ -18,13 +18,18 @@ public class Formatter {
 	 * @throws IOException
 	 */
 	public static void Format(String path, String type, frmJudge parent) throws IOException {
+            if("py".equals(type)){
+                return;
+            }
 		String cmd = "";
 //		frmJudge parent = new frmJudge();
 		if (type.equals("c") || type.equals("cpp")) {
 			cmd = parent.astylePath + " --style=allman " + path;
 		} else if (type.equals("java")) {
 			cmd = parent.astylePath + " --style=java " + path;
-		}
+		} else if (type.equals("py")) {
+                    cmd = parent.astylePath + " --style=python " + path;
+                }
 		Process process = Runtime.getRuntime().exec(cmd);
 		while (process.isAlive()) {
 		}

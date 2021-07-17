@@ -106,7 +106,7 @@ public class Judge {
                 } else {
                     fhandle.copyFile(folderPath.get(i), name);
                 }
-                
+
                 // Create log file DangVTH
                 writer = new FileWriter(parent.folderNopbaiPath + "/Logs/" + stuclass + "/" + name + ".log");
 
@@ -241,12 +241,12 @@ public class Judge {
                                 writer.write("Plagiarism: 0\n");
                             }
                         } else {
-                           writer.write("Plagiarism: 0\n"); 
+                            writer.write("Plagiarism: 0\n");
                         }
                         writer.write(result.toString());
                         writer.close();
                         // Set point for problem column
-                        setPoint(stuclass, String.valueOf(calculatePoint(stuclass, user, problem)), parent.hmStuIndex.get(user + stuclass),
+                        setPoint(stuclass, String.valueOf(calculatePoint(stuclass, user, problem, type)), parent.hmStuIndex.get(user + stuclass),
                                 parent.hmTable.get(stuclass).getColumn(parent.listProbName.get(j)).getModelIndex());
                         // Set total point for user
                         setPoint(stuclass, getTotalPoint(stuclass, user), parent.hmStuIndex.get(user + stuclass),
@@ -278,6 +278,7 @@ public class Judge {
             }
         }
     }
+
     /**
      * Calculate point
      *
@@ -286,7 +287,7 @@ public class Judge {
      * @param problem
      * @return
      */
-    private double calculatePoint(String contest, String student, String problem) {
+    private double calculatePoint(String contest, String student, String problem, String type) {
         int pen = 0;
         String lastestLogPath = "";
         String studentAndProblem = "[" + student + "][" + problem + "]";
@@ -301,30 +302,33 @@ public class Judge {
         try {
             List<String> lines = Files.readAllLines(Paths.get(lastestLogPath), StandardCharsets.UTF_8);
             if (!lines.get(0).contains("Error") && !lines.get(0).contains("Time") && !"".equals(lines.get(0))) {
-
-                boolean formatResult = Boolean.parseBoolean(lines.get(3).split(": ")[1]);
-                float commentPercentage = Float.parseFloat(lines.get(4).split(": ")[1]);
-                float plagiarismPercentage = Float.parseFloat(lines.get(5).split(": ")[1]);
                 float mainPoint = Float.parseFloat(lines.get(0));
-                if (checkFormatConfig && !formatResult) {
-                    mainPoint -= minusFormatPointConfig;
-                }
-                if (checkCommentConfig) {
-                    if ("Fixed".equals(commentModeConfig)) {
-                        if (commentPercentage < acceptCommentPercentage) {
-                            mainPoint -= minusCommentPointConfig;
-                        }
-                    } else {
-                        if (commentPercentage < acceptCommentPercentage) {
-                            mainPoint -= mainPoint * minusCommentPointConfig * 0.01;
+                if (!"py".equals(type)) {
+                    boolean formatResult = Boolean.parseBoolean(lines.get(3).split(": ")[1]);
+                    float commentPercentage = Float.parseFloat(lines.get(4).split(": ")[1]);
+                    float plagiarismPercentage = Float.parseFloat(lines.get(5).split(": ")[1]);
+                    if (checkFormatConfig && !formatResult) {
+                        mainPoint -= minusFormatPointConfig;
+                    }
+                    if (checkCommentConfig) {
+                        if ("Fixed".equals(commentModeConfig)) {
+                            if (commentPercentage < acceptCommentPercentage) {
+                                mainPoint -= minusCommentPointConfig;
+                            }
+                        } else {
+                            if (commentPercentage < acceptCommentPercentage) {
+                                mainPoint -= mainPoint * minusCommentPointConfig * 0.01;
+                            }
                         }
                     }
+                    if (checkPlagiarismConfig && plagiarismPercentage >= acceptPlagiarsimPercentageConfig) {
+                        mainPoint = 0;
+                    }
                 }
-                if (checkPlagiarismConfig && plagiarismPercentage >= acceptPlagiarsimPercentageConfig) {
-                    mainPoint = 0;
-                }
-                mainPoint -= pen;
-                return  mainPoint > 0 ? (double) mainPoint : 0.0;
+                System.out.println(mainPoint);
+                System.out.println(pen);
+                mainPoint -= (pen - 1);
+                return mainPoint > 0 ? (double) mainPoint : 0.0;
 
             }
         } catch (IOException ex) {
@@ -332,17 +336,18 @@ public class Judge {
         }
         return 0.0;
     }
-    
+
     /**
-     * 
+     *
      * @param value
      * @param precision
-     * @return 
+     * @return
      */
     private static float round(double value, int precision) {
         int scale = (int) Math.pow(10, precision);
         return (float) Math.round(value * scale) / scale;
     }
+
     /**
      * Set points into table
      *
@@ -814,6 +819,11 @@ public class Judge {
             String line;
             String string = "";
             boolean flag = false;
+            if ("py".equals(type)) {
+                string += "import sys\n"
+                        + "sys.stdin = open('A.inp', 'r')\n"
+                        + "sys.stdout = open('A.out', 'w')\n";
+            }
             while ((line = br.readLine()) != null) {
                 if (line.contains("fopen")) {
                     fr.close();

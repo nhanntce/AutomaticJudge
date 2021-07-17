@@ -20,6 +20,8 @@ public class Plagiarismer {
 
     public static ArrayList<Plagiarism> plagiarism(String fileCheck, ArrayList<String> listCheck, String type, frmJudge parent) throws IOException {
         ArrayList<Plagiarism> res = new ArrayList<>();
+        if("py".equals(type))
+            return res;
         Runtime r = Runtime.getRuntime();
         Process process = null;
         BufferedReader br1 = null;
