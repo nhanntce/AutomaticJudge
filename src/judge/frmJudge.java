@@ -20,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardWatchEventKinds;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -64,7 +65,6 @@ public class frmJudge extends javax.swing.JFrame {
     public HashMap<String, Integer> hmStuIndex;
     public HashMap<String, Integer> hmTotalPoint;
     public ArrayList<ArrayList<String>> lsParentProblem;    //list of list test case name folder NhanNT
-    public ArrayList<String> listContestLoadPannalty;       //list of contestant is loading pannalty NhanNT
     public DefaultTableModel tableModelExport;
 
     public String typecpp;
@@ -159,6 +159,7 @@ public class frmJudge extends javax.swing.JFrame {
         btnJudgeAContest = new javax.swing.JButton();
         btnJudgeAllContests = new javax.swing.JButton();
         btnJudgeAContest1 = new javax.swing.JButton();
+        btnLoadPoint = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Automatic Judger");
@@ -275,6 +276,15 @@ public class frmJudge extends javax.swing.JFrame {
             }
         });
 
+        btnLoadPoint.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        btnLoadPoint.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/btnloadpoint.png"))); // NOI18N
+        btnLoadPoint.setToolTipText("Load Point");
+        btnLoadPoint.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLoadPointActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnlToolbarLayout = new javax.swing.GroupLayout(pnlToolbar);
         pnlToolbar.setLayout(pnlToolbarLayout);
         pnlToolbarLayout.setHorizontalGroup(
@@ -284,7 +294,9 @@ public class frmJudge extends javax.swing.JFrame {
                 .addComponent(btnListProblem)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnUpdateOnline)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnLoadPoint)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnImportExcel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnExportExcel)
@@ -298,13 +310,14 @@ public class frmJudge extends javax.swing.JFrame {
                 .addComponent(btnJudgeAllContests)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnJudgeAContest1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         pnlToolbarLayout.setVerticalGroup(
             pnlToolbarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlToolbarLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnlToolbarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnLoadPoint)
                     .addComponent(btnJudgeAContest1)
                     .addComponent(btnJudgeAllContests)
                     .addComponent(btnJudgeAContest)
@@ -329,9 +342,9 @@ public class frmJudge extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtFilter, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(tabTable, javax.swing.GroupLayout.DEFAULT_SIZE, 820, Short.MAX_VALUE))
+                    .addComponent(tabTable, javax.swing.GroupLayout.DEFAULT_SIZE, 914, Short.MAX_VALUE))
                 .addContainerGap())
-            .addComponent(pnlToolbar, javax.swing.GroupLayout.DEFAULT_SIZE, 844, Short.MAX_VALUE)
+            .addComponent(pnlToolbar, javax.swing.GroupLayout.DEFAULT_SIZE, 938, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -363,36 +376,21 @@ public class frmJudge extends javax.swing.JFrame {
 
     public void loadAllPoint() {
         File[] listContestsPaths = new File(studentDir).listFiles(File::isDirectory);
-        String[] splitResult;
         for (File f : listContestsPaths) {
             String currentContest = f.getName();
-            for (String s : listContestLoadPannalty) {
-                JTable tb = hmTable.get(currentContest);
-                Thread tload = null;
-                if (currentContest.equals(s)) {
-                    tload = new Thread() {
-                        @Override
-                        public void run() {
-                            try {
-                                loadPointPenalty(currentContest, tb);
-                            } catch (IOException ex) {
-                                Logger.getLogger(frmJudge.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                        }
-                    };
-                    tload.start();
-                    break;
-                } else {
-                    tload = new Thread() {
-                        @Override
-                        public void run() {
-                            loadPoint(currentContest, tb);
-                        }
-                    };
-                    tload.start();
-                    break;
+            JTable tb = hmTable.get(currentContest);
+            Thread tload = null;
+            tload = new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        loadPointPenalty(currentContest, tb);
+                    } catch (IOException ex) {
+                        Logger.getLogger(frmJudge.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
-            }
+            };
+            tload.start();
         }
     }
 
@@ -597,7 +595,7 @@ public class frmJudge extends javax.swing.JFrame {
         boolean isCmtChecked = true;
         boolean isFormatChecked = true;
         boolean isPlagiarismChecked = true;
-        
+
         //if dont have config file -> create new file and write default setting to config file
         if (!tempFile.exists()) {
             try {
@@ -627,7 +625,7 @@ public class frmJudge extends javax.swing.JFrame {
                 fileWriter.write(minus_value + "\n");
                 fileWriter.write("check_plagiarism=" + check_plagiarism + "\n");
                 fileWriter.write(check_plagiarism_perAccept + "\n");
-                
+
                 fileWriter.close();
 
                 //get setting content in config file to interface
@@ -641,7 +639,7 @@ public class frmJudge extends javax.swing.JFrame {
                 setting.txtMinusValue.setText(minus_value);
                 setting.chkCheckPlagiarism.setSelected(Boolean.parseBoolean(this.props.getProperty("check_plagiarism")));
                 setting.txtPercentagePlaAccept.setText(check_plagiarism_perAccept);
-                
+
             } catch (IOException ex) {
                 Logger.getLogger(frmJudge.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -667,30 +665,30 @@ public class frmJudge extends javax.swing.JFrame {
                 isCmtChecked = Boolean.parseBoolean(lines.get(4).split("=")[1]);
                 isPlagiarismChecked = Boolean.parseBoolean(lines.get(8).split("=")[1]);
                 isFormatChecked = Boolean.parseBoolean(lines.get(2).split("=")[1]);
-                
+
             } catch (IOException ex) {
                 Logger.getLogger(frmJudge.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
         //if dont check comment is not checked => hiden 
         if (!isCmtChecked) {
             setting.pnlSettingCheckCmt.setVisible(false);
-        } 
+        }
         if (!isFormatChecked) {
             setting.pnlSettingCheckFormat.setVisible(false);
         }
         if (!isPlagiarismChecked) {
             setting.pnlSettingCheckPlagiarism.setVisible(false);
         }
-        
+
         //set text for label by mode check
         if ("By Percentage".equals(check_comment_mode)) {
             setting.lblMinusPoints.setText("Minus Points (%):");
         } else {
             setting.lblMinusPoints.setText("Minus Points (points):");
         }
-        
+
         setting.pack();
         setting.setVisible(true);
     }//GEN-LAST:event_btnSettingActionPerformed
@@ -834,6 +832,10 @@ public class frmJudge extends javax.swing.JFrame {
         frmAbout about = new frmAbout();
         about.setVisible(true);
     }//GEN-LAST:event_btnJudgeAContest1ActionPerformed
+
+    private void btnLoadPointActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadPointActionPerformed
+        loadAllPoint();
+    }//GEN-LAST:event_btnLoadPointActionPerformed
     /**
      * Method load point from logs file
      *
@@ -842,7 +844,6 @@ public class frmJudge extends javax.swing.JFrame {
      */
     private void loadPoint(String s, JTable tb) {
         String contest = s;
-        listContestLoadPannalty.remove(contest);
         for (int i = 0; i < tb.getRowCount(); ++i) {
             String user = tb.getValueAt(i, 0).toString();
             double total = 0;
@@ -887,100 +888,93 @@ public class frmJudge extends javax.swing.JFrame {
         String selectedTab = tabTable.getTitleAt(tabTable.getSelectedIndex());
         String pathToSettingConfig = problemDir + "\\" + selectedTab + "\\config.txt";
         File tempFile = new File(pathToSettingConfig);
+        //read config file
         List<String> logLines = Collections.emptyList();
-        if (!listContestLoadPannalty.contains(contest)) {
-            listContestLoadPannalty.add(contest);
+        boolean checkFormatConfig = false;
+        float minusFormatPointConfig = 0;
+        boolean checkCommentConfig = false;
+        String commentModeConfig = null;
+        float acceptCommentPercentage = 0;
+        float minusCommentPointConfig = 0;
+        boolean checkPlagiarismConfig = false;
+        float acceptPlagiarsimPercentageConfig = 0;
+        if (Files.exists(Paths.get(pathToSettingConfig))) {
+            try {
+                List<String> lines = Files.readAllLines(Paths.get(pathToSettingConfig), StandardCharsets.UTF_8);
+                // set setting content to interface
+                checkFormatConfig = Boolean.parseBoolean(lines.get(2).split("=")[1]);
+                minusFormatPointConfig = Float.parseFloat(lines.get(3));
+                checkCommentConfig = Boolean.parseBoolean(lines.get(4).split("=")[1]);
+                commentModeConfig = String.valueOf(lines.get(5).split("=")[1]);
+                acceptCommentPercentage = Float.parseFloat(lines.get(6));
+                minusCommentPointConfig = Float.parseFloat(lines.get(7));
+                checkPlagiarismConfig = Boolean.parseBoolean(lines.get(8).split("=")[1]);
+                acceptPlagiarsimPercentageConfig = Float.parseFloat(lines.get(9));
+            } catch (IOException ex) {
+                Logger.getLogger(frmJudge.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
+
         for (int i = 0; i < tb.getRowCount(); ++i) {
             String user = tb.getValueAt(i, 0).toString();
             double total = 0;
-            String comment = null;
-            String format = null;
-            String plag = null;
-            String percentage = null;
-            String subPoint = null;
-            String mode_cmt = null;
-            Double pnt = 0.0;
             for (int j = 1; j < tb.getColumnCount() - 1; ++j) {
                 String point = "";
                 int pen = 0;
                 String problem = tb.getColumnName(j);
-                String log = "[" + user + "][" + problem + "]";
+                String studentAndProblem = "[" + user + "][" + problem + "]";
                 // Duyá»‡t thÆ° má»¥c logs chá»©a káº¿t quáº£ bÃ i lÃ m
                 File[] pathlog = new File(folderNopbaiPath + "/Logs/" + contest).listFiles();
-                Arrays.sort(pathlog, Comparator.comparingLong(File::lastModified)); // sáº¯p xáº¿p theo thá»�i gian tÄƒng dáº§n
-                for (File file : pathlog) {
-                    if (file.getAbsolutePath().contains(log)) {
+                String lastestLogPath = "";
+                Arrays.sort(pathlog, Comparator.comparingLong(File::lastModified));
+                for (File f : pathlog) {
+                    if (f.getAbsolutePath().contains(studentAndProblem)) {
                         pen++;
-                        try {
-                            String strCurrentLine;
-                            BufferedReader reader = null;
-                            reader = new BufferedReader(new FileReader(file.getAbsolutePath()));
-
-                            logLines = Files.readAllLines(Paths.get(file.getAbsolutePath()), StandardCharsets.UTF_8);
-
-                            //get point
-                            point = logLines.get(0);
-
-                        } catch (IOException ex) {
-                            Logger.getLogger(frmJudge.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+                        lastestLogPath = f.getAbsolutePath();
                     }
                 }
-
-                if (!point.contains("Error") && !point.contains("Time") && point != "") {
-                    List<String> configLines = Collections.emptyList();
-                    configLines = Files.readAllLines(Paths.get(pathToSettingConfig), StandardCharsets.UTF_8);
-                    //get format value
-                    if (configLines.get(2).split("=")[1].equals("true")) {
-                        format = logLines.get(3).split(": ")[1];
-
-                    }
-                    //get value of comment
-                    if (configLines.get(3).split("=")[1].equals("true")) {
-                        mode_cmt = configLines.get(4).split("=")[1];
-                        comment = logLines.get(4).split(": ")[1];
-
-                        percentage = configLines.get(5);
-                        subPoint = configLines.get(6);
-
-                        // get value of plagiarism
-                        if (configLines.get(7).split("=")[1].equals("true")) {
-                            plag = logLines.get(5).split(": ")[1];
+                if ("".equals(lastestLogPath)) {
+                    hmTable.get(s).setValueAt("Not submit", i, j);
+                    break;
+                }
+                try {
+                    List<String> lines = Files.readAllLines(Paths.get(lastestLogPath), StandardCharsets.UTF_8);
+                    if (!lines.get(0).contains("Error") && !lines.get(0).contains("Time") && !"".equals(lines.get(0))) {
+                        float mainPoint = Float.parseFloat(lines.get(0));
+                        boolean formatResult = Boolean.parseBoolean(lines.get(3).split(": ")[1]);
+                        float commentPercentage = Float.parseFloat(lines.get(4).split(": ")[1]);
+                        float plagiarismPercentage = Float.parseFloat(lines.get(5).split(": ")[1]);
+                        if (checkFormatConfig && !formatResult) {
+                            mainPoint -= minusFormatPointConfig;
                         }
-
-                    } else {// get value of plagiarism
-                        if (configLines.get(4).split("=")[1].equals("true")) {
-                            plag = logLines.get(5).split(": ")[1];
-                        }
-                    }
-                    pnt = Double.parseDouble(point);
-                    if (format.equals("false")) {
-                        pnt -= 1;
-                    }
-                    if (configLines.get(3).split("=")[1].equals("true")) {
-                        if (mode_cmt.equals("Fixed")) {
-                            if (Double.parseDouble(comment) < Double.parseDouble(percentage)) {
-                                pnt -= Double.parseDouble(subPoint);
+                        if (checkCommentConfig) {
+                            if ("Fixed".equals(commentModeConfig)) {
+                                if (commentPercentage < acceptCommentPercentage) {
+                                    mainPoint -= minusCommentPointConfig;
+                                }
+                            } else {
+                                if (commentPercentage < acceptCommentPercentage) {
+                                    mainPoint -= mainPoint * minusCommentPointConfig * 0.01;
+                                }
                             }
-                        } else {
-                            pnt -= Double.parseDouble(percentage) * Double.parseDouble(subPoint) * 0.01;
                         }
-                    }
-
-                    if (Double.parseDouble(plag) >= 75) {
-                        pnt = 0.0;
-                    }
-                    hmTable.get(s).setValueAt(round(pnt * (11 - pen) * 0.1, 1), i, j);
-                    total += round((pnt * (11 - pen) * 0.1), 1);
-
-                } else {
-                    if (point == "") {
-                        hmTable.get(s).setValueAt("Not submit", i, j);
+                        if (checkPlagiarismConfig && plagiarismPercentage >= acceptPlagiarsimPercentageConfig) {
+                            mainPoint = 0;
+                        }
+                        mainPoint -= (pen - 1);
+                        mainPoint = (float) (mainPoint > 0 ? mainPoint : 0.0);
+                        DecimalFormat newFormat = new DecimalFormat("#.#");
+                        mainPoint = Float.valueOf(newFormat.format(mainPoint));
+                        hmTable.get(s).setValueAt(String.valueOf(mainPoint), i, j);
+                        total += mainPoint;
                     } else {
-                        hmTable.get(s).setValueAt(point, i, j);
+                        hmTable.get(s).setValueAt(lines.get(0), i, j);
                     }
+
+                } catch (IOException ex) {
+                    Logger.getLogger(Judge.class.getName()).log(Level.SEVERE, null, ex);
                 }
+
             }
             hmTable.get(s).setValueAt(total, i, tb.getColumnCount() - 1);
         }
@@ -1267,7 +1261,6 @@ public class frmJudge extends javax.swing.JFrame {
         this.fileFolderProblem.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         this.fileFolderStudent.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         this.fileFolderNopbai.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        listContestLoadPannalty = new ArrayList<>();
     }
 
     /**
@@ -1371,6 +1364,7 @@ public class frmJudge extends javax.swing.JFrame {
     public javax.swing.JButton btnJudgeAContest1;
     public javax.swing.JButton btnJudgeAllContests;
     private javax.swing.JButton btnListProblem;
+    public javax.swing.JButton btnLoadPoint;
     private javax.swing.JButton btnSetting;
     public javax.swing.JButton btnUpdateOnline;
     private javax.swing.JFileChooser fileFile;
