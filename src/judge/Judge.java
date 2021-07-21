@@ -325,7 +325,7 @@ public class Judge {
                         mainPoint = 0;
                     }
                 }
-                mainPoint -= (pen - 1);
+                mainPoint = mainPoint * (10 - pen + 1) / 10;
                 return mainPoint > 0 ? (double) mainPoint : 0.0;
 
             }
