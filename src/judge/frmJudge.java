@@ -935,44 +935,44 @@ public class frmJudge extends javax.swing.JFrame {
                 }
                 if ("".equals(lastestLogPath)) {
                     hmTable.get(s).setValueAt("Not submit", i, j);
-                    break;
-                }
-                try {
-                    List<String> lines = Files.readAllLines(Paths.get(lastestLogPath), StandardCharsets.UTF_8);
-                    if (!lines.get(0).contains("Error") && !lines.get(0).contains("Time") && !"".equals(lines.get(0))) {
-                        float mainPoint = Float.parseFloat(lines.get(0));
-                        boolean formatResult = Boolean.parseBoolean(lines.get(3).split(": ")[1]);
-                        float commentPercentage = Float.parseFloat(lines.get(4).split(": ")[1]);
-                        float plagiarismPercentage = Float.parseFloat(lines.get(5).split(": ")[1]);
-                        if (checkFormatConfig && !formatResult) {
-                            mainPoint -= minusFormatPointConfig;
-                        }
-                        if (checkCommentConfig) {
-                            if ("Fixed".equals(commentModeConfig)) {
-                                if (commentPercentage < acceptCommentPercentage) {
-                                    mainPoint -= minusCommentPointConfig;
-                                }
-                            } else {
-                                if (commentPercentage < acceptCommentPercentage) {
-                                    mainPoint -= mainPoint * minusCommentPointConfig * 0.01;
+                } else {
+                    try {
+                        List<String> lines = Files.readAllLines(Paths.get(lastestLogPath), StandardCharsets.UTF_8);
+                        if (!lines.get(0).contains("Error") && !lines.get(0).contains("Time") && !"".equals(lines.get(0))) {
+                            float mainPoint = Float.parseFloat(lines.get(0));
+                            boolean formatResult = Boolean.parseBoolean(lines.get(3).split(": ")[1]);
+                            float commentPercentage = Float.parseFloat(lines.get(4).split(": ")[1]);
+                            float plagiarismPercentage = Float.parseFloat(lines.get(5).split(": ")[1]);
+                            if (checkFormatConfig && !formatResult) {
+                                mainPoint -= minusFormatPointConfig;
+                            }
+                            if (checkCommentConfig) {
+                                if ("Fixed".equals(commentModeConfig)) {
+                                    if (commentPercentage < acceptCommentPercentage) {
+                                        mainPoint -= minusCommentPointConfig;
+                                    }
+                                } else {
+                                    if (commentPercentage < acceptCommentPercentage) {
+                                        mainPoint -= mainPoint * minusCommentPointConfig * 0.01;
+                                    }
                                 }
                             }
+                            if (checkPlagiarismConfig && plagiarismPercentage >= acceptPlagiarsimPercentageConfig) {
+                                mainPoint = 0;
+                            }
+                            mainPoint -= (pen - 1);
+                            mainPoint = (float) (mainPoint > 0 ? mainPoint : 0.0);
+                            DecimalFormat newFormat = new DecimalFormat("#.#");
+                            mainPoint = Float.valueOf(newFormat.format(mainPoint));
+                            hmTable.get(s).setValueAt(String.valueOf(mainPoint), i, j);
+                            total += mainPoint;
+                        } else {
+                            hmTable.get(s).setValueAt(lines.get(0), i, j);
                         }
-                        if (checkPlagiarismConfig && plagiarismPercentage >= acceptPlagiarsimPercentageConfig) {
-                            mainPoint = 0;
-                        }
-                        mainPoint -= (pen - 1);
-                        mainPoint = (float) (mainPoint > 0 ? mainPoint : 0.0);
-                        DecimalFormat newFormat = new DecimalFormat("#.#");
-                        mainPoint = Float.valueOf(newFormat.format(mainPoint));
-                        hmTable.get(s).setValueAt(String.valueOf(mainPoint), i, j);
-                        total += mainPoint;
-                    } else {
-                        hmTable.get(s).setValueAt(lines.get(0), i, j);
-                    }
 
-                } catch (IOException ex) {
-                    Logger.getLogger(Judge.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IOException ex) {
+                        Logger.getLogger(Judge.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
 
             }
