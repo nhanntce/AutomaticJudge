@@ -888,6 +888,7 @@ public class frmJudge extends javax.swing.JFrame {
         String selectedTab = tabTable.getTitleAt(tabTable.getSelectedIndex());
         String pathToSettingConfig = problemDir + "\\" + selectedTab + "\\config.txt";
         File tempFile = new File(pathToSettingConfig);
+        DecimalFormat newFormat = new DecimalFormat("#.#");
         //read config file
         List<String> logLines = Collections.emptyList();
         boolean checkFormatConfig = false;
@@ -960,9 +961,9 @@ public class frmJudge extends javax.swing.JFrame {
                             if (checkPlagiarismConfig && plagiarismPercentage >= acceptPlagiarsimPercentageConfig) {
                                 mainPoint = 0;
                             }
-                            mainPoint -= (pen - 1);
+                            mainPoint = mainPoint * (10 - pen + 1) / 10;
                             mainPoint = (float) (mainPoint > 0 ? mainPoint : 0.0);
-                            DecimalFormat newFormat = new DecimalFormat("#.#");
+                            
                             mainPoint = Float.valueOf(newFormat.format(mainPoint));
                             hmTable.get(s).setValueAt(String.valueOf(mainPoint), i, j);
                             total += mainPoint;
@@ -976,7 +977,7 @@ public class frmJudge extends javax.swing.JFrame {
                 }
 
             }
-            hmTable.get(s).setValueAt(total, i, tb.getColumnCount() - 1);
+            hmTable.get(s).setValueAt(newFormat.format(total), i, tb.getColumnCount() - 1);
         }
     }
 
