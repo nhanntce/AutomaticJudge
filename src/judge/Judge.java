@@ -246,7 +246,7 @@ public class Judge {
                         writer.write(result.toString());
                         writer.close();
                         // Set point for problem column
-                        setPoint(stuclass, String.valueOf(calculatePoint(stuclass, user, problem, type)), parent.hmStuIndex.get(user + stuclass),
+                        setPoint(stuclass, newFormat.format(calculatePoint(stuclass, user, problem, type)), parent.hmStuIndex.get(user + stuclass),
                                 parent.hmTable.get(stuclass).getColumn(parent.listProbName.get(j)).getModelIndex());
                         // Set total point for user
                         setPoint(stuclass, getTotalPoint(stuclass, user), parent.hmStuIndex.get(user + stuclass),
@@ -325,8 +325,6 @@ public class Judge {
                         mainPoint = 0;
                     }
                 }
-                System.out.println(mainPoint);
-                System.out.println(pen);
                 mainPoint -= (pen - 1);
                 return mainPoint > 0 ? (double) mainPoint : 0.0;
 
