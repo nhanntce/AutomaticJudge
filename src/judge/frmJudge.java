@@ -1009,8 +1009,7 @@ public class frmJudge extends javax.swing.JFrame {
                             }
                             mainPoint = (mainPoint > 0 ? mainPoint : 0.0);
 
-                            mainPoint = Double.valueOf(String.format("%.1f", mainPoint));
-                            hmTable.get(s).setValueAt(String.valueOf(mainPoint), i, j);
+                            hmTable.get(s).setValueAt(String.format("%.1f", mainPoint), i, j);
                             total += mainPoint;
                         } else {
                             hmTable.get(s).setValueAt(lines.get(0), i, j);
