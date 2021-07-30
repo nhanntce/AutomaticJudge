@@ -592,6 +592,7 @@ public class frmJudge extends javax.swing.JFrame {
         File tempFile = new File(pathToSettingConfig);
 
         String check_comment_mode = "";
+        String penalty_mode = "";
         boolean isCmtChecked = true;
         boolean isFormatChecked = true;
         boolean isPlagiarismChecked = true;
@@ -603,42 +604,63 @@ public class frmJudge extends javax.swing.JFrame {
                 FileWriter fileWriter = new FileWriter(tempFile);
 
                 //get default setting from property file
+                //time and memory limit setting
                 String time_limit = this.props.getProperty("time_limit");
                 String memory_limit = this.props.getProperty("memory_limit");
+                //format setting
                 String check_format = this.props.getProperty("check_format");
                 String check_format_minusValue = this.props.getProperty("check_format_minusValue");
+                //comment setting
                 String check_comment = this.props.getProperty("check_comment");
                 check_comment_mode = this.props.getProperty("check_comment_mode");
                 String perentage_accept = this.props.getProperty("perentage_accept");
                 String minus_value = this.props.getProperty("minus_value");
+                //check plagiarism setting
                 String check_plagiarism = this.props.getProperty("check_plagiarism");
                 String check_plagiarism_perAccept = this.props.getProperty("check_plagiarism_perAccept");
+                //penalty mode setting
+                penalty_mode = this.props.getProperty("penalty_mode");
+                String penalty_value = this.props.getProperty("penalty_value");
+                
 
                 //write setting to specify contest's config file
+                //write time and memory limit setting
                 fileWriter.write("time_limit=" + time_limit + "\n");
                 fileWriter.write("memory_limit=" + memory_limit + "\n");
+                //write format setting
                 fileWriter.write("check_format=" + check_format + "\n");
                 fileWriter.write(check_format_minusValue + "\n");
+                //write comment setting
                 fileWriter.write("check_comment=" + check_comment + "\n");
                 fileWriter.write("check_comment_mode=" + check_comment_mode + "\n");
                 fileWriter.write(perentage_accept + "\n");
                 fileWriter.write(minus_value + "\n");
+                //write check plagiarism setting
                 fileWriter.write("check_plagiarism=" + check_plagiarism + "\n");
                 fileWriter.write(check_plagiarism_perAccept + "\n");
+                //write penalty setting
+                fileWriter.write("penalty_mode=" + penalty_mode + "\n");
+                fileWriter.write(penalty_value + "\n");
 
                 fileWriter.close();
 
                 //get setting content in config file to interface
                 setting.txtTimeLimit.setText(time_limit);
                 setting.txtMemoryLimit.setText(memory_limit);
+                
                 setting.chkCheckFormat.setSelected(Boolean.parseBoolean(this.props.getProperty("check_format")));
                 setting.txtFormatMinusValue.setText(check_format_minusValue);
+                
                 setting.chkCheckCmt.setSelected(Boolean.parseBoolean(this.props.getProperty("check_comment")));
                 setting.cbbCommentMode.setSelectedItem(check_comment_mode);
                 setting.txtPercentageAccept.setText(perentage_accept);
                 setting.txtMinusValue.setText(minus_value);
+                
                 setting.chkCheckPlagiarism.setSelected(Boolean.parseBoolean(this.props.getProperty("check_plagiarism")));
                 setting.txtPercentagePlaAccept.setText(check_plagiarism_perAccept);
+                
+                setting.cbbPenaltyMode.setSelectedItem(penalty_mode);
+                setting.txtLimitSubmission.setText(penalty_value);
 
             } catch (IOException ex) {
                 Logger.getLogger(frmJudge.class.getName()).log(Level.SEVERE, null, ex);
@@ -652,16 +674,23 @@ public class frmJudge extends javax.swing.JFrame {
                 //set setting content to interface 
                 setting.txtTimeLimit.setText(lines.get(0).split("=")[1]);
                 setting.txtMemoryLimit.setText(lines.get(1).split("=")[1]);
+                
                 setting.chkCheckFormat.setSelected(Boolean.parseBoolean(lines.get(2).split("=")[1]));
                 setting.txtFormatMinusValue.setText(lines.get(3));
+                
                 setting.chkCheckCmt.setSelected(Boolean.parseBoolean(lines.get(4).split("=")[1]));
                 check_comment_mode = lines.get(5).split("=")[1];
                 setting.cbbCommentMode.setSelectedItem(check_comment_mode);
                 setting.txtPercentageAccept.setText(lines.get(6));
                 setting.txtMinusValue.setText(lines.get(7));
+                
                 setting.chkCheckPlagiarism.setSelected(Boolean.parseBoolean(lines.get(8).split("=")[1]));
                 setting.txtPercentagePlaAccept.setText(lines.get(9));
-
+                
+                penalty_mode = lines.get(10).split("=")[1];
+                setting.cbbPenaltyMode.setSelectedItem(penalty_mode);
+                setting.txtLimitSubmission.setText(lines.get(11));
+                
                 isCmtChecked = Boolean.parseBoolean(lines.get(4).split("=")[1]);
                 isPlagiarismChecked = Boolean.parseBoolean(lines.get(8).split("=")[1]);
                 isFormatChecked = Boolean.parseBoolean(lines.get(2).split("=")[1]);
@@ -681,7 +710,11 @@ public class frmJudge extends javax.swing.JFrame {
         if (!isPlagiarismChecked) {
             setting.pnlSettingCheckPlagiarism.setVisible(false);
         }
-
+        
+        if ("Hard".equals(penalty_mode)) {
+            setting.txtLimitSubmission.setEnabled(false);
+        }
+        
         //set text for label by mode check
         if ("By Percentage".equals(check_comment_mode)) {
             setting.lblMinusPoints.setText("Minus Points (%):");

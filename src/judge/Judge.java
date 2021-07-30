@@ -2,12 +2,16 @@ package judge;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -103,6 +107,38 @@ public class Judge {
                 if ("java".equals(type)) {
                     tenbai = problem;
                     fhandle.copyFile(folderPath.get(i), tenbai + "." + type);
+
+                    try {
+                        File file = new File(tenbai + "." + type);
+                        BufferedReader br = new BufferedReader(new FileReader(file));
+
+                        String st = "";
+                        String[] tmpString;
+                        String newData = "";
+
+                        while ((st = br.readLine()) != null) {
+                            tmpString = st.trim().split(" ");
+                            for (int j = 0; j < tmpString.length; j++) {
+                                if (j < (tmpString.length - 2) && tmpString[j].equals("public") && tmpString[j + 1].equals("class")) {
+                                    st = st.replaceFirst(tmpString[j + 2], problem);
+                                    break;
+                                }
+                            }
+                            newData += st + System.lineSeparator();
+                        }
+                        br.close();
+
+                        PrintWriter writerClear = new PrintWriter(file);
+                        writerClear.print("");
+                        writerClear.close();
+
+                        FileWriter fileWriter = new FileWriter(file);
+                        fileWriter.write(newData);
+                        fileWriter.close();
+
+                    } catch (FileNotFoundException ex) {
+                        Logger.getLogger(Judge.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 } else {
                     fhandle.copyFile(folderPath.get(i), name);
                 }
@@ -330,7 +366,8 @@ public class Judge {
 
             }
         } catch (IOException ex) {
-            Logger.getLogger(Judge.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Judge.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
         return 0.0;
     }
@@ -475,9 +512,11 @@ public class Judge {
                 listPlagiarisms = Plagiarismer.plagiarism(
                         parent.studentDir + "\\" + stuClass + "\\" + getUser(fileName) + "\\" + fileName,
                         listSolutionToCompare, type, parent);
+
             }
         } catch (IOException ex) {
-            Logger.getLogger(frmJudge.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(frmJudge.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
         if (!checkHack(problem, type, fileName + "." + type, parent.checkFormat, parent.checkCmt)) {
             return true;
@@ -772,8 +811,10 @@ public class Judge {
                     try {
                         parent.pro.getTxtTime().setText(secondtoTime(timecnt++));
                         sleep(1000);
+
                     } catch (InterruptedException ex) {
-                        Logger.getLogger(frmJudge.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(frmJudge.class
+                                .getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }
@@ -894,8 +935,10 @@ public class Judge {
             FileWriter writer = new FileWriter(file);
             writer.write(string);
             writer.close();
+
         } catch (IOException ex) {
-            Logger.getLogger(Judge.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Judge.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
 //        if (checkFunc && cntFunc < 1) {
 //            error = "You don't have any function in code";
