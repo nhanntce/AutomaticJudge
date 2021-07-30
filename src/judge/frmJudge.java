@@ -621,7 +621,6 @@ public class frmJudge extends javax.swing.JFrame {
                 //penalty mode setting
                 penalty_mode = this.props.getProperty("penalty_mode");
                 String penalty_value = this.props.getProperty("penalty_value");
-                
 
                 //write setting to specify contest's config file
                 //write time and memory limit setting
@@ -647,18 +646,18 @@ public class frmJudge extends javax.swing.JFrame {
                 //get setting content in config file to interface
                 setting.txtTimeLimit.setText(time_limit);
                 setting.txtMemoryLimit.setText(memory_limit);
-                
+
                 setting.chkCheckFormat.setSelected(Boolean.parseBoolean(this.props.getProperty("check_format")));
                 setting.txtFormatMinusValue.setText(check_format_minusValue);
-                
+
                 setting.chkCheckCmt.setSelected(Boolean.parseBoolean(this.props.getProperty("check_comment")));
                 setting.cbbCommentMode.setSelectedItem(check_comment_mode);
                 setting.txtPercentageAccept.setText(perentage_accept);
                 setting.txtMinusValue.setText(minus_value);
-                
+
                 setting.chkCheckPlagiarism.setSelected(Boolean.parseBoolean(this.props.getProperty("check_plagiarism")));
                 setting.txtPercentagePlaAccept.setText(check_plagiarism_perAccept);
-                
+
                 setting.cbbPenaltyMode.setSelectedItem(penalty_mode);
                 setting.txtLimitSubmission.setText(penalty_value);
 
@@ -674,23 +673,23 @@ public class frmJudge extends javax.swing.JFrame {
                 //set setting content to interface 
                 setting.txtTimeLimit.setText(lines.get(0).split("=")[1]);
                 setting.txtMemoryLimit.setText(lines.get(1).split("=")[1]);
-                
+
                 setting.chkCheckFormat.setSelected(Boolean.parseBoolean(lines.get(2).split("=")[1]));
                 setting.txtFormatMinusValue.setText(lines.get(3));
-                
+
                 setting.chkCheckCmt.setSelected(Boolean.parseBoolean(lines.get(4).split("=")[1]));
                 check_comment_mode = lines.get(5).split("=")[1];
                 setting.cbbCommentMode.setSelectedItem(check_comment_mode);
                 setting.txtPercentageAccept.setText(lines.get(6));
                 setting.txtMinusValue.setText(lines.get(7));
-                
+
                 setting.chkCheckPlagiarism.setSelected(Boolean.parseBoolean(lines.get(8).split("=")[1]));
                 setting.txtPercentagePlaAccept.setText(lines.get(9));
-                
+
                 penalty_mode = lines.get(10).split("=")[1];
                 setting.cbbPenaltyMode.setSelectedItem(penalty_mode);
                 setting.txtLimitSubmission.setText(lines.get(11));
-                
+
                 isCmtChecked = Boolean.parseBoolean(lines.get(4).split("=")[1]);
                 isPlagiarismChecked = Boolean.parseBoolean(lines.get(8).split("=")[1]);
                 isFormatChecked = Boolean.parseBoolean(lines.get(2).split("=")[1]);
@@ -710,11 +709,11 @@ public class frmJudge extends javax.swing.JFrame {
         if (!isPlagiarismChecked) {
             setting.pnlSettingCheckPlagiarism.setVisible(false);
         }
-        
+
         if ("Hard".equals(penalty_mode)) {
             setting.txtLimitSubmission.setEnabled(false);
         }
-        
+
         //set text for label by mode check
         if ("By Percentage".equals(check_comment_mode)) {
             setting.lblMinusPoints.setText("Minus Points (%):");
@@ -925,13 +924,15 @@ public class frmJudge extends javax.swing.JFrame {
         //read config file
         List<String> logLines = Collections.emptyList();
         boolean checkFormatConfig = false;
-        float minusFormatPointConfig = 0;
+        double minusFormatPointConfig = 0;
         boolean checkCommentConfig = false;
         String commentModeConfig = null;
-        float acceptCommentPercentage = 0;
-        float minusCommentPointConfig = 0;
+        double acceptCommentPercentage = 0;
+        double minusCommentPointConfig = 0;
         boolean checkPlagiarismConfig = false;
-        float acceptPlagiarsimPercentageConfig = 0;
+        double acceptPlagiarsimPercentageConfig = 0;
+        String penaltyMode = "";
+        int limitSubmission = 0;
         if (Files.exists(Paths.get(pathToSettingConfig))) {
             try {
                 List<String> lines = Files.readAllLines(Paths.get(pathToSettingConfig), StandardCharsets.UTF_8);
@@ -944,6 +945,8 @@ public class frmJudge extends javax.swing.JFrame {
                 minusCommentPointConfig = Float.parseFloat(lines.get(7));
                 checkPlagiarismConfig = Boolean.parseBoolean(lines.get(8).split("=")[1]);
                 acceptPlagiarsimPercentageConfig = Float.parseFloat(lines.get(9));
+                penaltyMode = String.valueOf(lines.get(10).split("=")[1]);
+                limitSubmission = Integer.parseInt(lines.get(11));
             } catch (IOException ex) {
                 Logger.getLogger(frmJudge.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -973,31 +976,44 @@ public class frmJudge extends javax.swing.JFrame {
                     try {
                         List<String> lines = Files.readAllLines(Paths.get(lastestLogPath), StandardCharsets.UTF_8);
                         if (!lines.get(0).contains("Error") && !lines.get(0).contains("Time") && !"".equals(lines.get(0))) {
-                            float mainPoint = Float.parseFloat(lines.get(0));
-                            boolean formatResult = Boolean.parseBoolean(lines.get(3).split(": ")[1]);
-                            float commentPercentage = Float.parseFloat(lines.get(4).split(": ")[1]);
-                            float plagiarismPercentage = Float.parseFloat(lines.get(5).split(": ")[1]);
-                            if (checkFormatConfig && !formatResult) {
-                                mainPoint -= minusFormatPointConfig;
-                            }
-                            if (checkCommentConfig) {
-                                if ("Fixed".equals(commentModeConfig)) {
-                                    if (commentPercentage < acceptCommentPercentage) {
-                                        mainPoint -= minusCommentPointConfig;
-                                    }
-                                } else {
-                                    if (commentPercentage < acceptCommentPercentage) {
-                                        mainPoint -= mainPoint * minusCommentPointConfig * 0.01;
+                            double mainPoint = Float.parseFloat(lines.get(0));
+                            if (!lastestLogPath.contains("py")) {
+                                boolean formatResult = Boolean.parseBoolean(lines.get(3).split(": ")[1]);
+                                double commentPercentage = Float.parseFloat(lines.get(4).split(": ")[1]);
+                                double plagiarismPercentage = Float.parseFloat(lines.get(5).split(": ")[1]);
+                                if (checkFormatConfig && !formatResult) {
+                                    mainPoint -= minusFormatPointConfig;
+                                }
+                                if (checkCommentConfig) {
+                                    if ("Fixed".equals(commentModeConfig)) {
+                                        if (commentPercentage < acceptCommentPercentage) {
+                                            mainPoint -= minusCommentPointConfig;
+                                        }
+                                    } else {
+                                        if (commentPercentage < acceptCommentPercentage) {
+                                            mainPoint -= mainPoint * minusCommentPointConfig * 0.01;
+                                        }
                                     }
                                 }
+                                if (checkPlagiarismConfig && plagiarismPercentage >= acceptPlagiarsimPercentageConfig) {
+                                    mainPoint = 0;
+                                }
                             }
-                            if (checkPlagiarismConfig && plagiarismPercentage >= acceptPlagiarsimPercentageConfig) {
-                                mainPoint = 0;
+                            if ("Hard".equals(penaltyMode)) {
+                                try {
+                                    double logPoint = Double.parseDouble(lines.get(0));
+                                    if (logPoint != 10) {
+                                        mainPoint = 0;
+                                    }
+                                } catch (Exception e) {
+
+                                }
+                            } else {
+                                mainPoint = mainPoint * (limitSubmission - pen + 1) / limitSubmission;
                             }
-                            mainPoint = mainPoint * (10 - pen + 1) / 10;
-                            mainPoint = (float) (mainPoint > 0 ? mainPoint : 0.0);
-                            
-                            mainPoint = Float.valueOf(newFormat.format(mainPoint));
+                            mainPoint = (mainPoint > 0 ? mainPoint : 0.0);
+
+                            mainPoint = Double.valueOf(newFormat.format(mainPoint));
                             hmTable.get(s).setValueAt(String.valueOf(mainPoint), i, j);
                             total += mainPoint;
                         } else {

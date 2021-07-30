@@ -50,13 +50,15 @@ public class Judge {
     private int timeLimitConfig;
     private int memoryLimitConfig;
     private boolean checkFormatConfig;
-    private float minusFormatPointConfig;
+    private double minusFormatPointConfig;
     private boolean checkCommentConfig;
     private String commentModeConfig;
-    private float acceptCommentPercentage;
-    private float minusCommentPointConfig;
+    private double acceptCommentPercentage;
+    private double minusCommentPointConfig;
     private boolean checkPlagiarismConfig;
-    private float acceptPlagiarsimPercentageConfig;
+    private double acceptPlagiarsimPercentageConfig;
+    private String penaltyMode;
+    private int limitSubmission;
 
     /**
      * Construct a Judge DangVTH
@@ -338,11 +340,11 @@ public class Judge {
         try {
             List<String> lines = Files.readAllLines(Paths.get(lastestLogPath), StandardCharsets.UTF_8);
             if (!lines.get(0).contains("Error") && !lines.get(0).contains("Time") && !"".equals(lines.get(0))) {
-                float mainPoint = Float.parseFloat(lines.get(0));
+                double mainPoint = Float.parseFloat(lines.get(0));
                 if (!"py".equals(type)) {
                     boolean formatResult = Boolean.parseBoolean(lines.get(3).split(": ")[1]);
-                    float commentPercentage = Float.parseFloat(lines.get(4).split(": ")[1]);
-                    float plagiarismPercentage = Float.parseFloat(lines.get(5).split(": ")[1]);
+                    double commentPercentage = Float.parseFloat(lines.get(4).split(": ")[1]);
+                    double plagiarismPercentage = Float.parseFloat(lines.get(5).split(": ")[1]);
                     if (checkFormatConfig && !formatResult) {
                         mainPoint -= minusFormatPointConfig;
                     }
@@ -361,8 +363,19 @@ public class Judge {
                         mainPoint = 0;
                     }
                 }
-                mainPoint = mainPoint * (10 - pen + 1) / 10;
-                return mainPoint > 0 ? (double) mainPoint : 0.0;
+                if("Hard".equals(penaltyMode)) {
+                    try {
+                        double logPoint = Double.parseDouble(lines.get(0));
+                        if(logPoint != 10) {
+                            mainPoint = 0;
+                        }
+                    } catch (Exception e){
+                        
+                    }
+                } else {
+                    mainPoint = mainPoint * (limitSubmission - pen + 1) / limitSubmission;
+                }
+                return mainPoint > 0 ? mainPoint : 0.0;
 
             }
         } catch (IOException ex) {
@@ -458,6 +471,8 @@ public class Judge {
                 minusCommentPointConfig = Float.parseFloat(lines.get(7));
                 checkPlagiarismConfig = Boolean.parseBoolean(lines.get(8).split("=")[1]);
                 acceptPlagiarsimPercentageConfig = Float.parseFloat(lines.get(9));
+                penaltyMode = String.valueOf(lines.get(10).split("=")[1]);
+                limitSubmission = Integer.parseInt(lines.get(11));
             }
 
             // Check format
