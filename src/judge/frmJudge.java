@@ -919,10 +919,7 @@ public class frmJudge extends javax.swing.JFrame {
         String contest = s;
         String selectedTab = tabTable.getTitleAt(tabTable.getSelectedIndex());
         String pathToSettingConfig = problemDir + "\\" + selectedTab + "\\config.txt";
-        File tempFile = new File(pathToSettingConfig);
-        DecimalFormat newFormat = new DecimalFormat("#.#");
         //read config file
-        List<String> logLines = Collections.emptyList();
         boolean checkFormatConfig = false;
         double minusFormatPointConfig = 0;
         boolean checkCommentConfig = false;
@@ -956,7 +953,6 @@ public class frmJudge extends javax.swing.JFrame {
             String user = tb.getValueAt(i, 0).toString();
             double total = 0;
             for (int j = 1; j < tb.getColumnCount() - 1; ++j) {
-                String point = "";
                 int pen = 0;
                 String problem = tb.getColumnName(j);
                 String studentAndProblem = "[" + user + "][" + problem + "]";
@@ -1013,7 +1009,7 @@ public class frmJudge extends javax.swing.JFrame {
                             }
                             mainPoint = (mainPoint > 0 ? mainPoint : 0.0);
 
-                            mainPoint = Double.valueOf(newFormat.format(mainPoint));
+                            mainPoint = Double.valueOf(String.format("%.1f", mainPoint));
                             hmTable.get(s).setValueAt(String.valueOf(mainPoint), i, j);
                             total += mainPoint;
                         } else {
@@ -1026,7 +1022,7 @@ public class frmJudge extends javax.swing.JFrame {
                 }
 
             }
-            hmTable.get(s).setValueAt(newFormat.format(total), i, tb.getColumnCount() - 1);
+            hmTable.get(s).setValueAt(String.format("%.1f", total), i, tb.getColumnCount() - 1);
         }
     }
 

@@ -284,7 +284,7 @@ public class Judge {
                         writer.write(result.toString());
                         writer.close();
                         // Set point for problem column
-                        setPoint(stuclass, newFormat.format(calculatePoint(stuclass, user, problem, type)), parent.hmStuIndex.get(user + stuclass),
+                        setPoint(stuclass, String.format("%.1f", calculatePoint(stuclass, user, problem, type)), parent.hmStuIndex.get(user + stuclass),
                                 parent.hmTable.get(stuclass).getColumn(parent.listProbName.get(j)).getModelIndex());
                         // Set total point for user
                         setPoint(stuclass, getTotalPoint(stuclass, user), parent.hmStuIndex.get(user + stuclass),
