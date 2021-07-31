@@ -153,7 +153,6 @@ public class frmJudge extends javax.swing.JFrame {
         btnListProblem = new javax.swing.JButton();
         btnUpdateOnline = new javax.swing.JButton();
         btnImportExcel = new javax.swing.JButton();
-        btnExportExcel = new javax.swing.JButton();
         btnConfig = new javax.swing.JButton();
         btnSetting = new javax.swing.JButton();
         btnJudgeAContest = new javax.swing.JButton();
@@ -220,14 +219,6 @@ public class frmJudge extends javax.swing.JFrame {
         btnImportExcel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnImportExcelActionPerformed(evt);
-            }
-        });
-
-        btnExportExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/btnexport.png"))); // NOI18N
-        btnExportExcel.setToolTipText("Export Excel");
-        btnExportExcel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnExportExcelActionPerformed(evt);
             }
         });
 
@@ -298,9 +289,7 @@ public class frmJudge extends javax.swing.JFrame {
                 .addComponent(btnLoadPoint)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnImportExcel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnExportExcel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnConfig)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnSetting)
@@ -310,7 +299,7 @@ public class frmJudge extends javax.swing.JFrame {
                 .addComponent(btnJudgeAllContests)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnJudgeAContest1)
-                .addContainerGap())
+                .addGap(110, 110, 110))
         );
         pnlToolbarLayout.setVerticalGroup(
             pnlToolbarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -323,7 +312,6 @@ public class frmJudge extends javax.swing.JFrame {
                     .addComponent(btnJudgeAContest)
                     .addComponent(btnSetting)
                     .addComponent(btnConfig)
-                    .addComponent(btnExportExcel)
                     .addComponent(btnImportExcel)
                     .addComponent(btnUpdateOnline)
                     .addComponent(btnListProblem))
@@ -342,9 +330,11 @@ public class frmJudge extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtFilter, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(tabTable, javax.swing.GroupLayout.DEFAULT_SIZE, 914, Short.MAX_VALUE))
+                    .addComponent(tabTable))
                 .addContainerGap())
-            .addComponent(pnlToolbar, javax.swing.GroupLayout.DEFAULT_SIZE, 938, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(pnlToolbar, javax.swing.GroupLayout.PREFERRED_SIZE, 834, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -433,7 +423,6 @@ public class frmJudge extends javax.swing.JFrame {
         if (!listProbName.isEmpty() && !listStuName.isEmpty()) {
             btnUpdateOnline.setEnabled(true);
             btnImportExcel.setEnabled(true);
-            btnExportExcel.setEnabled(true);
             btnJudgeAContest.setEnabled(true);
         }
     }
@@ -523,7 +512,6 @@ public class frmJudge extends javax.swing.JFrame {
         if (!listProbName.isEmpty() && !listStuName.isEmpty()) {
             btnUpdateOnline.setEnabled(true);
             btnImportExcel.setEnabled(true);
-            btnExportExcel.setEnabled(true);
             btnJudgeAContest.setEnabled(true);
         }
     }
@@ -817,15 +805,6 @@ public class frmJudge extends javax.swing.JFrame {
             this.dispose();
         }
     }//GEN-LAST:event_formWindowClosing
-    /**
-     * open Export excel frame
-     *
-     * @param evt
-     */
-    private void btnExportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportExcelActionPerformed
-        frmExportExcel frmCon = new frmExportExcel(this);
-        frmCon.setVisible(true);
-    }//GEN-LAST:event_btnExportExcelActionPerformed
 
     private void btnUpdateOnlineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateOnlineActionPerformed
         autoJudge();
@@ -1040,7 +1019,6 @@ public class frmJudge extends javax.swing.JFrame {
             try {
                 btnUpdateOnline.setEnabled(true);
                 btnImportExcel.setEnabled(true);
-                btnExportExcel.setEnabled(true);
                 btnJudgeAContest.setEnabled(true);
                 tabTable.removeAll();
                 listProbPath.clear();
@@ -1267,7 +1245,6 @@ public class frmJudge extends javax.swing.JFrame {
         this.btnUpdateOnline.setEnabled(false);
         this.btnUpdateOnline.setEnabled(false);
         this.btnImportExcel.setEnabled(false);
-        this.btnExportExcel.setEnabled(false);
 //        this.btnJudge.setEnabled(false);
         this.tmptype = "cpppysqljava"; // C, C++, python
         this.listNopbaiPath = new ArrayList<>();
@@ -1403,7 +1380,6 @@ public class frmJudge extends javax.swing.JFrame {
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnConfig;
-    private javax.swing.JButton btnExportExcel;
     private javax.swing.JButton btnImportExcel;
     public javax.swing.JButton btnJudgeAContest;
     public javax.swing.JButton btnJudgeAContest1;
