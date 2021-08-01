@@ -987,7 +987,7 @@ public class frmJudge extends javax.swing.JFrame {
                                 mainPoint = mainPoint * (limitSubmission - pen + 1) / limitSubmission;
                             }
                             mainPoint = (mainPoint > 0 ? mainPoint : 0.0);
-
+                            
                             hmTable.get(s).setValueAt(String.format("%.1f", mainPoint), i, j);
                             total += mainPoint;
                         } else {
