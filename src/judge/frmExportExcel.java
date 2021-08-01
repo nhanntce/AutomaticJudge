@@ -104,7 +104,8 @@ public class frmExportExcel extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
     /**
      * export student's score NhaNT
-     * @param evt 
+     *
+     * @param evt
      */
     private void btnExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportActionPerformed
         ExcelHandle tool = new ExcelHandle(parent);
@@ -120,14 +121,14 @@ public class frmExportExcel extends javax.swing.JFrame {
                     this.setVisible(false);
                     JTable tbExport = new JTable(parent.tableModelExport);
                     if (tbExport.getRowCount() == 0) {
-                        tool.writeToExcell(parent.hmTable.get(cmbExport.getSelectedItem().toString()), fileFile.getSelectedFile());
+                        tool.writeToExcell(parent.hmTable.get(cmbExport.getSelectedItem().toString()), fileFile.getSelectedFile(), cmbExport.getSelectedItem().toString());
                     } else {
                         for (int i = 0; i < tbExport.getRowCount(); ++i) {
                             for (int j = 3; j < tbExport.getColumnCount(); ++j) {
                                 tbExport.setValueAt(parent.hmTable.get(cmbExport.getSelectedItem().toString()).getValueAt(i, j - 2), i, j);
                             }
                         }
-                        tool.writeToExcell(tbExport, fileFile.getSelectedFile());
+                        tool.writeToExcell(tbExport, fileFile.getSelectedFile(), cmbExport.getSelectedItem().toString());
                     }
 
                 }

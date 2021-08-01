@@ -5,10 +5,7 @@
  */
 package judge;
 
-import java.awt.BorderLayout;
 import java.awt.Toolkit;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
 
 /**
  *
@@ -129,7 +126,7 @@ public class frmAbout extends javax.swing.JFrame {
 
         lnlEmailThaoNM5.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         lnlEmailThaoNM5.setLabelFor(lblIconThaoNM);
-        lnlEmailThaoNM5.setText("0965689616");
+        lnlEmailThaoNM5.setText("0974440621");
 
         lblThaoNM3.setFont(new java.awt.Font("Tahoma", 1, 22)); // NOI18N
         lblThaoNM3.setText("VO TRUONG HAI DANG");
@@ -187,13 +184,11 @@ public class frmAbout extends javax.swing.JFrame {
             .addGroup(pnlAboutUsLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnlAboutUsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlAboutUsLayout.createSequentialGroup()
-                        .addComponent(lblContactUs, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap())
+                    .addComponent(lblContactUs, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlAboutUsLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(lblLogo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
+                        .addComponent(lblLogo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlAboutUsLayout.createSequentialGroup()
                 .addContainerGap(80, Short.MAX_VALUE)
                 .addGroup(pnlAboutUsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

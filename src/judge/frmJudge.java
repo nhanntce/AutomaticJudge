@@ -73,7 +73,7 @@ public class frmJudge extends javax.swing.JFrame {
     public String typejava;
     public String studentDir;       //store the path of workspace NhanNT
     public String problemDir;      //store the path of testcase of contests NhanNT
-    private String excelPath;
+    public String excelPath;
     public String folderNopbaiPath; //store the path of submissions NhanNT
     public String testcaseEventPath; //store the path catch the event when update testcase NhanNT
     public String workspaceEventPath; //store the path catch the event when update workspace NhanNT
@@ -152,7 +152,7 @@ public class frmJudge extends javax.swing.JFrame {
         pnlToolbar = new javax.swing.JPanel();
         btnListProblem = new javax.swing.JButton();
         btnUpdateOnline = new javax.swing.JButton();
-        btnImportExcel = new javax.swing.JButton();
+        btnExportExcel = new javax.swing.JButton();
         btnConfig = new javax.swing.JButton();
         btnSetting = new javax.swing.JButton();
         btnJudgeAContest = new javax.swing.JButton();
@@ -213,12 +213,12 @@ public class frmJudge extends javax.swing.JFrame {
             }
         });
 
-        btnImportExcel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        btnImportExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/btnimport.png"))); // NOI18N
-        btnImportExcel.setToolTipText("Import Excel");
-        btnImportExcel.addActionListener(new java.awt.event.ActionListener() {
+        btnExportExcel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        btnExportExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/btnexport.png"))); // NOI18N
+        btnExportExcel.setToolTipText("Import Excel");
+        btnExportExcel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnImportExcelActionPerformed(evt);
+                btnExportExcelActionPerformed(evt);
             }
         });
 
@@ -288,7 +288,7 @@ public class frmJudge extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnLoadPoint)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnImportExcel)
+                .addComponent(btnExportExcel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnConfig)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -312,7 +312,7 @@ public class frmJudge extends javax.swing.JFrame {
                     .addComponent(btnJudgeAContest)
                     .addComponent(btnSetting)
                     .addComponent(btnConfig)
-                    .addComponent(btnImportExcel)
+                    .addComponent(btnExportExcel)
                     .addComponent(btnUpdateOnline)
                     .addComponent(btnListProblem))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -422,7 +422,7 @@ public class frmJudge extends javax.swing.JFrame {
         }
         if (!listProbName.isEmpty() && !listStuName.isEmpty()) {
             btnUpdateOnline.setEnabled(true);
-            btnImportExcel.setEnabled(true);
+            btnExportExcel.setEnabled(true);
             btnJudgeAContest.setEnabled(true);
         }
     }
@@ -511,7 +511,7 @@ public class frmJudge extends javax.swing.JFrame {
         }
         if (!listProbName.isEmpty() && !listStuName.isEmpty()) {
             btnUpdateOnline.setEnabled(true);
-            btnImportExcel.setEnabled(true);
+            btnExportExcel.setEnabled(true);
             btnJudgeAContest.setEnabled(true);
         }
     }
@@ -753,22 +753,10 @@ public class frmJudge extends javax.swing.JFrame {
      *
      * @param evt
      */
-    private void btnImportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImportExcelActionPerformed
-        fileFile.removeChoosableFileFilter(fileFile.getFileFilter());
-        fileFile.setCurrentDirectory(new File(excelPath));
-        fileFile.setAcceptAllFileFilterUsed(false);
-        FileFilter filter = new FileNameExtensionFilter("Excel File (.xlsx)", "xlsx");
-        fileFile.setFileFilter(filter);
-
-        int choice = fileFile.showOpenDialog(this);
-        if (choice == JFileChooser.APPROVE_OPTION) { // if option Open file in JFileChooser
-            File f = fileFile.getSelectedFile(); // get file
-            excelPath = f.getAbsolutePath(); // get file path
-            String excelName = f.getName(); // get file name
-            excel = new ExcelHandle(excelPath, excelName, studentDir, problemDir, this);
-            excel.importExcel();
-        }
-    }//GEN-LAST:event_btnImportExcelActionPerformed
+    private void btnExportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportExcelActionPerformed
+        frmExportExcel frmCon = new frmExportExcel(this);
+        frmCon.setVisible(true);
+    }//GEN-LAST:event_btnExportExcelActionPerformed
 
     /**
      * save config file NhanNT
@@ -787,7 +775,7 @@ public class frmJudge extends javax.swing.JFrame {
             props.setProperty("testcaseEventPath", testcaseEventPath.replace(path1, ""));
             props.setProperty("workspaceEventPath", workspaceEventPath.replace(path1, ""));
             props.setProperty("folderNopbaiPath", folderNopbaiPath.replace(path1, ""));
-            props.setProperty("excelPath", excelPath);
+            props.setProperty("excelPath", excelPath.replace(path1, ""));
             props.setProperty("typecpp", typecpp);
             props.setProperty("typec", typec);
             props.setProperty("typepy", typepy);
@@ -1018,7 +1006,7 @@ public class frmJudge extends javax.swing.JFrame {
         if (input == 0) {
             try {
                 btnUpdateOnline.setEnabled(true);
-                btnImportExcel.setEnabled(true);
+                btnExportExcel.setEnabled(true);
                 btnJudgeAContest.setEnabled(true);
                 tabTable.removeAll();
                 listProbPath.clear();
@@ -1244,7 +1232,7 @@ public class frmJudge extends javax.swing.JFrame {
     private void init() {
         this.btnUpdateOnline.setEnabled(false);
         this.btnUpdateOnline.setEnabled(false);
-        this.btnImportExcel.setEnabled(false);
+        this.btnExportExcel.setEnabled(false);
 //        this.btnJudge.setEnabled(false);
         this.tmptype = "cpppysqljava"; // C, C++, python
         this.listNopbaiPath = new ArrayList<>();
@@ -1313,7 +1301,7 @@ public class frmJudge extends javax.swing.JFrame {
             this.testcaseEventPath = path1 + this.props.getProperty("testcaseEventPath");
             this.workspaceEventPath = path1 + this.props.getProperty("workspaceEventPath");
             this.folderNopbaiPath = path1 + this.props.getProperty("folderNopbaiPath");
-            this.excelPath = this.props.getProperty("excelPath");
+            this.excelPath = path1 + this.props.getProperty("excelPath");
             this.typecpp = this.props.getProperty("typecpp");
             this.typec = this.props.getProperty("typec");
             this.typepy = this.props.getProperty("typepy");
@@ -1380,7 +1368,7 @@ public class frmJudge extends javax.swing.JFrame {
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnConfig;
-    private javax.swing.JButton btnImportExcel;
+    private javax.swing.JButton btnExportExcel;
     public javax.swing.JButton btnJudgeAContest;
     public javax.swing.JButton btnJudgeAContest1;
     public javax.swing.JButton btnJudgeAllContests;
