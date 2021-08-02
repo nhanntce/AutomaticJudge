@@ -422,6 +422,7 @@ public class frmSetting extends javax.swing.JFrame {
                 
                 fileWriter.close();
                 setVisible(false);
+                parent.btnSetting.setEnabled(true);
             } catch (IOException ex) {
                 Logger.getLogger(frmSetting.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -430,6 +431,7 @@ public class frmSetting extends javax.swing.JFrame {
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
         setVisible(false);
+        parent.btnSetting.setEnabled(true);
     }//GEN-LAST:event_btnCancelActionPerformed
 
     private void chkCheckFormatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkCheckFormatActionPerformed

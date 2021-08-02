@@ -260,12 +260,14 @@ public class frmSetPaths extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(frmSetting.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
+            parent.btnListProblem.setEnabled(true);
             setVisible(false);
         }
     }//GEN-LAST:event_btnAcceptActionPerformed
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
         setVisible(false);
+        parent.btnListProblem.setEnabled(true);
     }//GEN-LAST:event_btnCancelActionPerformed
 
 

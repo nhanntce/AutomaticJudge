@@ -50,13 +50,24 @@ public class ExcelHandle {
     String problemDir;
     String path;
     String name;
+    private final String MAIN_SHEET = "IT1";
+    private final String FORMAT_SHEET = "Format";
+    private final String COMMENT_SHEET = "Comment";
+    private final String PLAGIARISM_SHEET = "Plagiarism";
+    private final String TEMPLATE = "template";
 
     public ExcelHandle(frmJudge parent) {
         this.parent = parent;
     }
 
     /**
-     * Get path list student by file excel LinhNC
+     * Constructor
+     *
+     * @param path
+     * @param name
+     * @param studentDir
+     * @param problemDir
+     * @param parent
      */
     public ExcelHandle(String path, String name, String studentDir, String problemDir, frmJudge parent) {
         try {
@@ -132,7 +143,7 @@ public class ExcelHandle {
 
     /**
      * Export data to file Excel
-     *
+     * @author NhanNT
      * @param table
      * @param file
      * @throws FileNotFoundException
@@ -141,63 +152,74 @@ public class ExcelHandle {
         try {
             TableModel dtm = table.getModel();
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            //get format, comment, plagiarism result
             StudentResult studentResult = getStudentResult(contestName, dtm);
-            Map<String, String> studentName = new HashMap<>();
             String semester = contestName.split("_")[0] != null ? contestName.split("_")[0] : "";
             String subject = contestName.split("_")[1] != null ? contestName.split("_")[1] : "";
             String clas = contestName.split("_")[2] != null ? contestName.split("_")[2] : "";
-
+            //get student name in the contest
+            Map<String, String> studentName = new HashMap<>();
             if (Files.exists(Paths.get(parent.problemDir + "\\" + contestName + "\\student.txt"))) {
                 List<String> students = Files.readAllLines(Paths.get(parent.problemDir + "\\" + contestName + "\\student.txt"));
                 for (int i = 0, len = students.size(); i < len; i++) {
                     studentName.put(students.get(i).split("=")[0], students.get(i).split("=")[1]);
                 }
             }
+            //get attribute in config file in the contest
             boolean checkFormat = true;
             boolean checkComment = true;
-            double percetageComment = 50;
+            double percetageComment = 0;
             boolean checkPlagiarism = true;
-            double percetagePlagiarism = 75;
+            double percetagePlagiarism = 0;
+            double formatMinus = 0;
+            String commentMode = "Fixed";
+            double commentMinus = 0;
             if (Files.exists(Paths.get(parent.problemDir + "\\" + contestName + "\\config.txt"))) {
                 List<String> config = Files.readAllLines(Paths.get(parent.problemDir + "\\" + contestName + "\\config.txt"));
                 checkFormat = Boolean.parseBoolean(config.get(2).split("=")[1]);
+                formatMinus = Double.parseDouble(config.get(3));
                 checkComment = Boolean.parseBoolean(config.get(4).split("=")[1]);
+                commentMode = config.get(5).split("=")[1];
                 percetageComment = Double.parseDouble(config.get(6));
+                commentMinus = Double.parseDouble(config.get(7));
                 checkPlagiarism = Boolean.parseBoolean(config.get(8).split("=")[1]);
                 percetagePlagiarism = Double.parseDouble(config.get(9));
             }
-
+            //get excel template
             Workbook wbexport = new XSSFWorkbook(parent.excelPath + "\\template\\template_final.xlsx");
-            Sheet mainSheet = wbexport.getSheet("IT1");
-            Sheet tmp = wbexport.getSheet("template");
+            //get main sheet
+            Sheet mainSheet = wbexport.getSheet(MAIN_SHEET);
+            Sheet tmp = wbexport.getSheet(TEMPLATE);
             //set Style for cell
             CellStyle headerCellStyle = tmp.getRow(5).getCell(3).getCellStyle();
             headerCellStyle.setWrapText(false);
             headerCellStyle.setAlignment(HorizontalAlignment.LEFT);
+            CellStyle title = tmp.getRow(3).getCell(0).getCellStyle();
             CellStyle problemHeader = tmp.getRow(9).getCell(3).getCellStyle();
             CellStyle pointHeader = tmp.getRow(10).getCell(3).getCellStyle();
             CellStyle calPoint = tmp.getRow(12).getCell(8).getCellStyle();
             CellStyle normalCell = tmp.getRow(11).getCell(0).getCellStyle();
-            
-            //Semester
+            CellStyle note = tmp.getRow(17).getCell(0).getCellStyle();
+
+            //write Semester
             Row semesterRow = mainSheet.getRow(5);
             Cell semesterCell = semesterRow.createCell(4);
             semesterCell.getSheet().addMergedRegion(new CellRangeAddress(5, 5, 4, 6));
             semesterCell.setCellStyle(headerCellStyle);
             semesterCell.setCellValue(semester);
-            //Semester
+            //write subject
             Row subjectRow = mainSheet.getRow(6);
             Cell subjectCell = subjectRow.createCell(4);
             subjectCell.getSheet().addMergedRegion(new CellRangeAddress(6, 6, 4, 6));
             subjectCell.setCellStyle(headerCellStyle);
             subjectCell.setCellValue(subject);
-            //class
+            //write class
             Row clasRow = mainSheet.getRow(7);
             Cell classCell = clasRow.createCell(4);
             classCell.getSheet().addMergedRegion(new CellRangeAddress(7, 7, 4, 6));
             classCell.setCellStyle(headerCellStyle);
             classCell.setCellValue(clas);
-            //Date
+            //write Date
             Row dateRow = mainSheet.getRow(8);
             Cell dateCell = dateRow.createCell(4);
             dateCell.getSheet().addMergedRegion(new CellRangeAddress(8, 8, 4, 6));
@@ -217,6 +239,36 @@ public class ExcelHandle {
                 c = pointRow.createCell(excelColIdx);
                 c.setCellStyle(pointHeader);
                 c.setCellValue("10.0");
+            }
+            //format sheet
+            Sheet formatSheet = null;
+            if (checkFormat) {
+                formatSheet = wbexport.cloneSheet(wbexport.getSheetIndex(MAIN_SHEET));
+                wbexport.setSheetName(wbexport.getSheetIndex(formatSheet.getSheetName()), FORMAT_SHEET);
+                Row fr = formatSheet.getRow(3);
+                Cell fc = fr.createCell(0);
+                fc.setCellStyle(title);
+                fc.setCellValue("FORMAT RESULT");
+            }
+            //comment sheet
+            Sheet commentSheet = null;
+            if (checkFormat) {
+                commentSheet = wbexport.cloneSheet(wbexport.getSheetIndex(MAIN_SHEET));
+                wbexport.setSheetName(wbexport.getSheetIndex(commentSheet.getSheetName()), COMMENT_SHEET);
+                Row cr = commentSheet.getRow(3);
+                Cell cc = cr.createCell(0);
+                cc.setCellStyle(title);
+                cc.setCellValue("COMMENT RESULT");
+            }
+            //comment sheet
+            Sheet plagiarismSheet = null;
+            if (checkFormat) {
+                plagiarismSheet = wbexport.cloneSheet(wbexport.getSheetIndex(MAIN_SHEET));
+                wbexport.setSheetName(wbexport.getSheetIndex(plagiarismSheet.getSheetName()), PLAGIARISM_SHEET);
+                Row pr = plagiarismSheet.getRow(3);
+                Cell pc = pr.createCell(0);
+                pc.setCellStyle(title);
+                pc.setCellValue("PLAGIARISM RESULT");
             }
             //write Sum header
             c = problemRow.createCell(excelColIdx);
@@ -255,24 +307,35 @@ public class ExcelHandle {
             c = pointRow.createCell(excelColIdx + 4);
             c.setCellStyle(problemHeader);
             c.setCellValue("Plagiarism");
-
-            mainSheet.autoSizeColumn(excelColIdx + 2);
-            mainSheet.autoSizeColumn(excelColIdx + 3);
-            mainSheet.autoSizeColumn(excelColIdx + 4);
+            //write points
             double total = 0;
             for (excelRowIdx = 11, dtRowIdx = 0; dtRowIdx < dtm.getRowCount(); excelRowIdx++, dtRowIdx++) {
                 Row row = mainSheet.createRow(excelRowIdx);
+                Row rowFormat = formatSheet.createRow(excelRowIdx);
+                Row rowComment = commentSheet.createRow(excelRowIdx);
+                Row rowPlagiarism = plagiarismSheet.createRow(excelRowIdx);
                 total = 0;
                 String id = "";
                 String format = "";
                 String comment = "";
                 String plagiarism = "";
                 String idAndPro = "";
-                Cell cell = null;
-                //No.
-                cell = row.createCell(0);
+                //No. main sheet
+                Cell cell = row.createCell(0);
                 cell.setCellStyle(normalCell);
                 cell.setCellValue(dtRowIdx + 1);
+                //No.format sheet
+                Cell cellFormat = rowFormat.createCell(0);
+                cellFormat.setCellStyle(normalCell);
+                cellFormat.setCellValue(dtRowIdx + 1);
+                //No.comment sheet
+                Cell cellComment = rowComment.createCell(0);
+                cellComment.setCellStyle(normalCell);
+                cellComment.setCellValue(dtRowIdx + 1);
+                //No.plagiarism sheet
+                Cell cellPlagiarism = rowPlagiarism.createCell(0);
+                cellPlagiarism.setCellStyle(normalCell);
+                cellPlagiarism.setCellValue(dtRowIdx + 1);
                 for (excelColIdx = 1, dtColIdx = 0; dtColIdx < dtm.getColumnCount() - 1; excelColIdx++, dtColIdx++) {
                     if (dtColIdx > 0) {
                         //point
@@ -283,14 +346,47 @@ public class ExcelHandle {
                         String formatResult = studentResult.getFormat().get(idAndPro);
                         String commentResult = studentResult.getComment().get(idAndPro);
                         String plagiarismResult = studentResult.getPlagiarsm().get(idAndPro);
-                        if (formatResult != null && checkFormat && formatResult.equals("false")) {
-                            format += dtm.getColumnName(dtColIdx);
+                        if (checkFormat) {
+                            //write in format sheet
+                            cellFormat = rowFormat.createCell(excelColIdx + 1);
+                            cellFormat.setCellStyle(normalCell);
+                            if (formatResult != null && formatResult.equals("false")) {
+                                format += dtm.getColumnName(dtColIdx);
+                                cellFormat.setCellValue("No");
+                            } else if (formatResult != null && formatResult.equals("true")) {
+                                cellFormat.setCellValue("Yes");
+                            } else {
+                                cellFormat.setCellValue("-");
+                            }
+
                         }
-                        if (commentResult != null && checkComment && Double.parseDouble(commentResult) < percetageComment) {
-                            comment += dtm.getColumnName(dtColIdx);
+                        if (checkComment) {
+                            //write in comment sheet
+                            cellComment = rowComment.createCell(excelColIdx + 1);
+                            cellComment.setCellStyle(normalCell);
+                            if (commentResult != null) {
+                                cellComment.setCellValue(Double.parseDouble(commentResult));
+                                if (Double.parseDouble(commentResult) < percetageComment) {
+                                    comment += dtm.getColumnName(dtColIdx);
+                                }
+                            } else {
+                                cellComment.setCellValue("-");
+                            }
+
                         }
-                        if (plagiarismResult != null && checkPlagiarism && Double.parseDouble(plagiarismResult) > percetagePlagiarism) {
-                            plagiarism += dtm.getColumnName(dtColIdx);
+                        if (checkPlagiarism) {
+                            //write in comment sheet
+                            cellPlagiarism = rowPlagiarism.createCell(excelColIdx + 1);
+                            cellPlagiarism.setCellStyle(normalCell);
+                            if (plagiarismResult != null) {
+                                cellPlagiarism.setCellValue(Double.parseDouble(plagiarismResult));
+                                if (Double.parseDouble(plagiarismResult) > percetagePlagiarism) {
+                                    plagiarism += dtm.getColumnName(dtColIdx);
+                                }
+                            } else {
+                                cellPlagiarism.setCellValue("-");
+                            }
+
                         }
 
                     } else {
@@ -298,10 +394,35 @@ public class ExcelHandle {
                         cell = row.createCell(excelColIdx);
                         cell.setCellStyle(normalCell);
                         cell.setCellValue(String.valueOf(dtm.getValueAt(dtRowIdx, dtColIdx)));
+                        //ID format sheet
+                        cellFormat = rowFormat.createCell(excelColIdx);
+                        cellFormat.setCellStyle(normalCell);
+                        cellFormat.setCellValue(String.valueOf(dtm.getValueAt(dtRowIdx, dtColIdx)));
+                        //ID comment sheet
+                        cellComment = rowComment.createCell(excelColIdx);
+                        cellComment.setCellStyle(normalCell);
+                        cellComment.setCellValue(String.valueOf(dtm.getValueAt(dtRowIdx, dtColIdx)));
+                        //ID plgiarism sheet
+                        cellPlagiarism = rowPlagiarism.createCell(excelColIdx);
+                        cellPlagiarism.setCellStyle(normalCell);
+                        cellPlagiarism.setCellValue(String.valueOf(dtm.getValueAt(dtRowIdx, dtColIdx)));
                         //Name
                         cell = row.createCell(excelColIdx + 1);
                         cell.setCellStyle(normalCell);
                         cell.setCellValue(studentName.get(String.valueOf(dtm.getValueAt(dtRowIdx, dtColIdx))));
+                        //Name format sheet
+                        cellFormat = rowFormat.createCell(excelColIdx + 1);
+                        cellFormat.setCellStyle(normalCell);
+                        cellFormat.setCellValue(studentName.get(String.valueOf(dtm.getValueAt(dtRowIdx, dtColIdx))));
+                        //Name comment sheet
+                        cellComment = rowComment.createCell(excelColIdx + 1);
+                        cellComment.setCellStyle(normalCell);
+                        cellComment.setCellValue(studentName.get(String.valueOf(dtm.getValueAt(dtRowIdx, dtColIdx))));
+                        //Name plagiarism sheet
+                        cellPlagiarism = rowPlagiarism.createCell(excelColIdx + 1);
+                        cellPlagiarism.setCellStyle(normalCell);
+                        cellPlagiarism.setCellValue(studentName.get(String.valueOf(dtm.getValueAt(dtRowIdx, dtColIdx))));
+
                         id = String.valueOf(dtm.getValueAt(dtRowIdx, dtColIdx));
                     }
                     if (isNumeric(dtm.getValueAt(dtRowIdx, dtColIdx).toString())) {
@@ -331,12 +452,20 @@ public class ExcelHandle {
                 cell.setCellValue(plagiarism.equals("") ? "-" : plagiarism);
             }
             //auto Size fit content
-            for(int i = 3, len = dtm.getColumnCount() + 6; i < len; i++) {
+            for (int i = 3, len = dtm.getColumnCount() + 6; i < len; i++) {
                 mainSheet.autoSizeColumn(i);
             }
+            //Note
+            Row endRow = mainSheet.createRow(excelRowIdx);
+            Cell endCell = endRow.createCell(0);
+            if (checkComment || checkPlagiarism || checkFormat) {
+                endCell.getSheet().addMergedRegion(new CellRangeAddress(excelRowIdx, excelRowIdx, 0, dtm.getColumnCount() - 2));
+                endCell.setCellStyle(note);
+                endCell.setCellValue("Note: View detail in others sheet");
+            }
             //date end
-            Row endRow = mainSheet.createRow(excelRowIdx + 2);
-            Cell endCell = endRow.createCell(dtm.getColumnCount() + 2);
+            endRow = mainSheet.createRow(excelRowIdx + 2);
+            endCell = endRow.createCell(dtm.getColumnCount() + 2);
             endCell.getSheet().addMergedRegion(new CellRangeAddress(excelRowIdx + 2, excelRowIdx + 2, dtm.getColumnCount() + 2, dtm.getColumnCount() + 5));
             endCell.setCellStyle(tmp.getRow(18).getCell(9).getCellStyle());
             SimpleDateFormat dFormat = new SimpleDateFormat("dd MMMM yyyy");
@@ -353,7 +482,35 @@ public class ExcelHandle {
             endCell.getSheet().addMergedRegion(new CellRangeAddress(excelRowIdx + 6, excelRowIdx + 6, dtm.getColumnCount() + 2, dtm.getColumnCount() + 5));
             endCell.setCellStyle(tmp.getRow(22).getCell(9).getCellStyle());
             endCell.setCellValue("Tên giảng viên");
+
+            //end for format
+            Row endFormatRow = formatSheet.createRow(excelRowIdx);
+            Cell endFormatCell = endFormatRow.createCell(0);
+            endFormatCell.getSheet().addMergedRegion(new CellRangeAddress(excelRowIdx, excelRowIdx, 0, dtm.getColumnCount() + 1));
+            endFormatCell.setCellStyle(note);
+            endFormatCell.setCellValue(String.format("Minus %.1f point when student have not formatted their source code", formatMinus));
+
+            //end for format
+            Row endCommentRow = commentSheet.createRow(excelRowIdx);
+            Cell endCommentCell = endCommentRow.createCell(0);
+            endCommentCell.getSheet().addMergedRegion(new CellRangeAddress(excelRowIdx, excelRowIdx, 0, dtm.getColumnCount() + 1));
+            endCommentCell.setCellStyle(note);
+            if ("Fixed".equals(commentMode)) {
+                endCommentCell.setCellValue(String.format("Minus %.1f point(s) when student have not comment source code more than %.1f %%", commentMinus, percetageComment));
+            } else {
+                endCommentCell.setCellValue(String.format("Minus %.1f of points when student have not comment source code more than %.1f %%", commentMinus, percetageComment));
+            }
+            //end for plagiarism
+            Row endPlagiarismRow = plagiarismSheet.createRow(excelRowIdx);
+            Cell endPlagiarismCell = endPlagiarismRow.createCell(0);
+            endPlagiarismCell.getSheet().addMergedRegion(new CellRangeAddress(excelRowIdx, excelRowIdx, 0, dtm.getColumnCount() + 1));
+            endPlagiarismCell.setCellStyle(note);
+            endPlagiarismCell.setCellValue(String.format("ZERO point if student plagiarized more than %.1f %%", percetagePlagiarism));
             
+            //set main sheet active
+            wbexport.setActiveSheet(wbexport.getSheetIndex(MAIN_SHEET));
+            //remove template sheet
+            wbexport.removeSheetAt(wbexport.getSheetIndex(TEMPLATE));
             if (!file.toString().contains(".xlsx")) {
                 file = new File(file.toString() + ".xlsx");
             }
@@ -362,7 +519,7 @@ public class ExcelHandle {
             out.close();
 
         } catch (IOException e) {
-            System.out.println(e);
+
         }
     }
 
@@ -374,6 +531,18 @@ public class ExcelHandle {
         return (double) Math.round(value * scale) / scale;
     }
 
+    private void writeFormat(Sheet formatSheet, CellStyle normalStyle, boolean checkFormat) {
+
+    }
+
+    /**
+     * get format, comment, plagiarism result
+     *
+     * @author NhanNT
+     * @param contest
+     * @param dtm
+     * @return
+     */
     private StudentResult getStudentResult(String contest, TableModel dtm) {
         HashMap<String, String> format = new HashMap<>();
         HashMap<String, String> comment = new HashMap<>();

@@ -157,7 +157,7 @@ public class frmJudge extends javax.swing.JFrame {
         btnSetting = new javax.swing.JButton();
         btnJudgeAContest = new javax.swing.JButton();
         btnJudgeAllContests = new javax.swing.JButton();
-        btnJudgeAContest1 = new javax.swing.JButton();
+        btnAbout = new javax.swing.JButton();
         btnLoadPoint = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -258,12 +258,12 @@ public class frmJudge extends javax.swing.JFrame {
             }
         });
 
-        btnJudgeAContest1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        btnJudgeAContest1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/btninfo.png"))); // NOI18N
-        btnJudgeAContest1.setToolTipText("Judge Current Tab");
-        btnJudgeAContest1.addActionListener(new java.awt.event.ActionListener() {
+        btnAbout.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        btnAbout.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/btninfo.png"))); // NOI18N
+        btnAbout.setToolTipText("Judge Current Tab");
+        btnAbout.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnJudgeAContest1ActionPerformed(evt);
+                btnAboutActionPerformed(evt);
             }
         });
 
@@ -298,7 +298,7 @@ public class frmJudge extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnJudgeAllContests)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnJudgeAContest1)
+                .addComponent(btnAbout)
                 .addGap(110, 110, 110))
         );
         pnlToolbarLayout.setVerticalGroup(
@@ -307,7 +307,7 @@ public class frmJudge extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(pnlToolbarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(btnLoadPoint)
-                    .addComponent(btnJudgeAContest1)
+                    .addComponent(btnAbout)
                     .addComponent(btnJudgeAllContests)
                     .addComponent(btnJudgeAContest)
                     .addComponent(btnSetting)
@@ -333,7 +333,7 @@ public class frmJudge extends javax.swing.JFrame {
                     .addComponent(tabTable))
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
-                .addComponent(pnlToolbar, javax.swing.GroupLayout.PREFERRED_SIZE, 834, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(pnlToolbar, javax.swing.GroupLayout.PREFERRED_SIZE, 843, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -362,6 +362,7 @@ public class frmJudge extends javax.swing.JFrame {
     private void btnListProblemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnListProblemActionPerformed
         frmSetPaths setPaths = new frmSetPaths(this);
         setPaths.setVisible(true);
+        btnListProblem.setEnabled(false);
     }//GEN-LAST:event_btnListProblemActionPerformed
 
     public void loadAllPoint() {
@@ -711,6 +712,7 @@ public class frmJudge extends javax.swing.JFrame {
 
         setting.pack();
         setting.setVisible(true);
+        btnSetting.setEnabled(false);
     }//GEN-LAST:event_btnSettingActionPerformed
 
     /**
@@ -747,6 +749,7 @@ public class frmJudge extends javax.swing.JFrame {
     private void btnConfigActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfigActionPerformed
         frmConfig frmCon = new frmConfig(this);
         frmCon.setVisible(true);
+        btnConfig.setEnabled(false);
     }//GEN-LAST:event_btnConfigActionPerformed
     /**
      * import excel NhanNT
@@ -756,6 +759,7 @@ public class frmJudge extends javax.swing.JFrame {
     private void btnExportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportExcelActionPerformed
         frmExportExcel frmCon = new frmExportExcel(this);
         frmCon.setVisible(true);
+        btnExportExcel.setEnabled(false);
     }//GEN-LAST:event_btnExportExcelActionPerformed
 
     /**
@@ -827,10 +831,11 @@ public class frmJudge extends javax.swing.JFrame {
 
     }//GEN-LAST:event_btnJudgeAllContestsActionPerformed
 
-    private void btnJudgeAContest1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnJudgeAContest1ActionPerformed
-        frmAbout about = new frmAbout();
+    private void btnAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAboutActionPerformed
+        frmAbout about = new frmAbout(this);
         about.setVisible(true);
-    }//GEN-LAST:event_btnJudgeAContest1ActionPerformed
+        btnAbout.setEnabled(false);
+    }//GEN-LAST:event_btnAboutActionPerformed
 
     private void btnLoadPointActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadPointActionPerformed
         loadAllPoint();
@@ -1367,14 +1372,14 @@ public class frmJudge extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnConfig;
-    private javax.swing.JButton btnExportExcel;
+    public javax.swing.JButton btnAbout;
+    public javax.swing.JButton btnConfig;
+    public javax.swing.JButton btnExportExcel;
     public javax.swing.JButton btnJudgeAContest;
-    public javax.swing.JButton btnJudgeAContest1;
     public javax.swing.JButton btnJudgeAllContests;
-    private javax.swing.JButton btnListProblem;
+    public javax.swing.JButton btnListProblem;
     public javax.swing.JButton btnLoadPoint;
-    private javax.swing.JButton btnSetting;
+    public javax.swing.JButton btnSetting;
     public javax.swing.JButton btnUpdateOnline;
     private javax.swing.JFileChooser fileFile;
     public javax.swing.JFileChooser fileFolderNopbai;

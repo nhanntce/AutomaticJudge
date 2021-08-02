@@ -132,19 +132,21 @@ public class frmExportExcel extends javax.swing.JFrame {
                     }
 
                 }
-
+                parent.btnExportExcel.setEnabled(true);
             } catch (HeadlessException | FileNotFoundException e) {
                 System.out.println(e.getMessage());
             }
         } else {
             JOptionPane.showMessageDialog(null, "Please add the full path!", "Error!", JOptionPane.ERROR_MESSAGE);
             this.setVisible(false);
+            parent.btnExportExcel.setEnabled(true);
         }
 
     }//GEN-LAST:event_btnExportActionPerformed
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
         this.setVisible(false);
+        parent.btnExportExcel.setEnabled(true);
     }//GEN-LAST:event_btnCancelActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancel;

@@ -12,14 +12,15 @@ import java.awt.Toolkit;
  * @author ADMIN
  */
 public class frmAbout extends javax.swing.JFrame {
-
+    private frmJudge parent;
     /**
      * Creates new form frmAbout
      */
-    public frmAbout() {
+    public frmAbout(frmJudge parent) {
         initComponents();
         this.setLocationRelativeTo(null);
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/img/btninfo.png")));
+        this.parent = parent; 
 //        this.setLayout(new BorderLayout());
 //        this.setContentPane(new JLabel(new ImageIcon("./src/img/background_about.png")));
 //        this.setResizable(false);
@@ -73,6 +74,11 @@ public class frmAbout extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("About Us");
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                formWindowClosed(evt);
+            }
+        });
 
         pnlAboutUs.setBackground(new java.awt.Color(253, 239, 239));
         pnlAboutUs.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -341,6 +347,10 @@ public class frmAbout extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
+        parent.btnAbout.setEnabled(true);
+    }//GEN-LAST:event_formWindowClosed
 
 
 //    private static void loadAndShowImage(ImagePanel imagePanel) {

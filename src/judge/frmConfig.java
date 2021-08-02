@@ -105,6 +105,7 @@ public class frmConfig extends javax.swing.JFrame {
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
         setVisible(false);
+        parent.btnConfig.setEnabled(true);
     }//GEN-LAST:event_btnCancelActionPerformed
 
     private void btnOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOkActionPerformed
@@ -113,6 +114,7 @@ public class frmConfig extends javax.swing.JFrame {
         parent.typepy = tblConfig.getValueAt(2, 1).toString();
         parent.typejava = tblConfig.getValueAt(3, 1).toString();
         setVisible(false);
+        parent.btnConfig.setEnabled(true);
     }//GEN-LAST:event_btnOkActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancel;
