@@ -286,28 +286,53 @@ public class ExcelHandle {
             c = pointRow.createCell(excelColIdx + 1);
             c.setCellStyle(pointHeader);
             c.setCellValue(100.0);
-            //write Note header
-            c = problemRow.createCell(excelColIdx + 2);
-            c.getSheet().addMergedRegion(new CellRangeAddress(9, 9, excelColIdx + 2, excelColIdx + 4));
-            c.setCellStyle(problemHeader);
-            c.setCellValue("Note");
-            c = problemRow.createCell(excelColIdx + 3);
-            c.setCellStyle(problemHeader);
-            c = problemRow.createCell(excelColIdx + 4);
-            c.setCellStyle(problemHeader);
-            //write format header
-            c = pointRow.createCell(excelColIdx + 2);
-            c.setCellStyle(problemHeader);
-            c.setCellValue("Format");
-            //write format header
-            c = pointRow.createCell(excelColIdx + 3);
-            c.setCellStyle(problemHeader);
-            mainSheet.autoSizeColumn(excelColIdx + 3);
-            c.setCellValue("Comment");
-            //write format header
-            c = pointRow.createCell(excelColIdx + 4);
-            c.setCellStyle(problemHeader);
-            c.setCellValue("Plagiarism");
+            int notRange = 0;
+            int nextCol = excelColIdx;
+            if (checkFormat) {
+                notRange++;
+            }
+            if (checkComment) {
+                notRange++;
+            }
+            if (checkPlagiarism) {
+                notRange++;
+            }
+            if (notRange > 0) {
+                //write Note header
+                c = problemRow.createCell(excelColIdx + 2);
+                if (notRange > 1) {
+                    c.getSheet().addMergedRegion(new CellRangeAddress(9, 9, excelColIdx + 2, excelColIdx + notRange + 1));
+                }
+                c.setCellStyle(problemHeader);
+                c.setCellValue("Note");
+                if (notRange > 1) {
+                    c = problemRow.createCell(excelColIdx + 3);
+                    c.setCellStyle(problemHeader);
+                }
+                if (notRange > 2) {
+                    c = problemRow.createCell(excelColIdx + 4);
+                    c.setCellStyle(problemHeader);
+                }
+                nextCol += 2;
+                //write format header
+                if (checkFormat) {
+                    c = pointRow.createCell(nextCol++);
+                    c.setCellStyle(problemHeader);
+                    c.setCellValue("Format");
+                }
+                //write format header
+                if (checkComment) {
+                    c = pointRow.createCell(nextCol++);
+                    c.setCellStyle(problemHeader);
+                    c.setCellValue("Comment");
+                }
+                //write format header
+                if (checkPlagiarism) {
+                    c = pointRow.createCell(nextCol++);
+                    c.setCellStyle(problemHeader);
+                    c.setCellValue("Plagiarism");
+                }
+            }
             //write points
             double total = 0;
             for (excelRowIdx = 11, dtRowIdx = 0; dtRowIdx < dtm.getRowCount(); excelRowIdx++, dtRowIdx++) {
@@ -464,17 +489,24 @@ public class ExcelHandle {
                 cell.setCellStyle(calPoint);
                 cell.setCellValue(total * 10 / (dtm.getColumnCount() - 2));
                 //Format
-                cell = row.createCell(excelColIdx + 3);
-                cell.setCellStyle(normalCell);
-                cell.setCellValue(format.equals("") ? "-" : format);
+                nextCol = excelColIdx + 3;
+                if (checkFormat) {
+                    cell = row.createCell(nextCol++);
+                    cell.setCellStyle(normalCell);
+                    cell.setCellValue(format.equals("") ? "-" : format);
+                }
                 //Comment
-                cell = row.createCell(excelColIdx + 4);
-                cell.setCellStyle(normalCell);
-                cell.setCellValue(comment.equals("") ? "-" : comment);
+                if (checkComment) {
+                    cell = row.createCell(nextCol++);
+                    cell.setCellStyle(normalCell);
+                    cell.setCellValue(comment.equals("") ? "-" : comment);
+                }
                 //Plagiarism
-                cell = row.createCell(excelColIdx + 5);
-                cell.setCellStyle(normalCell);
-                cell.setCellValue(plagiarism.equals("") ? "-" : plagiarism);
+                if (checkPlagiarism) {
+                    cell = row.createCell(nextCol++);
+                    cell.setCellStyle(normalCell);
+                    cell.setCellValue(plagiarism.equals("") ? "-" : plagiarism);
+                }
             }
             //auto Size fit content
             for (int i = 3, len = dtm.getColumnCount() + 6; i < len; i++) {
