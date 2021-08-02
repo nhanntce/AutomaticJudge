@@ -143,6 +143,7 @@ public class ExcelHandle {
 
     /**
      * Export data to file Excel
+     *
      * @author NhanNT
      * @param table
      * @param file
@@ -252,7 +253,7 @@ public class ExcelHandle {
             }
             //comment sheet
             Sheet commentSheet = null;
-            if (checkFormat) {
+            if (checkComment) {
                 commentSheet = wbexport.cloneSheet(wbexport.getSheetIndex(MAIN_SHEET));
                 wbexport.setSheetName(wbexport.getSheetIndex(commentSheet.getSheetName()), COMMENT_SHEET);
                 Row cr = commentSheet.getRow(3);
@@ -262,7 +263,7 @@ public class ExcelHandle {
             }
             //comment sheet
             Sheet plagiarismSheet = null;
-            if (checkFormat) {
+            if (checkPlagiarism) {
                 plagiarismSheet = wbexport.cloneSheet(wbexport.getSheetIndex(MAIN_SHEET));
                 wbexport.setSheetName(wbexport.getSheetIndex(plagiarismSheet.getSheetName()), PLAGIARISM_SHEET);
                 Row pr = plagiarismSheet.getRow(3);
@@ -311,9 +312,18 @@ public class ExcelHandle {
             double total = 0;
             for (excelRowIdx = 11, dtRowIdx = 0; dtRowIdx < dtm.getRowCount(); excelRowIdx++, dtRowIdx++) {
                 Row row = mainSheet.createRow(excelRowIdx);
-                Row rowFormat = formatSheet.createRow(excelRowIdx);
-                Row rowComment = commentSheet.createRow(excelRowIdx);
-                Row rowPlagiarism = plagiarismSheet.createRow(excelRowIdx);
+                Row rowFormat = null;
+                if (checkFormat) {
+                    rowFormat = formatSheet.createRow(excelRowIdx);
+                }
+                Row rowComment = null;
+                if (checkComment) {
+                    rowComment = commentSheet.createRow(excelRowIdx);
+                }
+                Row rowPlagiarism = null;
+                if (checkPlagiarism) {
+                    rowPlagiarism = plagiarismSheet.createRow(excelRowIdx);
+                }
                 total = 0;
                 String id = "";
                 String format = "";
@@ -325,17 +335,26 @@ public class ExcelHandle {
                 cell.setCellStyle(normalCell);
                 cell.setCellValue(dtRowIdx + 1);
                 //No.format sheet
-                Cell cellFormat = rowFormat.createCell(0);
-                cellFormat.setCellStyle(normalCell);
-                cellFormat.setCellValue(dtRowIdx + 1);
+                Cell cellFormat = null;
+                if (checkFormat) {
+                    cellFormat = rowFormat.createCell(0);
+                    cellFormat.setCellStyle(normalCell);
+                    cellFormat.setCellValue(dtRowIdx + 1);
+                }
                 //No.comment sheet
-                Cell cellComment = rowComment.createCell(0);
-                cellComment.setCellStyle(normalCell);
-                cellComment.setCellValue(dtRowIdx + 1);
+                Cell cellComment = null;
+                if (checkComment) {
+                    cellComment = rowComment.createCell(0);
+                    cellComment.setCellStyle(normalCell);
+                    cellComment.setCellValue(dtRowIdx + 1);
+                }
                 //No.plagiarism sheet
-                Cell cellPlagiarism = rowPlagiarism.createCell(0);
-                cellPlagiarism.setCellStyle(normalCell);
-                cellPlagiarism.setCellValue(dtRowIdx + 1);
+                Cell cellPlagiarism = null;
+                if (checkPlagiarism) {
+                    cellPlagiarism = rowPlagiarism.createCell(0);
+                    cellPlagiarism.setCellStyle(normalCell);
+                    cellPlagiarism.setCellValue(dtRowIdx + 1);
+                }
                 for (excelColIdx = 1, dtColIdx = 0; dtColIdx < dtm.getColumnCount() - 1; excelColIdx++, dtColIdx++) {
                     if (dtColIdx > 0) {
                         //point
@@ -394,34 +413,40 @@ public class ExcelHandle {
                         cell = row.createCell(excelColIdx);
                         cell.setCellStyle(normalCell);
                         cell.setCellValue(String.valueOf(dtm.getValueAt(dtRowIdx, dtColIdx)));
-                        //ID format sheet
-                        cellFormat = rowFormat.createCell(excelColIdx);
-                        cellFormat.setCellStyle(normalCell);
-                        cellFormat.setCellValue(String.valueOf(dtm.getValueAt(dtRowIdx, dtColIdx)));
-                        //ID comment sheet
-                        cellComment = rowComment.createCell(excelColIdx);
-                        cellComment.setCellStyle(normalCell);
-                        cellComment.setCellValue(String.valueOf(dtm.getValueAt(dtRowIdx, dtColIdx)));
-                        //ID plgiarism sheet
-                        cellPlagiarism = rowPlagiarism.createCell(excelColIdx);
-                        cellPlagiarism.setCellStyle(normalCell);
-                        cellPlagiarism.setCellValue(String.valueOf(dtm.getValueAt(dtRowIdx, dtColIdx)));
                         //Name
                         cell = row.createCell(excelColIdx + 1);
                         cell.setCellStyle(normalCell);
                         cell.setCellValue(studentName.get(String.valueOf(dtm.getValueAt(dtRowIdx, dtColIdx))));
-                        //Name format sheet
-                        cellFormat = rowFormat.createCell(excelColIdx + 1);
-                        cellFormat.setCellStyle(normalCell);
-                        cellFormat.setCellValue(studentName.get(String.valueOf(dtm.getValueAt(dtRowIdx, dtColIdx))));
-                        //Name comment sheet
-                        cellComment = rowComment.createCell(excelColIdx + 1);
-                        cellComment.setCellStyle(normalCell);
-                        cellComment.setCellValue(studentName.get(String.valueOf(dtm.getValueAt(dtRowIdx, dtColIdx))));
-                        //Name plagiarism sheet
-                        cellPlagiarism = rowPlagiarism.createCell(excelColIdx + 1);
-                        cellPlagiarism.setCellStyle(normalCell);
-                        cellPlagiarism.setCellValue(studentName.get(String.valueOf(dtm.getValueAt(dtRowIdx, dtColIdx))));
+                        //ID format sheet
+                        if (checkFormat) {
+                            cellFormat = rowFormat.createCell(excelColIdx);
+                            cellFormat.setCellStyle(normalCell);
+                            cellFormat.setCellValue(String.valueOf(dtm.getValueAt(dtRowIdx, dtColIdx)));
+                            //Name format sheet
+                            cellFormat = rowFormat.createCell(excelColIdx + 1);
+                            cellFormat.setCellStyle(normalCell);
+                            cellFormat.setCellValue(studentName.get(String.valueOf(dtm.getValueAt(dtRowIdx, dtColIdx))));
+                        }
+                        //ID comment sheet
+                        if (checkComment) {
+                            cellComment = rowComment.createCell(excelColIdx);
+                            cellComment.setCellStyle(normalCell);
+                            cellComment.setCellValue(String.valueOf(dtm.getValueAt(dtRowIdx, dtColIdx)));
+                            //Name comment sheet
+                            cellComment = rowComment.createCell(excelColIdx + 1);
+                            cellComment.setCellStyle(normalCell);
+                            cellComment.setCellValue(studentName.get(String.valueOf(dtm.getValueAt(dtRowIdx, dtColIdx))));
+                        }
+                        //ID plgiarism sheet
+                        if (checkPlagiarism) {
+                            cellPlagiarism = rowPlagiarism.createCell(excelColIdx);
+                            cellPlagiarism.setCellStyle(normalCell);
+                            cellPlagiarism.setCellValue(String.valueOf(dtm.getValueAt(dtRowIdx, dtColIdx)));
+                            //Name plagiarism sheet
+                            cellPlagiarism = rowPlagiarism.createCell(excelColIdx + 1);
+                            cellPlagiarism.setCellStyle(normalCell);
+                            cellPlagiarism.setCellValue(studentName.get(String.valueOf(dtm.getValueAt(dtRowIdx, dtColIdx))));
+                        }
 
                         id = String.valueOf(dtm.getValueAt(dtRowIdx, dtColIdx));
                     }
@@ -484,29 +509,35 @@ public class ExcelHandle {
             endCell.setCellValue("Tên giảng viên");
 
             //end for format
-            Row endFormatRow = formatSheet.createRow(excelRowIdx);
-            Cell endFormatCell = endFormatRow.createCell(0);
-            endFormatCell.getSheet().addMergedRegion(new CellRangeAddress(excelRowIdx, excelRowIdx, 0, dtm.getColumnCount() + 1));
-            endFormatCell.setCellStyle(note);
-            endFormatCell.setCellValue(String.format("Minus %.1f point when student have not formatted their source code", formatMinus));
+            if (checkFormat) {
+                Row endFormatRow = formatSheet.createRow(excelRowIdx);
+                Cell endFormatCell = endFormatRow.createCell(0);
+                endFormatCell.getSheet().addMergedRegion(new CellRangeAddress(excelRowIdx, excelRowIdx, 0, dtm.getColumnCount() + 1));
+                endFormatCell.setCellStyle(note);
+                endFormatCell.setCellValue(String.format("Minus %.1f point when student have not formatted their source code", formatMinus));
 
-            //end for format
-            Row endCommentRow = commentSheet.createRow(excelRowIdx);
-            Cell endCommentCell = endCommentRow.createCell(0);
-            endCommentCell.getSheet().addMergedRegion(new CellRangeAddress(excelRowIdx, excelRowIdx, 0, dtm.getColumnCount() + 1));
-            endCommentCell.setCellStyle(note);
-            if ("Fixed".equals(commentMode)) {
-                endCommentCell.setCellValue(String.format("Minus %.1f point(s) when student have not comment source code more than %.1f %%", commentMinus, percetageComment));
-            } else {
-                endCommentCell.setCellValue(String.format("Minus %.1f of points when student have not comment source code more than %.1f %%", commentMinus, percetageComment));
+            }
+            //end for comment
+            if (checkComment) {
+                Row endCommentRow = commentSheet.createRow(excelRowIdx);
+                Cell endCommentCell = endCommentRow.createCell(0);
+                endCommentCell.getSheet().addMergedRegion(new CellRangeAddress(excelRowIdx, excelRowIdx, 0, dtm.getColumnCount() + 1));
+                endCommentCell.setCellStyle(note);
+                if ("Fixed".equals(commentMode)) {
+                    endCommentCell.setCellValue(String.format("Minus %.1f point(s) when student have not comment source code more than %.1f %%", commentMinus, percetageComment));
+                } else {
+                    endCommentCell.setCellValue(String.format("Minus %.1f of points when student have not comment source code more than %.1f %%", commentMinus, percetageComment));
+                }
             }
             //end for plagiarism
-            Row endPlagiarismRow = plagiarismSheet.createRow(excelRowIdx);
-            Cell endPlagiarismCell = endPlagiarismRow.createCell(0);
-            endPlagiarismCell.getSheet().addMergedRegion(new CellRangeAddress(excelRowIdx, excelRowIdx, 0, dtm.getColumnCount() + 1));
-            endPlagiarismCell.setCellStyle(note);
-            endPlagiarismCell.setCellValue(String.format("ZERO point if student plagiarized more than %.1f %%", percetagePlagiarism));
-            
+            if (checkPlagiarism) {
+                Row endPlagiarismRow = plagiarismSheet.createRow(excelRowIdx);
+                Cell endPlagiarismCell = endPlagiarismRow.createCell(0);
+                endPlagiarismCell.getSheet().addMergedRegion(new CellRangeAddress(excelRowIdx, excelRowIdx, 0, dtm.getColumnCount() + 1));
+                endPlagiarismCell.setCellStyle(note);
+                endPlagiarismCell.setCellValue(String.format("ZERO point if student plagiarized more than %.1f %%", percetagePlagiarism));
+
+            }
             //set main sheet active
             wbexport.setActiveSheet(wbexport.getSheetIndex(MAIN_SHEET));
             //remove template sheet
