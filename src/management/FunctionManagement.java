@@ -68,190 +68,53 @@ public class FunctionManagement {
         for (int i = 0; i < lines.size(); i++) {
             String line = lines.get(i);
 
-            if (!checkSyntax(line)) {
-                return null;
-            }
-
             if (isFunction(line)) {
-                boolean checkSyntax = true;
+
                 // Use to save content of function
                 String content = line;
                 startIndex = i + 1;
 
                 while (!line.contains(")") && (i < lines.size() - 1)) {
-                    if (isFunction(lines.get(i + 1))) {
-                        checkSyntax = false;
-                        break;
-                    }
 
                     line = lines.get(++i);
-
-                    if (!checkSyntax(line)) {
-                        return null;
-                    }
 
                     content += "\n" + line;
                 }
 
-                if (checkSyntax) {
+                if (line.contains("{") && !line.contains("\"") && !line.contains("\'")) {
+                    stack.push("{");
+                }
+
+                while (i < lines.size() - 1) {
+                    line = lines.get(++i);
+
+                    content += "\n" + line;
 
                     if (line.contains("{") && !line.contains("\"") && !line.contains("\'")) {
                         stack.push("{");
                     }
 
-                    while (i < lines.size() - 1) {
-                        line = lines.get(++i);
+                    if (line.contains("}") && !line.contains("\"") && !line.contains("\'")
+                            && !stack.isEmpty()) {
+                        stack.pop();
+                        if (stack.isEmpty()) {
+                            MyFunction mf = new MyFunction();
 
-                        if (!checkSyntax(line)) {
-                            return null;
-                        }
+                            mf.setStartIndex(startIndex);
+                            mf.setEndIndex(i + 1);
+                            mf.setContent(content);
 
-                        content += "\n" + line;
-
-                        if (isFunction(line)) {
-
-                        } else {
-                            if (line.contains("{") && !line.contains("\"") && !line.contains("\'")) {
-                                stack.push("{");
-                            }
-
-                            if (line.contains("}") && !line.contains("\"") && !line.contains("\'")
-                                    && !stack.isEmpty()) {
-                                stack.pop();
-                                if (stack.isEmpty()) {
-                                    MyFunction mf = new MyFunction();
-
-                                    mf.setStartIndex(startIndex);
-                                    mf.setEndIndex(i + 1);
-                                    mf.setContent(content);
-
-                                    funcs.add(mf);
-                                    break;
-                                }
-                            }
+                            funcs.add(mf);
+                            break;
                         }
                     }
-                } else {
-                    return null;
                 }
             }
-        }
-
-        if (!stack.isEmpty() || !checkParentheses.isEmpty() || !checkCurlyBraces.isEmpty()) {
-            return null;
         }
 
         return funcs;
     }
-
-    /**
-     * Check syntax error
-     *
-     * @param line
-     * @return boolean
-     */
-    private boolean checkSyntax(String line) {
-        if (line.contains("\"") || line.contains("\'")) {
-            boolean tmp = false;
-            int d = 0;
-            for (int i = 0; i < line.length(); i++) {
-                if ((line.charAt(i) == '\"' || line.charAt(i) == '\'') && d != 1) {
-                    tmp = true;
-                    d++;
-                } else if ((line.charAt(i) == '\"' || line.charAt(i) == '\'') && d == 1) {
-                    tmp = false;
-                    d = 0;
-                }
-
-                if (line.charAt(i) == '(' && !tmp) {
-                    checkParentheses.push("(");
-                }
-
-                if (line.charAt(i) == ')' && !tmp) {
-                    if (checkParentheses.isEmpty()) {
-                        return false;
-                    } else {
-                        checkParentheses.pop();
-                    }
-                }
-
-                if (line.charAt(i) == '{' && !tmp) {
-                    checkCurlyBraces.push("{");
-                }
-
-                if (line.charAt(i) == '}' && !tmp) {
-                    if (checkCurlyBraces.isEmpty()) {
-                        return false;
-                    } else {
-                        checkCurlyBraces.pop();
-                    }
-                }
-            }
-        } else {
-            if (line.contains("(")) {
-                checkParentheses.push("(");
-            }
-
-            if (line.contains(")")) {
-                if (checkParentheses.isEmpty()) {
-                    return false;
-                } else {
-                    checkParentheses.pop();
-                }
-
-            }
-
-            if (line.contains("{")) {
-                checkCurlyBraces.push("{");
-            }
-
-            if (line.contains("}")) {
-                if (checkCurlyBraces.isEmpty()) {
-                    return false;
-                } else {
-                    checkCurlyBraces.pop();
-                }
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Find the line that contain return type
-     *
-     * @param line
-     * @return boolean
-     */
-    public boolean isContainReturnType(String line) {
-        // List of return type for C language
-        String[] returnTypes = new String[]{"void", "char", "unsigned char", "int", "unsigned int", "short",
-            "unsigned short", "long long", "unsigned long long", "float", "double"};
-
-        for (String rt : returnTypes) {
-            if (line.startsWith(rt.toLowerCase())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Find the line that contain function definition
-     *
-     * @param line
-     * @return boolean
-     */
-//    public boolean isFunction(String line) {
-//        if (line.startsWith("//") || line.contains(";")) {
-//            return false;
-//        }
-//
-//        if (isContainReturnType(line) && line.contains("(")) {
-//            return true;
-//        }
-//        return false;
-//    }
+    
     /**
      * Check and modify whether a function is commented or not
      *
@@ -275,11 +138,13 @@ public class FunctionManagement {
             }
         }
     }
+
     /**
-     * check a function had algorithm comment or not
-     * if all of line comment greater than 20% all line of code return true, otherwise return false
+     * check a function had algorithm comment or not if all of line comment
+     * greater than 20% all line of code return true, otherwise return false
      * NhanNT
-     * @param cmts 
+     *
+     * @param cmts
      */
     public void checkAlgorithmComment(List<Comment> cmts) {
         int countLineComment;
@@ -287,13 +152,13 @@ public class FunctionManagement {
         for (int i = 0; i < this.funcs.size(); i++) {
             countLineComment = 0;
             for (int j = 0; j < cmts.size(); j++) {
-                    if (this.funcs.get(i).getStartIndex() < cmts.get(j).getStartLine()
-                            && this.funcs.get(i).getEndIndex() > cmts.get(j).getEndLine()) {
-                        countLineComment += cmts.get(j).getNumberOfLines();
-                    }
+                if (this.funcs.get(i).getStartIndex() < cmts.get(j).getStartLine()
+                        && this.funcs.get(i).getEndIndex() > cmts.get(j).getEndLine()) {
+                    countLineComment += cmts.get(j).getNumberOfLines();
+                }
             }
-            percentageOfComment = (100.0 / (double)this.funcs.get(i).getLineOfCodes()) * (double)countLineComment; 
-            if(percentageOfComment >= 20){
+            percentageOfComment = (100.0 / (double) this.funcs.get(i).getLineOfCodes()) * (double) countLineComment;
+            if (percentageOfComment >= 20) {
                 this.funcs.get(i).setIsAlgorithmCommented(true);
             }
         }
@@ -352,7 +217,7 @@ public class FunctionManagement {
      * @return
      */
     private boolean isFunction(String line) {
-        String[] arr = new String[]{"boolean", "char", "double", "float", "int", "long", "string", "void"};
-        return Arrays.stream(arr).anyMatch(line::contains) && !line.endsWith(";");
+        String[] arr = new String[]{"boolean", "char", "double", "float", "int", "long", "string", "void", "public", "private", "protected", "default"};
+        return Arrays.stream(arr).anyMatch(line::contains) && !line.contains("=") && !line.endsWith(";");
     }
 }
