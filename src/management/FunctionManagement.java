@@ -218,6 +218,6 @@ public class FunctionManagement {
      */
     private boolean isFunction(String line) {
         String[] arr = new String[]{"boolean", "char", "double", "float", "int", "long", "String", "void", "public", "private", "protected", "default"};
-        return Arrays.stream(arr).anyMatch(line::contains) && !line.contains("=") && !line.endsWith(";");
+        return Arrays.stream(arr).anyMatch(line::contains) && !line.contains("=") && !line.contains("class") && !line.endsWith(";");
     }
 }
