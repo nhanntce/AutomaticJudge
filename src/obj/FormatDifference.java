@@ -8,13 +8,10 @@ public class FormatDifference {
 	private String content2;
 	
 	
-	/**
-	 * Constructor with 3 params
-	 * @param lineStart
-	 * @param lineEnd
-	 * @param content
-	 */
 	
+	/**
+         * Constructor
+         */
 	public FormatDifference() {
 		super();
 	}

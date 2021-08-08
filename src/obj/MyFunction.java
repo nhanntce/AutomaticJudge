@@ -33,7 +33,7 @@ public class MyFunction {
     /**
      * Set index of start
      *
-     * @param startIndex
+     * @param startIndex index of function
      */
     public void setStartIndex(int startIndex) {
         this.startIndex = startIndex;
@@ -51,7 +51,7 @@ public class MyFunction {
     /**
      * Set index of end
      *
-     * @param endIndex
+     * @param endIndex end line of function
      */
     public void setEndIndex(int endIndex) {
         this.endIndex = endIndex;
@@ -69,7 +69,7 @@ public class MyFunction {
     /**
      * Set content of function
      *
-     * @param content
+     * @param content content of function
      */
     public void setContent(String content) {
         this.content = content;

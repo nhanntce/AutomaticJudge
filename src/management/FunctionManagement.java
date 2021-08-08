@@ -31,10 +31,7 @@ public class FunctionManagement {
 
     /**
      * Add function to list
-     *
-     * @param startIndex
-     * @param endIndex
-     * @param content
+     * @param mf my function object 
      */
     public void addFunction(MyFunction mf) {
         funcs.add(mf);
@@ -52,11 +49,11 @@ public class FunctionManagement {
     /**
      * Find and get all of function
      *
-     * @param lines
+     * @param lines all lines of source code
      * @return funcs
      */
     public List<MyFunction> separateFunction(List<String> lines) {
-        funcs = new ArrayList<MyFunction>();
+        funcs = new ArrayList<>();
         MyStack stack = new MyStack();
         checkParentheses = new MyStack();
         checkCurlyBraces = new MyStack();
@@ -118,7 +115,7 @@ public class FunctionManagement {
     /**
      * Check and modify whether a function is commented or not
      *
-     * @param cmts
+     * @param cmts list comments of source code
      */
     public void checkFunctionComment(List<Comment> cmts) {
         for (int i = 0; i < funcs.size(); i++) {
@@ -144,7 +141,7 @@ public class FunctionManagement {
      * greater than 20% all line of code return true, otherwise return false
      * NhanNT
      *
-     * @param cmts
+     * @param cmts list comments of source code
      */
     public void checkAlgorithmComment(List<Comment> cmts) {
         int countLineComment;
@@ -166,8 +163,8 @@ public class FunctionManagement {
 
     /**
      * Get information of function for print
-     *
-     * @return str
+     * @param commentList list comments of source code
+     * @return 
      */
     public String toString(List<Comment> commentList) {
         String str = "";

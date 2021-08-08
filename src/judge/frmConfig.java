@@ -12,7 +12,7 @@ public class frmConfig extends javax.swing.JFrame {
     frmJudge parent;
     /**
      * Creates new form frmConfig
-     * @param parent
+     * @param parent main frame
      */
     public frmConfig(frmJudge parent) {
         initComponents();

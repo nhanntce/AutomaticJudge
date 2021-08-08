@@ -21,7 +21,7 @@ public class frmSetting extends javax.swing.JFrame {
     /**
      * Creates new form frmSetting
      *
-     * @param parent
+     * @param parent main frame
      */
     public frmSetting(frmJudge parent) {
         initComponents();
