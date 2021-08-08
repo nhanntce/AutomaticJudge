@@ -15,6 +15,7 @@ public class frmAbout extends javax.swing.JFrame {
     private frmJudge parent;
     /**
      * Creates new form frmAbout
+     * @param parent main frame
      */
     public frmAbout(frmJudge parent) {
         initComponents();

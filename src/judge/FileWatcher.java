@@ -33,14 +33,12 @@ public class FileWatcher implements Runnable {
     private Path directoryWatched;
 
     /**
-     * @param directory
-     * @Path directory to watch files into
-     * @param fileHandler
-     * @FileHandler implemented instance to handle the file event
+     * @param directory directory to watch files into
+     * @param fileHandler implemented instance to handle the file event
      * @param watchRecursive if directory is to be watched recursively
      * @param watchedEvents Set of file events watched
      *
-     * @throws IOException
+     * @throws IOException if having some errors
      */
     public FileWatcher(Path directory, FileHandler fileHandler, boolean watchRecursive,
             WatchEvent.Kind<?>... watchedEvents) throws IOException {

@@ -14,7 +14,7 @@ public class frmProcess extends javax.swing.JFrame {
     frmJudge parent;
     /**
      * Creates new form frmProgress
-     * @param parent
+     * @param parent main frame
      */
     public frmProcess(frmJudge parent) {
         initComponents();

@@ -18,11 +18,11 @@ public class CommentManagement {
 	/**
 	 * separating comment
 	 * 
-	 * @param lines
+	 * @param lines all of lines of source code
 	 * @return a list comment object
 	 */
 	public List<Comment> separateComment(List<String> lines) {
-		List<Comment> cmts = new ArrayList<Comment>();
+		List<Comment> cmts = new ArrayList<>();
 		boolean checkOpenCmt = false;
 		boolean checkStartComment = false;
 		String comment = "";
@@ -247,9 +247,9 @@ public class CommentManagement {
 
 	/**
 	 * 
-	 * @param func
-	 * @param cmtList
-	 * @return
+	 * @param func My function object
+	 * @param cmtList list comments in source code
+	 * @return percentage of comments in source code
 	 */
 	public double calculatePercentOfFunctionCmt(MyFunction func, List<Comment> cmtList) {
 		int countCmt = 0;

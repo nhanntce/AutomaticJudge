@@ -18,6 +18,8 @@ public class FileHandle {
 	/**
 	 * Copy file  
 	 *LinhNC
+     * @param source original file
+     * @param dest destination file
 	 */
     public void copyFile(String source, String dest) {
         try {
@@ -29,6 +31,10 @@ public class FileHandle {
     /**
      * Compare two file
      * LinhNC
+     * @param file1Path file need to compare 1
+     * @param file2Path file need to compare 2
+     * @return file1 == file2
+     * @throws java.io.IOException if file is not exists
      */
     public boolean compareTwoFiles(String file1Path, String file2Path) throws IOException {
 

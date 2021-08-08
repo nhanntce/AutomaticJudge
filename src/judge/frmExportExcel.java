@@ -21,7 +21,7 @@ public class frmExportExcel extends javax.swing.JFrame {
     /**
      * Creates new form frmExportExcel
      *
-     * @param parent
+     * @param parent main frame
      */
     public frmExportExcel(frmJudge parent) {
         initComponents();

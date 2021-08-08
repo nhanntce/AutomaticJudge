@@ -26,6 +26,7 @@ public class frmSetPaths extends javax.swing.JFrame {
 
     /**
      * Creates new form frmSetPaths
+     * @param parent main frame
      */
     public frmSetPaths(frmJudge parent) {
         initComponents();

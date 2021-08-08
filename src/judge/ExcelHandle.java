@@ -63,11 +63,11 @@ public class ExcelHandle {
     /**
      * Constructor
      *
-     * @param path
-     * @param name
-     * @param studentDir
-     * @param problemDir
-     * @param parent
+     * @param path of file
+     * @param name name file
+     * @param studentDir path of workspace
+     * @param problemDir path of problemDir
+     * @param parent main frame
      */
     public ExcelHandle(String path, String name, String studentDir, String problemDir, frmJudge parent) {
         try {
@@ -145,9 +145,10 @@ public class ExcelHandle {
      * Export data to file Excel
      *
      * @author NhanNT
-     * @param table
-     * @param file
-     * @throws FileNotFoundException
+     * @param table data
+     * @param file file to write in
+     * @param contestName contestName
+     * @throws FileNotFoundException file error
      */
     public void writeToExcell(JTable table, File file, String contestName) throws FileNotFoundException {
         try {

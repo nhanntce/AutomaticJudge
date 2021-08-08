@@ -20,10 +20,10 @@ public class Comment {
 	}
 	
 	/**
-	 * Constructor with three params
-	 * @param content
-	 * @param startLine
-	 * @param endLine
+	 * Constructor with three parameters
+	 * @param content content of comment
+	 * @param startLine start line of comment
+	 * @param endLine end line of comment
 	 */
 	public Comment(String content, int startLine, int endLine) {
 		super();

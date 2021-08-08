@@ -144,7 +144,7 @@ public class Judge {
                                     Pattern r1 = Pattern.compile(pattCheck1);
                                     Matcher m1 = r1.matcher(tmpString);
                                     if (m1.find()) {
-                                        st = Tool.replaceLast(st, oldClassName, tenbai);
+                                        st = st.replaceAll(oldClassName, tenbai);
                                         newData += st + System.lineSeparator();
                                     } else {
                                         String pattCheck2 = "^\\w+(\\s{1}[=]|[=])(\\s{1}new|new)\\s{1}" + oldClassName + "[(][)][;]";
@@ -624,9 +624,9 @@ public class Judge {
     /**
      * Get String compile command
      *
-     * @param problem
-     * @param type
-     * @return
+     * @param problem source code 
+     * @param type type of source code
+     * @return string to run command line
      */
     public String compileCMD(String problem, String type) {
         String compilecmd = "";
@@ -660,10 +660,10 @@ public class Judge {
     /**
      * Run executable file
      *
-     * @param tenbai
-     * @param problem
-     * @param type
-     * @return
+     * @param tenbai name of file source code
+     * @param problem problem name
+     * @param type type of source code
+     * @return run fail or success
      */
     public boolean run(String tenbai, String problem, String type) {
         String cmd = "";
@@ -739,8 +739,8 @@ public class Judge {
     /**
      * Get String executable file
      *
-     * @param problem
-     * @return
+     * @param problem source code
+     * @return String to run command line
      */
     public String runCMD(String problem) {
         String runcmd = "";
@@ -762,8 +762,8 @@ public class Judge {
     /**
      * Get student class
      *
-     * @param s
-     * @return
+     * @param s get class in file source code name
+     * @return class name
      */
     public String getStuClass(String s) {
         s = s.substring(1);
@@ -780,8 +780,8 @@ public class Judge {
     /**
      * Get username
      *
-     * @param s
-     * @return
+     * @param s get Student code in file's source code name
+     * @return student code
      */
     public String getUser(String s) {
         try {
@@ -797,8 +797,8 @@ public class Judge {
     /**
      * Get problem
      *
-     * @param s
-     * @return
+     * @param s get problem name
+     * @return problem name
      */
     public String getProblem(String s) {
         try {
@@ -815,19 +815,19 @@ public class Judge {
     /**
      * get type submission file
      *
-     * @param s
-     * @return
+     * @param s file name of source code
+     * @return type of source code
      */
     public String getType(String s) {
         return s.split("\\.")[1];
     }
 
     /**
-     * Excute Judge DangVTH
+     * Execute Judge DangVTH
      *
-     * @param NopbaiPath
-     * @param NopbaiName
-     * @param auto
+     * @param NopbaiPath path workspace
+     * @param NopbaiName name of each file
+     * @param auto check auto judge or judge in workspace
      */
     public void foo(ArrayList<String> NopbaiPath, ArrayList<String> NopbaiName, boolean auto) {
         if (NopbaiPath.isEmpty() || NopbaiName.isEmpty()) {
@@ -1062,11 +1062,11 @@ public class Judge {
     }
 
     /**
-     * Excute SQL statement DangVTH
+     * Execute SQL statement DangVTH
      *
-     * @param sql
-     * @param st
-     * @return
+     * @param sql sql
+     * @param st st
+     * @return boolean
      */
     public boolean runSql(String sql, Statement st) {
         long start = System.currentTimeMillis();

@@ -27,7 +27,7 @@ public class MyStack {
 	/**
 	 * add item to stack
 	 *
-	 * @param j
+	 * @param j j
 	 */
 	public void push(String j) {
 		try {

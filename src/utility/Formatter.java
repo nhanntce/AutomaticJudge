@@ -14,8 +14,10 @@ public class Formatter {
 	 * Format a source code directly Copy content of original source, then store the
 	 * copy into the same path with the original source
 	 * 
-	 * @param path
-	 * @throws IOException
+	 * @param path of file need to format
+        * @param type type of source code
+        * @param parent Main frame
+	 * @throws IOException if file not exists
 	 */
 	public static void Format(String path, String type, frmJudge parent) throws IOException {
             if("py".equals(type)){
