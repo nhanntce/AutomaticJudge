@@ -164,7 +164,7 @@ public class FunctionManagement {
     /**
      * Get information of function for print
      * @param commentList list comments of source code
-     * @return 
+     * @return toString of this class
      */
     public String toString(List<Comment> commentList) {
         String str = "";

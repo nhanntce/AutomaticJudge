@@ -38,7 +38,11 @@ public class Tool {
 		s = s.replaceAll("\\s+", "");
 		return s.isEmpty();
 	}
-
+        
+        /**
+         * remove blank line in list string
+         * @param lines list string
+         */
 	public static void removeBlankLine(List<String> lines) {
 		for (int i = 0; i < lines.size(); i++) {
 			if (checkBlankLine(lines.get(i)))
@@ -75,4 +79,15 @@ public class Tool {
 			throw new Exception("The file is not exists");
 		}
 	}
+        
+        /**
+         * relace last match ThaoNM
+         * @param text string need to repalce
+         * @param regex regex
+         * @param replacement string replace
+         * @return string is replced
+         */
+        public static String replaceLast(String text, String regex, String replacement) {
+            return text.replaceFirst("(?s)(.*)" + regex, "$1" + replacement);
+        }
 }

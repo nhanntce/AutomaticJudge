@@ -17,7 +17,7 @@ public class Formatter {
 	 * @param path of file need to format
         * @param type type of source code
         * @param parent Main frame
-	 * @throws IOException
+	 * @throws IOException if file not exists
 	 */
 	public static void Format(String path, String type, frmJudge parent) throws IOException {
             if("py".equals(type)){

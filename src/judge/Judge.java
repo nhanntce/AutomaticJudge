@@ -29,10 +29,13 @@ import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import management.FunctionManagement;
 import obj.Plagiarism;
 import utility.Formatter;
 import utility.Plagiarismer;
+import utility.Tool;
 
 /**
  *
@@ -115,18 +118,49 @@ public class Judge {
                         BufferedReader br = new BufferedReader(new FileReader(file));
 
                         String st = "";
-                        String[] tmpString;
+                        String tmpString = "";
                         String newData = "";
-
+                        String oldClassName = "";
+                        boolean checkFixClassName = false;
                         while ((st = br.readLine()) != null) {
-                            tmpString = st.trim().split(" ");
-                            for (int j = 0; j < tmpString.length; j++) {
-                                if (j < (tmpString.length - 2) && tmpString[j].equals("public") && tmpString[j + 1].equals("class")) {
-                                    st = st.replaceFirst(tmpString[j + 2], problem);
-                                    break;
+                            tmpString = st.trim();
+                            String pattern = "(^public\\s{1}class|^class)\\s{1}\\w+(\\s{1}|)[{](w|[^w])*";
+                            Pattern r = Pattern.compile(pattern);
+                            Matcher m = r.matcher(tmpString);
+                            String[] string = tmpString.split(" ");
+                            if (checkFixClassName == false && m.find()) {
+                                for (int l = 0; l < string.length; l++) {
+                                    if ("class".equals(string[l])) {
+                                        oldClassName = string[l + 1].endsWith("{") ? string[l + 1] = string[l + 1].replace(string[l + 1].substring(string[l + 1].length() - 1), "") : string[l + 1];
+                                        break;
+                                    }
+                                }
+                                st = st.replaceFirst(oldClassName, problem);
+                                checkFixClassName = true;
+                                newData += st + System.lineSeparator();
+                            } else {
+                                if (checkFixClassName) {
+                                    String pattCheck1 = "^" + oldClassName + "\\s{1}\\w+((([;]|\\s+[;]))|(([=]|\\s{1}[=])(new|\\s{1}new)\\s{1}" + oldClassName + "[(][)][;]*))";
+                                    Pattern r1 = Pattern.compile(pattCheck1);
+                                    Matcher m1 = r1.matcher(tmpString);
+                                    if (m1.find()) {
+                                        st = st.replaceAll(oldClassName, tenbai);
+                                        newData += st + System.lineSeparator();
+                                    } else {
+                                        String pattCheck2 = "^\\w+(\\s{1}[=]|[=])(\\s{1}new|new)\\s{1}" + oldClassName + "[(][)][;]";
+                                        Pattern r2 = Pattern.compile(pattCheck2);
+                                        Matcher m2 = r2.matcher(tmpString);
+                                        if (m2.find()) {
+                                            st = st.replaceFirst(oldClassName, tenbai);
+                                            newData += st + System.lineSeparator();
+                                        } else {
+                                            newData += st + System.lineSeparator();
+                                        }
+                                    }
+                                } else {
+                                    newData += st + System.lineSeparator();
                                 }
                             }
-                            newData += st + System.lineSeparator();
                         }
                         br.close();
 
@@ -363,14 +397,14 @@ public class Judge {
                         mainPoint = 0;
                     }
                 }
-                if("Hard".equals(penaltyMode)) {
+                if ("Hard".equals(penaltyMode)) {
                     try {
                         double logPoint = Double.parseDouble(lines.get(0));
-                        if(logPoint != 10) {
+                        if (logPoint != 10) {
                             mainPoint = 0;
                         }
-                    } catch (Exception e){
-                        
+                    } catch (Exception e) {
+
                     }
                 } else {
                     mainPoint = mainPoint * (limitSubmission - pen + 1) / limitSubmission;
