@@ -486,6 +486,7 @@ public class Judge {
      * @param problem Name of problem
      * @param type File extension
      * @param stuClass Name of contest
+     * @param origialFile Name of file without file extension
      * @return True if compile successfully, false if compile not successfully
      */
     public boolean compile(String fileName, String problem, String type, String stuClass, String origialFile) {
