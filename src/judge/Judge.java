@@ -92,6 +92,7 @@ public class Judge {
         String problem; // Store the name of the problem DangVTH
         String type; // Store the type of the solution DangVTH
         FileWriter writer = null;
+        String originalFile;
 
         // scan workspace DangVTH
         for (int i = 0; i < folderPath.size(); ++i) {
@@ -99,6 +100,7 @@ public class Judge {
                 name = fileName.get(i);
                 // Get name of solution DangVTH
                 tenbai = name.split("\\.")[0];
+                originalFile = tenbai;
                 // Get class of student DangVTH
                 stuclass = getStuClass(name);
                 // Get username of student DangVTH
@@ -184,7 +186,7 @@ public class Judge {
 
                 parent.pro.getTxtCompileRun().setText("Compiling " + problem);
                 // if comile error DangVTH
-                if (!compile(tenbai, problem, type, stuclass)) {
+                if (!compile(tenbai, problem, type, stuclass, originalFile)) {
                     writer.write("Compile Error\n" + error);
                     setPoint(stuclass, "Compile Error", parent.hmStuIndex.get(user + stuclass),
                             parent.hmTable.get(stuclass).getColumn(problem).getModelIndex());
@@ -486,7 +488,7 @@ public class Judge {
      * @param stuClass Name of contest
      * @return True if compile successfully, false if compile not successfully
      */
-    public boolean compile(String fileName, String problem, String type, String stuClass) {
+    public boolean compile(String fileName, String problem, String type, String stuClass, String origialFile) {
         error = "";
         String cmd = "";
         int exitCode = 0;
@@ -559,7 +561,7 @@ public class Judge {
                     }
                 }
                 listPlagiarisms = Plagiarismer.plagiarism(
-                        parent.studentDir + "\\" + stuClass + "\\" + getUser(fileName) + "\\" + fileName,
+                        parent.studentDir + "\\" + stuClass + "\\" + getUser(origialFile) + "\\" + origialFile,
                         listSolutionToCompare, type, parent);
 
             }
