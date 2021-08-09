@@ -31,7 +31,10 @@ public class FunctionManagement {
 
     /**
      * Add function to list
-     * @param mf my function object 
+     *
+     * @param startIndex
+     * @param endIndex
+     * @param content
      */
     public void addFunction(MyFunction mf) {
         funcs.add(mf);
@@ -49,11 +52,11 @@ public class FunctionManagement {
     /**
      * Find and get all of function
      *
-     * @param lines all lines of source code
+     * @param lines
      * @return funcs
      */
     public List<MyFunction> separateFunction(List<String> lines) {
-        funcs = new ArrayList<>();
+        funcs = new ArrayList<MyFunction>();
         MyStack stack = new MyStack();
         checkParentheses = new MyStack();
         checkCurlyBraces = new MyStack();
@@ -115,7 +118,7 @@ public class FunctionManagement {
     /**
      * Check and modify whether a function is commented or not
      *
-     * @param cmts list comments of source code
+     * @param cmts
      */
     public void checkFunctionComment(List<Comment> cmts) {
         for (int i = 0; i < funcs.size(); i++) {
@@ -141,7 +144,7 @@ public class FunctionManagement {
      * greater than 20% all line of code return true, otherwise return false
      * NhanNT
      *
-     * @param cmts list comments of source code
+     * @param cmts
      */
     public void checkAlgorithmComment(List<Comment> cmts) {
         int countLineComment;
@@ -163,8 +166,8 @@ public class FunctionManagement {
 
     /**
      * Get information of function for print
-     * @param commentList list comments of source code
-     * @return toString of this class
+     *
+     * @return str
      */
     public String toString(List<Comment> commentList) {
         String str = "";
@@ -215,6 +218,6 @@ public class FunctionManagement {
      */
     private boolean isFunction(String line) {
         String[] arr = new String[]{"boolean", "char", "double", "float", "int", "long", "String", "void", "public", "private", "protected", "default"};
-        return Arrays.stream(arr).anyMatch(line::contains) && !line.contains("=") && !line.endsWith(";");
+        return Arrays.stream(arr).anyMatch(line::contains) && !line.contains("=") && !line.contains("class") && !line.endsWith(";");
     }
 }
