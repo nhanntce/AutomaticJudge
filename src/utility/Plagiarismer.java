@@ -86,7 +86,6 @@ public class Plagiarismer {
             case MacOS:
                 break;
             case Linux:
-
             case Other:
                 break;
         }
