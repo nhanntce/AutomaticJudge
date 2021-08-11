@@ -514,6 +514,7 @@ public class Judge {
 
             // Check format
             if (checkFormatConfig) {
+//                checkFormat = 
                 // Generate formatted file
                 Formatter.Format(fileName + "." + type, type, parent);
                 // check file is exist
