@@ -104,10 +104,7 @@ public class FunctionManagementTest {
         instance.separateFunction(lines);
         instance.checkAlgorithmComment(cmts);
         List<MyFunction> checkList = instance.getList();
-        for (MyFunction myFunction : checkList) {
-            System.out.println(myFunction.getContent());
-            System.out.println(myFunction.isIsAlgorithmCommented());
-        }
+        
         assertEquals(true, checkList.get(0).isIsAlgorithmCommented());
         assertEquals(true, checkList.get(1).isIsAlgorithmCommented());
         assertEquals(true, checkList.get(2).isIsAlgorithmCommented());
