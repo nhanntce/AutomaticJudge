@@ -35,22 +35,18 @@ public class Plagiarismer {
             cmdPercentage += " \"" + s + "\"";
         }
 
-        if (null != type) {
-            switch (type) {
-                case "c":
-                    process = r.exec("sim_c.exe -p " + cmdPercentage);
-                    break;
-                case "cpp":
-                    process = r.exec("\"sim_c++.exe\" -p " + cmdPercentage);
-                    break;
-                case "java":
-                    process = r.exec("\"sim_java.exe\" -p " + cmdPercentage);
-                    break;
-                default:
-                    break;
-            }
-        } else {
-            return res;
+        switch (type) {
+            case "c":
+                process = r.exec("sim_c.exe -p " + cmdPercentage);
+                break;
+            case "cpp":
+                process = r.exec("\"sim_c++.exe\" -p " + cmdPercentage);
+                break;
+            case "java":
+                process = r.exec("\"sim_java.exe\" -p " + cmdPercentage);
+                break;
+            default:
+                break;
         }
         br1 = new BufferedReader(new InputStreamReader(process.getInputStream()));
         ArrayList<String> resultPercentage = new ArrayList<>();
