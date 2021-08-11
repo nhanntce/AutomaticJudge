@@ -84,7 +84,7 @@ public class MyFunction {
     }
 
     public int getLineOfCodes() {
-        return lineOfCodes;
+        return endIndex - startIndex;
     }
 
     public void setLineOfCodes(int lineOfCodes) {
