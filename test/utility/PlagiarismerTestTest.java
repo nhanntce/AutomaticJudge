@@ -52,9 +52,13 @@ public class PlagiarismerTestTest {
         fileChecks.add("source code for unit test/plagiarism/py1");
         //second parameter
         list1.add("source code for unit test/plagiarism/C2.c");
+        list1.add("source code for unit test/plagiarism/C3.c");
         list2.add("source code for unit test/plagiarism/Cpp2.cpp");
+        list2.add("source code for unit test/plagiarism/Cpp3.cpp");
         list3.add("source code for unit test/plagiarism/Java2.java");
+        list3.add("source code for unit test/plagiarism/Java3.java");
         list4.add("source code for unit test/plagiarism/py2.py");
+        list4.add("source code for unit test/plagiarism/py3.py");
         listChecks.add(list1);
         listChecks.add(list2);
         listChecks.add(list3);
