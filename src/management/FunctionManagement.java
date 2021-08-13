@@ -190,9 +190,9 @@ public class FunctionManagement {
             List<String> lines = Collections.emptyList();
 //            lines = Files.readAllLines(path, StandardCharsets.UTF_8);
             lines = Files.readAllLines(Paths.get(path));
-            separateFunction(lines);
             CommentManagement cm = new CommentManagement();
             List<Comment> cmts = cm.separateComments(lines);
+            separateFunction(lines);
             checkFunctionComment(cmts);
             checkAlgorithmComment(cmts);
             for (MyFunction func : funcs) {
