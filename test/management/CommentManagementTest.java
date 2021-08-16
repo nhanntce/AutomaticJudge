@@ -53,12 +53,16 @@ public class CommentManagementTest {
         
         assertEquals(expResult.get(0).getStartLine(), result.get(0).getStartLine());
         assertEquals(expResult.get(0).getEndLine(), result.get(0).getEndLine());
+        
         assertEquals(expResult.get(1).getStartLine(), result.get(1).getStartLine());
         assertEquals(expResult.get(1).getEndLine(), result.get(1).getEndLine());
+        
         assertEquals(expResult.get(2).getStartLine(), result.get(2).getStartLine());
         assertEquals(expResult.get(2).getEndLine(), result.get(2).getEndLine());
+        
         assertEquals(expResult.get(3).getStartLine(), result.get(3).getStartLine());
         assertEquals(expResult.get(3).getEndLine(), result.get(3).getEndLine());
+        
         assertEquals(expResult.get(4).getStartLine(), result.get(4).getStartLine());
         assertEquals(expResult.get(4).getEndLine(), result.get(4).getEndLine());
         

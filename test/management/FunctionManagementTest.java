@@ -68,6 +68,7 @@ public class FunctionManagementTest {
         cmts.add(new Comment("//show data", 33, 33));
         cmts.add(new Comment("/**\n     * display\n     * @param data\n     * @return \n     */", 37, 41));
         cmts.add(new Comment("//return value", 43, 43));
+        cmts.add(new Comment("//display number", 45, 45));
 
         FunctionManagement instance = new FunctionManagement();
         instance.separateFunction(lines);
@@ -77,6 +78,7 @@ public class FunctionManagementTest {
         assertEquals(true, checkList.get(0).isCommented());
         assertEquals(true, checkList.get(1).isCommented());
         assertEquals(true, checkList.get(2).isCommented());
+        assertEquals(false, checkList.get(3).isCommented());
     }
 
     /**
@@ -119,13 +121,19 @@ public class FunctionManagementTest {
         System.out.println("calculatePercentOfAllFunctionCmt");
         String path_1 = "source code for unit test/seperateComment.java";
         String path_2 = "source code for unit test/testcalculatepercentcmt.java";
+        String path_3 = "source code for unit test/uncomment.java";
 
         FunctionManagement instance = new FunctionManagement();
         double expResult_1 = 75.0;
         double expResult_2 = 33.33333333333333;
+        double expResult_3 = 0.0;
+        
         double result_1 = instance.calculatePercentOfAllFunctionCmt(path_1);
         double result_2 = instance.calculatePercentOfAllFunctionCmt(path_2);
+        double result_3 = instance.calculatePercentOfAllFunctionCmt(path_3);
+        
         assertEquals(expResult_1, result_1, 0.0);
         assertEquals(expResult_2, result_2, 0.0);
+        assertEquals(expResult_3, result_3, 0.0);
     }
 }
