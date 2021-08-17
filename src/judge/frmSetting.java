@@ -85,6 +85,11 @@ public class frmSetting extends javax.swing.JFrame {
         setMaximumSize(new java.awt.Dimension(550, 2147483647));
         setMinimumSize(new java.awt.Dimension(550, 0));
         setName("frmSetting"); // NOI18N
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         btnOk.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         btnOk.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/btnCheck.png"))); // NOI18N
@@ -485,6 +490,10 @@ public class frmSetting extends javax.swing.JFrame {
             txtLimitSubmission.setEnabled(false);
         }
     }//GEN-LAST:event_cbbPenaltyModeItemStateChanged
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        parent.btnSetting.setEnabled(true);
+    }//GEN-LAST:event_formWindowClosing
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancel;

@@ -40,6 +40,11 @@ public class frmConfig extends javax.swing.JFrame {
         btnOk = new javax.swing.JButton();
 
         setTitle("Configure the compilation environment");
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         btnCancel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         btnCancel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/btnCross.png"))); // NOI18N
@@ -116,6 +121,11 @@ public class frmConfig extends javax.swing.JFrame {
         setVisible(false);
         parent.btnConfig.setEnabled(true);
     }//GEN-LAST:event_btnOkActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        parent.btnConfig.setEnabled(true);
+    }//GEN-LAST:event_formWindowClosing
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnOk;

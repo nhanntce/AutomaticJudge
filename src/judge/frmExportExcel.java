@@ -48,6 +48,14 @@ public class frmExportExcel extends javax.swing.JFrame {
         btnCancel = new javax.swing.JButton();
 
         setTitle("Export Excel");
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                formWindowClosed(evt);
+            }
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         lblExport.setText("Select list");
 
@@ -132,7 +140,6 @@ public class frmExportExcel extends javax.swing.JFrame {
                     }
 
                 }
-                parent.btnExportExcel.setEnabled(true);
             } catch (HeadlessException | FileNotFoundException e) {
                 System.out.println(e.getMessage());
             }
@@ -148,6 +155,15 @@ public class frmExportExcel extends javax.swing.JFrame {
         this.setVisible(false);
         parent.btnExportExcel.setEnabled(true);
     }//GEN-LAST:event_btnCancelActionPerformed
+
+    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
+//        parent.btnExportExcel.setEnabled(true);
+    }//GEN-LAST:event_formWindowClosed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        parent.btnExportExcel.setEnabled(true);
+    }//GEN-LAST:event_formWindowClosing
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnExport;

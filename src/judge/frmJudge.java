@@ -215,7 +215,7 @@ public class frmJudge extends javax.swing.JFrame {
 
         btnExportExcel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         btnExportExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/btnexport.png"))); // NOI18N
-        btnExportExcel.setToolTipText("Import Excel");
+        btnExportExcel.setToolTipText("Export Result To Excel");
         btnExportExcel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnExportExcelActionPerformed(evt);
