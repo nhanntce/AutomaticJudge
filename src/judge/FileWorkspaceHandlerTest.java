@@ -34,7 +34,7 @@ public class FileWorkspaceHandlerTest implements FileHandler {
                 || fileEvent == StandardWatchEventKinds.ENTRY_MODIFY)) {
             tool.listProblemA();
             tool.loadStudentToTable();
-            tool.loadAllPoint();
+//            tool.loadAllPoint();
         }
     }
 }

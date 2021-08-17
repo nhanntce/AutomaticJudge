@@ -1,6 +1,7 @@
 package judge;
 
 import java.awt.Toolkit;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -19,6 +20,19 @@ public class frmConfig extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/img/btncompilerconfig.png")));
         this.parent = parent;
+        tblConfig.setModel(new DefaultTableModel(
+            new Object [][] {
+                {".cpp", null},
+                {".c", null},
+                {".py", null},
+                {".java", null}
+            },
+            new String [] {
+                "File type", "Compiler"
+            }
+        ));
+        this.setSize(500, 270);
+        this.setResizable(false);
         tblConfig.setValueAt(parent.typecpp, 0, 1);
         tblConfig.setValueAt(parent.typec, 1, 1);
         tblConfig.setValueAt(parent.typepy, 2, 1);
@@ -41,6 +55,9 @@ public class frmConfig extends javax.swing.JFrame {
 
         setTitle("Configure the compilation environment");
         addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                formWindowClosed(evt);
+            }
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
             }
@@ -59,8 +76,7 @@ public class frmConfig extends javax.swing.JFrame {
             new Object [][] {
                 {".cpp", null},
                 {".c", null},
-                {".py", null},
-                {".java", null}
+                {".py", null}
             },
             new String [] {
                 "File type", "Compiler"
@@ -125,6 +141,10 @@ public class frmConfig extends javax.swing.JFrame {
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         parent.btnConfig.setEnabled(true);
     }//GEN-LAST:event_formWindowClosing
+
+    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
+        parent.btnConfig.setEnabled(true);
+    }//GEN-LAST:event_formWindowClosed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancel;

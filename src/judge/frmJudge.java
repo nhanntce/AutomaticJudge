@@ -260,7 +260,7 @@ public class frmJudge extends javax.swing.JFrame {
 
         btnAbout.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         btnAbout.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/btninfo.png"))); // NOI18N
-        btnAbout.setToolTipText("Judge Current Tab");
+        btnAbout.setToolTipText("About us");
         btnAbout.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAboutActionPerformed(evt);
@@ -425,6 +425,9 @@ public class frmJudge extends javax.swing.JFrame {
             btnUpdateOnline.setEnabled(true);
             btnExportExcel.setEnabled(true);
             btnJudgeAContest.setEnabled(true);
+            btnJudgeAllContests.setEnabled(true);
+            btnLoadPoint.setEnabled(true);
+            btnSetting.setEnabled(true);
         }
     }
 
@@ -514,6 +517,9 @@ public class frmJudge extends javax.swing.JFrame {
             btnUpdateOnline.setEnabled(true);
             btnExportExcel.setEnabled(true);
             btnJudgeAContest.setEnabled(true);
+            btnLoadPoint.setEnabled(true);
+            btnJudgeAllContests.setEnabled(true);
+            btnSetting.setEnabled(true);
         }
     }
 
@@ -576,143 +582,148 @@ public class frmJudge extends javax.swing.JFrame {
     private void btnSettingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSettingActionPerformed
 
         frmSetting setting = new frmSetting(this);
-        String selectedTab = tabTable.getTitleAt(tabTable.getSelectedIndex());
-        String pathToSettingConfig = problemDir + "\\" + selectedTab + "\\config.txt";
-        File tempFile = new File(pathToSettingConfig);
+        try {
+            String selectedTab = tabTable.getTitleAt(tabTable.getSelectedIndex());
+            String pathToSettingConfig = problemDir + "\\" + selectedTab + "\\config.txt";
+            File tempFile = new File(pathToSettingConfig);
 
-        String check_comment_mode = "";
-        String penalty_mode = "";
-        boolean isCmtChecked = true;
-        boolean isFormatChecked = true;
-        boolean isPlagiarismChecked = true;
+            String check_comment_mode = "";
+            String penalty_mode = "";
+            boolean isCmtChecked = true;
+            boolean isFormatChecked = true;
+            boolean isPlagiarismChecked = true;
 
-        //if dont have config file -> create new file and write default setting to config file
-        if (!tempFile.exists()) {
-            try {
-                tempFile.createNewFile();
-                FileWriter fileWriter = new FileWriter(tempFile);
+            //if dont have config file -> create new file and write default setting to config file
+            if (!tempFile.exists()) {
+                try {
+                    tempFile.createNewFile();
+                    FileWriter fileWriter = new FileWriter(tempFile);
 
-                //get default setting from property file
-                //time and memory limit setting
-                String time_limit = this.props.getProperty("time_limit");
-                String memory_limit = this.props.getProperty("memory_limit");
-                //format setting
-                String check_format = this.props.getProperty("check_format");
-                String check_format_minusValue = this.props.getProperty("check_format_minusValue");
-                //comment setting
-                String check_comment = this.props.getProperty("check_comment");
-                check_comment_mode = this.props.getProperty("check_comment_mode");
-                String perentage_accept = this.props.getProperty("perentage_accept");
-                String minus_value = this.props.getProperty("minus_value");
-                //check plagiarism setting
-                String check_plagiarism = this.props.getProperty("check_plagiarism");
-                String check_plagiarism_perAccept = this.props.getProperty("check_plagiarism_perAccept");
-                //penalty mode setting
-                penalty_mode = this.props.getProperty("penalty_mode");
-                String penalty_value = this.props.getProperty("penalty_value");
+                    //get default setting from property file
+                    //time and memory limit setting
+                    String time_limit = this.props.getProperty("time_limit");
+                    String memory_limit = this.props.getProperty("memory_limit");
+                    //format setting
+                    String check_format = this.props.getProperty("check_format");
+                    String check_format_minusValue = this.props.getProperty("check_format_minusValue");
+                    //comment setting
+                    String check_comment = this.props.getProperty("check_comment");
+                    check_comment_mode = this.props.getProperty("check_comment_mode");
+                    String perentage_accept = this.props.getProperty("perentage_accept");
+                    String minus_value = this.props.getProperty("minus_value");
+                    //check plagiarism setting
+                    String check_plagiarism = this.props.getProperty("check_plagiarism");
+                    String check_plagiarism_perAccept = this.props.getProperty("check_plagiarism_perAccept");
+                    //penalty mode setting
+                    penalty_mode = this.props.getProperty("penalty_mode");
+                    String penalty_value = this.props.getProperty("penalty_value");
 
-                //write setting to specify contest's config file
-                //write time and memory limit setting
-                fileWriter.write("time_limit=" + time_limit + "\n");
-                fileWriter.write("memory_limit=" + memory_limit + "\n");
-                //write format setting
-                fileWriter.write("check_format=" + check_format + "\n");
-                fileWriter.write(check_format_minusValue + "\n");
-                //write comment setting
-                fileWriter.write("check_comment=" + check_comment + "\n");
-                fileWriter.write("check_comment_mode=" + check_comment_mode + "\n");
-                fileWriter.write(perentage_accept + "\n");
-                fileWriter.write(minus_value + "\n");
-                //write check plagiarism setting
-                fileWriter.write("check_plagiarism=" + check_plagiarism + "\n");
-                fileWriter.write(check_plagiarism_perAccept + "\n");
-                //write penalty setting
-                fileWriter.write("penalty_mode=" + penalty_mode + "\n");
-                fileWriter.write(penalty_value + "\n");
+                    //write setting to specify contest's config file
+                    //write time and memory limit setting
+                    fileWriter.write("time_limit=" + time_limit + "\n");
+                    fileWriter.write("memory_limit=" + memory_limit + "\n");
+                    //write format setting
+                    fileWriter.write("check_format=" + check_format + "\n");
+                    fileWriter.write(check_format_minusValue + "\n");
+                    //write comment setting
+                    fileWriter.write("check_comment=" + check_comment + "\n");
+                    fileWriter.write("check_comment_mode=" + check_comment_mode + "\n");
+                    fileWriter.write(perentage_accept + "\n");
+                    fileWriter.write(minus_value + "\n");
+                    //write check plagiarism setting
+                    fileWriter.write("check_plagiarism=" + check_plagiarism + "\n");
+                    fileWriter.write(check_plagiarism_perAccept + "\n");
+                    //write penalty setting
+                    fileWriter.write("penalty_mode=" + penalty_mode + "\n");
+                    fileWriter.write(penalty_value + "\n");
 
-                fileWriter.close();
+                    fileWriter.close();
 
-                //get setting content in config file to interface
-                setting.txtTimeLimit.setText(time_limit);
-                setting.txtMemoryLimit.setText(memory_limit);
+                    //get setting content in config file to interface
+                    setting.txtTimeLimit.setText(time_limit);
+                    setting.txtMemoryLimit.setText(memory_limit);
 
-                setting.chkCheckFormat.setSelected(Boolean.parseBoolean(this.props.getProperty("check_format")));
-                setting.txtFormatMinusValue.setText(check_format_minusValue);
+                    setting.chkCheckFormat.setSelected(Boolean.parseBoolean(this.props.getProperty("check_format")));
+                    setting.txtFormatMinusValue.setText(check_format_minusValue);
 
-                setting.chkCheckCmt.setSelected(Boolean.parseBoolean(this.props.getProperty("check_comment")));
-                setting.cbbCommentMode.setSelectedItem(check_comment_mode);
-                setting.txtPercentageAccept.setText(perentage_accept);
-                setting.txtMinusValue.setText(minus_value);
+                    setting.chkCheckCmt.setSelected(Boolean.parseBoolean(this.props.getProperty("check_comment")));
+                    setting.cbbCommentMode.setSelectedItem(check_comment_mode);
+                    setting.txtPercentageAccept.setText(perentage_accept);
+                    setting.txtMinusValue.setText(minus_value);
 
-                setting.chkCheckPlagiarism.setSelected(Boolean.parseBoolean(this.props.getProperty("check_plagiarism")));
-                setting.txtPercentagePlaAccept.setText(check_plagiarism_perAccept);
+                    setting.chkCheckPlagiarism.setSelected(Boolean.parseBoolean(this.props.getProperty("check_plagiarism")));
+                    setting.txtPercentagePlaAccept.setText(check_plagiarism_perAccept);
 
-                setting.cbbPenaltyMode.setSelectedItem(penalty_mode);
-                setting.txtLimitSubmission.setText(penalty_value);
+                    setting.cbbPenaltyMode.setSelectedItem(penalty_mode);
+                    setting.txtLimitSubmission.setText(penalty_value);
 
-            } catch (IOException ex) {
-                Logger.getLogger(frmJudge.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(frmJudge.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                //if have config file -> read and get setting content to interface
+            } else {
+                try {
+                    List<String> lines = Collections.emptyList();
+                    lines = Files.readAllLines(Paths.get(pathToSettingConfig), StandardCharsets.UTF_8);
+
+                    //set setting content to interface 
+                    setting.txtTimeLimit.setText(lines.get(0).split("=")[1]);
+                    setting.txtMemoryLimit.setText(lines.get(1).split("=")[1]);
+
+                    setting.chkCheckFormat.setSelected(Boolean.parseBoolean(lines.get(2).split("=")[1]));
+                    setting.txtFormatMinusValue.setText(lines.get(3));
+
+                    setting.chkCheckCmt.setSelected(Boolean.parseBoolean(lines.get(4).split("=")[1]));
+                    check_comment_mode = lines.get(5).split("=")[1];
+                    setting.cbbCommentMode.setSelectedItem(check_comment_mode);
+                    setting.txtPercentageAccept.setText(lines.get(6));
+                    setting.txtMinusValue.setText(lines.get(7));
+
+                    setting.chkCheckPlagiarism.setSelected(Boolean.parseBoolean(lines.get(8).split("=")[1]));
+                    setting.txtPercentagePlaAccept.setText(lines.get(9));
+
+                    penalty_mode = lines.get(10).split("=")[1];
+                    setting.cbbPenaltyMode.setSelectedItem(penalty_mode);
+                    setting.txtLimitSubmission.setText(lines.get(11));
+
+                    isCmtChecked = Boolean.parseBoolean(lines.get(4).split("=")[1]);
+                    isPlagiarismChecked = Boolean.parseBoolean(lines.get(8).split("=")[1]);
+                    isFormatChecked = Boolean.parseBoolean(lines.get(2).split("=")[1]);
+
+                } catch (IOException ex) {
+                    Logger.getLogger(frmJudge.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
-            //if have config file -> read and get setting content to interface
-        } else {
-            try {
-                List<String> lines = Collections.emptyList();
-                lines = Files.readAllLines(Paths.get(pathToSettingConfig), StandardCharsets.UTF_8);
 
-                //set setting content to interface 
-                setting.txtTimeLimit.setText(lines.get(0).split("=")[1]);
-                setting.txtMemoryLimit.setText(lines.get(1).split("=")[1]);
-
-                setting.chkCheckFormat.setSelected(Boolean.parseBoolean(lines.get(2).split("=")[1]));
-                setting.txtFormatMinusValue.setText(lines.get(3));
-
-                setting.chkCheckCmt.setSelected(Boolean.parseBoolean(lines.get(4).split("=")[1]));
-                check_comment_mode = lines.get(5).split("=")[1];
-                setting.cbbCommentMode.setSelectedItem(check_comment_mode);
-                setting.txtPercentageAccept.setText(lines.get(6));
-                setting.txtMinusValue.setText(lines.get(7));
-
-                setting.chkCheckPlagiarism.setSelected(Boolean.parseBoolean(lines.get(8).split("=")[1]));
-                setting.txtPercentagePlaAccept.setText(lines.get(9));
-
-                penalty_mode = lines.get(10).split("=")[1];
-                setting.cbbPenaltyMode.setSelectedItem(penalty_mode);
-                setting.txtLimitSubmission.setText(lines.get(11));
-
-                isCmtChecked = Boolean.parseBoolean(lines.get(4).split("=")[1]);
-                isPlagiarismChecked = Boolean.parseBoolean(lines.get(8).split("=")[1]);
-                isFormatChecked = Boolean.parseBoolean(lines.get(2).split("=")[1]);
-
-            } catch (IOException ex) {
-                Logger.getLogger(frmJudge.class.getName()).log(Level.SEVERE, null, ex);
+            //if dont check comment is not checked => hiden 
+            if (!isCmtChecked) {
+                setting.pnlSettingCheckCmt.setVisible(false);
             }
-        }
+            if (!isFormatChecked) {
+                setting.pnlSettingCheckFormat.setVisible(false);
+            }
+            if (!isPlagiarismChecked) {
+                setting.pnlSettingCheckPlagiarism.setVisible(false);
+            }
 
-        //if dont check comment is not checked => hiden 
-        if (!isCmtChecked) {
-            setting.pnlSettingCheckCmt.setVisible(false);
-        }
-        if (!isFormatChecked) {
-            setting.pnlSettingCheckFormat.setVisible(false);
-        }
-        if (!isPlagiarismChecked) {
-            setting.pnlSettingCheckPlagiarism.setVisible(false);
-        }
+            if ("Hard".equals(penalty_mode)) {
+                setting.txtLimitSubmission.setEnabled(false);
+            }
 
-        if ("Hard".equals(penalty_mode)) {
-            setting.txtLimitSubmission.setEnabled(false);
-        }
+            //set text for label by mode check
+            if ("By Percentage".equals(check_comment_mode)) {
+                setting.lblMinusPoints.setText("Minus Points (%):");
+            } else {
+                setting.lblMinusPoints.setText("Minus Points (points):");
+            }
 
-        //set text for label by mode check
-        if ("By Percentage".equals(check_comment_mode)) {
-            setting.lblMinusPoints.setText("Minus Points (%):");
-        } else {
-            setting.lblMinusPoints.setText("Minus Points (points):");
+            setting.pack();
+            setting.setVisible(true);
+            btnSetting.setEnabled(false);
+        } catch (Exception e) {
+            JOptionPane.showOptionDialog(this, "Don't have any contest to setting", "Warning",
+                    JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, null, null);
         }
-
-        setting.pack();
-        setting.setVisible(true);
-        btnSetting.setEnabled(false);
     }//GEN-LAST:event_btnSettingActionPerformed
 
     /**
@@ -838,7 +849,13 @@ public class frmJudge extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAboutActionPerformed
 
     private void btnLoadPointActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadPointActionPerformed
-        loadAllPoint();
+//        try {
+            loadAllPoint();
+//        } catch (Exception e) {
+//            JOptionPane.showOptionDialog(this, "Do not have any contest to Load point", "Message",
+//                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
+//        }
+
     }//GEN-LAST:event_btnLoadPointActionPerformed
     /**
      * Method load point from logs file
@@ -980,7 +997,7 @@ public class frmJudge extends javax.swing.JFrame {
                                 mainPoint = mainPoint * (limitSubmission - pen + 1) / limitSubmission;
                             }
                             mainPoint = (mainPoint > 0 ? mainPoint : 0.0);
-                            
+
                             hmTable.get(s).setValueAt(String.format("%.1f", mainPoint), i, j);
                             total += mainPoint;
                         } else {
@@ -1013,6 +1030,10 @@ public class frmJudge extends javax.swing.JFrame {
                 btnUpdateOnline.setEnabled(true);
                 btnExportExcel.setEnabled(true);
                 btnJudgeAContest.setEnabled(true);
+                btnJudgeAllContests.setEnabled(true);
+                btnLoadPoint.setEnabled(true);
+                btnSetting.setEnabled(true);
+                
                 tabTable.removeAll();
                 listProbPath.clear();
                 listProbName.clear();
@@ -1235,10 +1256,13 @@ public class frmJudge extends javax.swing.JFrame {
      * Initialize components
      */
     private void init() {
-        this.btnUpdateOnline.setEnabled(false);
-        this.btnUpdateOnline.setEnabled(false);
-        this.btnExportExcel.setEnabled(false);
-//        this.btnJudge.setEnabled(false);
+//        this.btnLoadPoint.setEnabled(false);
+//        this.btnUpdateOnline.setEnabled(false);
+//        this.btnExportExcel.setEnabled(false);
+//        this.btnJudgeAContest.setEnabled(false);
+//        this.btnJudgeAllContests.setEnabled(false);
+//        this.btnSetting.setEnabled(false);
+
         this.tmptype = "cpppysqljava"; // C, C++, python
         this.listNopbaiPath = new ArrayList<>();
         this.listNopbaiName = new ArrayList<>();
