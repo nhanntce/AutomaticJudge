@@ -214,7 +214,7 @@ public class Judge {
                     Files.deleteIfExists(Paths.get(tenbai + ".pyc"));
                     // delete file java NhanNT
                     Files.deleteIfExists(Paths.get(tenbai + ".class"));
-                    Files.deleteIfExists(Paths.get(tenbai + ".java"));
+//                    Files.deleteIfExists(Paths.get(tenbai + ".java"));
                     // if auto judging, delete solution in submissions folder DangVTH
                     if (auto) {
                         Files.deleteIfExists(Paths.get(folderPath.get(i)));
@@ -957,6 +957,7 @@ public class Judge {
                                     + "            fileOutzzz = new java.io.PrintStream(\"" + problem + ".out\");\n"
                                     + "             System.setOut(fileOutzzz); \n"
                                     + "        } catch (java.io.FileNotFoundException ex) {}";
+                            flag = false;
                         } else {
                             flag = true;
                         }
