@@ -138,7 +138,7 @@ public class frmExportExcel extends javax.swing.JFrame {
                         }
                         tool.writeToExcell(tbExport, fileFile.getSelectedFile(), cmbExport.getSelectedItem().toString());
                     }
-
+                    parent.btnExportExcel.setEnabled(true);
                 }
             } catch (HeadlessException | FileNotFoundException e) {
                 System.out.println(e.getMessage());

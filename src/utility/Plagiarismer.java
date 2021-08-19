@@ -6,8 +6,13 @@
 package utility;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import judge.frmJudge;
 import obj.Plagiarism;
@@ -57,6 +62,12 @@ public class Plagiarismer {
         String result = resultPercentage.get(resultPercentage.size() - 1).trim();
         if (!result.equals("")) {
             try {
+                BasicFileAttributes fAtt1 = Files.readAttributes(Paths.get(fileCheck + "." + type), BasicFileAttributes.class);
+                BasicFileAttributes fAtt2 = Files.readAttributes(Paths.get(result.substring(result.indexOf(" % of ") + 6,
+                        result.length() - 9)), BasicFileAttributes.class);
+                if(fAtt1.creationTime().toMillis() <  fAtt2.creationTime().toMillis()){
+                    return res;
+                }
                 plagiarismPath = result.substring(result.indexOf(" % of ") + 6, result.length() - 9);
                 percentage = Integer.parseInt(result.substring(result.indexOf(" consists for ") + 14, result.indexOf(" % of ")));
                 res.add(new Plagiarism(percentage, plagiarismPath));

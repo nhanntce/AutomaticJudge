@@ -850,7 +850,7 @@ public class frmJudge extends javax.swing.JFrame {
 
     private void btnLoadPointActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadPointActionPerformed
 //        try {
-            loadAllPoint();
+        loadAllPoint();
 //        } catch (Exception e) {
 //            JOptionPane.showOptionDialog(this, "Do not have any contest to Load point", "Message",
 //                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
@@ -906,8 +906,7 @@ public class frmJudge extends javax.swing.JFrame {
      */
     private void loadPointPenalty(String s, JTable tb) throws IOException {
         String contest = s;
-        String selectedTab = tabTable.getTitleAt(tabTable.getSelectedIndex());
-        String pathToSettingConfig = problemDir + "\\" + selectedTab + "\\config.txt";
+        String pathToSettingConfig = problemDir + "\\" + s + "\\config.txt";
         //read config file
         boolean checkFormatConfig = false;
         double minusFormatPointConfig = 0;
@@ -1033,7 +1032,7 @@ public class frmJudge extends javax.swing.JFrame {
                 btnJudgeAllContests.setEnabled(true);
                 btnLoadPoint.setEnabled(true);
                 btnSetting.setEnabled(true);
-                
+
                 tabTable.removeAll();
                 listProbPath.clear();
                 listProbName.clear();
