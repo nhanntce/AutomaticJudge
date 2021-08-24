@@ -36,7 +36,11 @@ public class Plagiarismer {
         String cmdPercentage = "\"" + fileCheck + "." + type + "\" / ";
         String cmdSimilar = "\"" + fileCheck + "." + type + "\" / ";
         listCheck.remove(fileCheck + "." + type);
+        String user = getUser(fileCheck);
         for (String s : listCheck) {
+            if (s.contains(user)) {
+                continue;
+            }
             cmdPercentage += " \"" + s + "\"";
         }
 
@@ -65,7 +69,7 @@ public class Plagiarismer {
                 BasicFileAttributes fAtt1 = Files.readAttributes(Paths.get(fileCheck + "." + type), BasicFileAttributes.class);
                 BasicFileAttributes fAtt2 = Files.readAttributes(Paths.get(result.substring(result.indexOf(" % of ") + 6,
                         result.length() - 9)), BasicFileAttributes.class);
-                if(fAtt1.creationTime().toMillis() <  fAtt2.creationTime().toMillis()){
+                if (fAtt1.creationTime().toMillis() < fAtt2.creationTime().toMillis()) {
                     return res;
                 }
                 plagiarismPath = result.substring(result.indexOf(" % of ") + 6, result.length() - 9);
@@ -101,5 +105,22 @@ public class Plagiarismer {
         }
 
         return res;
+    }
+
+    /**
+     * Get username
+     *
+     * @param s get Student code in file's source code name
+     * @return student code
+     */
+    public static String getUser(String s) {
+        try {
+            String pattern = "\\]\\[";
+            String[] lsuser = s.split(pattern);
+            String user = lsuser[lsuser.length - 2];
+            return user;
+        } catch (ArrayIndexOutOfBoundsException e) {
+        }
+        return "";
     }
 }

@@ -913,8 +913,8 @@ public class Judge {
             boolean flag = false;
             if ("py".equals(type)) {
                 string += "import sys\n"
-                        + "sys.stdin = open('A.inp', 'r')\n"
-                        + "sys.stdout = open('A.out', 'w')\n";
+                        + "sys.stdin = open('" + problem + ".inp', 'r')\n"
+                        + "sys.stdout = open('" + problem + ".out', 'w')\n";
             }
             while ((line = br.readLine()) != null) {
                 if (line.contains("fopen")) {
