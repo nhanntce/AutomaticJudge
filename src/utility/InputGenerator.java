@@ -20,7 +20,11 @@ public class InputGenerator {
     
     // generate 
     public String Generate(ArrayList<InputDescriptor> descriptors) {
-        // TODO
-        return "";
+        String input = "";
+        for (int i = 0; i < descriptors.size(); i++) {
+            input+= descriptors.get(i).toString();
+            
+        }
+        return input;
     }
 }
