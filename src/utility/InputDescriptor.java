@@ -22,9 +22,7 @@ public abstract class InputDescriptor {
     public abstract java.lang.String toString();
     
     
-    /**
-     * generator char
-     */
+    
     public static class Char extends InputDescriptor {
         char character ;
         /**
@@ -56,9 +54,7 @@ public abstract class InputDescriptor {
         }
         
     }
-    /**
-     * generator number
-     */
+    
     public static class Number extends InputDescriptor {
         double input;
         DecimalFormat df ;
@@ -76,9 +72,7 @@ public abstract class InputDescriptor {
             return java.lang.String.valueOf(df.format(input)+"\t");
         }
     }
-    /**
-     * generator string 
-     */
+    
     public static class String extends InputDescriptor {
         java.lang.String input;
         int leng;
@@ -101,9 +95,7 @@ public abstract class InputDescriptor {
             return "\n"+input+"\n";
         }
     }
-    /**
-     * generator Matrix status bug
-     */
+    
     public static class Matrix extends InputDescriptor {
         ArrayList<InputDescriptor> array = new ArrayList<>();
         int row;

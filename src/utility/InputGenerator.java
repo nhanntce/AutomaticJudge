@@ -18,11 +18,7 @@ public class InputGenerator {
         // TODO
     }
     
-    /**
-     * generator
-     * @param descriptors
-     * @return 
-     */
+    // generate 
     public String Generate(ArrayList<InputDescriptor> descriptors) {
         String input = "";
         for (int i = 0; i < descriptors.size(); i++) {
